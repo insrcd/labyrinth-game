@@ -107,10 +107,12 @@ fn add_player(mut commands: Commands,
     sprites : ResMut<world::SpriteLibrary>,
     mut query: Query<(Added<player::Player>, &player::Named, &world::Location)>
 ) {
-    for (tile, name , loc) in &mut query.iter() {
+    for (player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!
         let sprite = sprites.get("player");
-        println!("got sprite {}", sprite.name);
+        
+        println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
+        
         commands
         .spawn(SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),

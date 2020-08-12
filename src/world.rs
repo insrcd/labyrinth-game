@@ -5,7 +5,7 @@ use bevy::{
 };
 use std::collections::HashMap;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Sprite {
     pub name:  &'static str,
     pub atlas_sprite : u32,
@@ -46,6 +46,7 @@ impl Sprite {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Location (pub f32, pub f32, pub f32);
 pub struct Tile (pub TileType);
 #[derive(Debug)]
