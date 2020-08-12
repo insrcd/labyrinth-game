@@ -2,8 +2,8 @@ fn startup_scene() {
 
 }
 
-fn render_room(){
-
+fn render_area(){
+    
 }
 
 fn main_menu(){

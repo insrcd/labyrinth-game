@@ -8,30 +8,17 @@ pub enum ItemType {
     Ingredient
 }
 
-struct Item {
+pub struct Item {
     id: u32,
     item_type: ItemType,
     weight: f64,
     attributes: Box<HashMap<String, String>>
 }
 
-struct Location {
-    floor: u32,
-    x: u32,
-    y: u32
-}
+impl Map {
+    fn load_map_from_file(filename : &str) -> Map {
 
-struct Tile {
-
-}
-
-struct Collidable {
-    
-}
-
-struct Map {
-    tiles: &[Tile],
-    placeable: &[Placeable]
+    }
 }
  
 enum WeaponSpecialPowers {
@@ -54,11 +41,10 @@ trait Mixable {
     fn mix_with(item : &mut Item);
 }
 
-// sprite component
-struct Sprite {
-    name: &str,
-    sprite_sheet_id : u32,
-    sprite_location : u32,
-    height: u32,
-    width: u32
+pub struct ObjectMaker;
+
+impl ObjectMaker {
+    pub fn make_tile(&commands: Commands, texture_name: &str){
+        
+    }
 }
