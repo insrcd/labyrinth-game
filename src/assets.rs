@@ -2,10 +2,53 @@ use bevy::{
     prelude::*
 };
 
+use crate::world::Location;
 use crate::player::*;
-use crate::world::{ Sprite as WorldSprite, Location, SpriteLibrary};
+use std::collections::HashMap;
 
-pub fn load_tiles(
+#[derive(Clone, Debug)]
+pub struct Sprite {
+    pub name:  &'static str,
+    pub atlas_sprite : u32,
+    pub atlas_handle : Handle<TextureAtlas>,
+    pub height: u32,
+    pub width: u32
+}
+
+pub struct SpriteLibrary {
+    library: Box<HashMap<&'static str, Sprite>>
+}
+
+impl SpriteLibrary {
+    pub fn new () -> SpriteLibrary {
+        SpriteLibrary {
+            library : Box::new(HashMap::new())
+        }
+    }
+
+    pub fn add(&mut self, name : &'static str, sprite: Sprite){
+        self.library.as_mut().insert(name, sprite);
+    }
+
+    pub fn get(&self, name : &str) -> Sprite {
+        self.library.as_ref().get(name).unwrap().clone()
+    }
+}
+
+impl Sprite {
+    pub fn new (name : &'static str, sprite_idx: u32, handle: Handle<TextureAtlas>, width: u32, height: u32) -> Sprite {
+         return Sprite {
+             name: name.clone(),
+             atlas_sprite: sprite_idx,
+             atlas_handle: handle,
+             width,
+             height
+         }
+    }
+}
+
+
+pub fn load_world_sprites(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -36,9 +79,9 @@ pub fn load_tiles(
 
     let mut sprite_lib = SpriteLibrary::new();
 
-    sprite_lib.add("wall", WorldSprite::new("wall", 1, texture_atlas_handle.clone(), 16, 16));
-    sprite_lib.add("floor", WorldSprite::new("floor", 2, texture_atlas_handle.clone(), 16, 16));
-    sprite_lib.add("player", WorldSprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
+    sprite_lib.add("wall", Sprite::new("wall", 1, texture_atlas_handle.clone(), 16, 16));
+    sprite_lib.add("floor", Sprite::new("floor", 2, texture_atlas_handle.clone(), 16, 16));
+    sprite_lib.add("player", Sprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
 
     commands
     .insert_resource(sprite_lib)
