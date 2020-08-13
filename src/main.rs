@@ -1,6 +1,7 @@
 mod player;
 mod world;
 mod assets;
+mod scripting;
 
 use bevy::{
     prelude::*,
@@ -12,6 +13,7 @@ use bevy::{
 use assets::*;
 use player::*;
 use world::*;
+use scripting::*;
 
 use world::Tile;
 enum GameState {
@@ -74,7 +76,7 @@ fn make_room (
     mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
     texture_atlases: Res<Assets<TextureAtlas>>,    
-    mut query: Query<(Added<Tile>, &Visible)>,
+    mut query: Query<(Entity, Added<Tile>, &Visible)>,
     mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
     for (e, push, vis, &loc) in &mut p_query.iter() {
@@ -91,7 +93,7 @@ fn make_room (
             ..Default::default()
         });
     }
-    for (tile, vis) in &mut query.iter() {
+    for (e, tile, vis) in &mut query.iter() {
         //println!("Found a tile named {:?} {}", tile.0, name.0);    
 
         let sprite = match tile.0 {
@@ -102,7 +104,7 @@ fn make_room (
         let loc = &tile.1;
 
         commands
-        .spawn(SpriteSheetComponents {
+        .insert(e, SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
             draw: Draw { is_visible: true, ..Default::default() },
@@ -226,6 +228,7 @@ fn keyboard_input_system(
     keyboard_input: Res<Input<KeyCode>>, 
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut query: Query<(&Player, &mut Translation)>) {
+    
     for (player, mut loc) in &mut query.iter() {   
         if keyboard_input.just_pressed(KeyCode::W) {
             *loc.0.y_mut() += 32.;

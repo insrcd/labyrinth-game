@@ -1469,6 +1469,11 @@ name = "instant"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b141fdc7836c525d4d594027d318c84161ca17aaf8113ab1f81ab93ae897485"
+dependencies = [
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
+]
 
 [[package]]
 name = "iovec"
@@ -1516,6 +1521,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "log",
+ "rhai",
 ]
 
 [[package]]
@@ -2132,6 +2138,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3acd125665422973a33ac9d3dd2df85edad0f4ae9b00dafb1a05e43a9f5ef8e7"
 dependencies = [
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "rhai"
+version = "0.18.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "baf577f0bb372ad1d9cf2517063b87891a82e67321c79dd9fde9a4419611551e"
+dependencies = [
+ "instant",
+ "num-traits",
+ "smallvec",
 ]
 
 [[package]]

@@ -7,7 +7,7 @@ pub struct Location (pub f32, pub f32, pub f32);
 pub struct Area(pub f32, pub f32);
 
 #[derive(Clone, Debug, Copy)]
-pub struct Tile (pub TileType, pub Location);
+pub struct Tile (pub TileType);
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TileType {
     Wall,
