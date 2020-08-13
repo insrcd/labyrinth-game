@@ -28,8 +28,8 @@ pub struct AreaMap;
 
 pub struct MapBuilder {
     tile_size : Vec2,
-    current_tile : Tile,
-    tiles : Box<Vec<Tile>>
+    current_location : Location,
+    tiles : Box<Vec<(Tile,Location)>>
 }
 
 pub enum RelativePosition {
@@ -43,7 +43,7 @@ impl MapBuilder {
     pub fn new(tile_size : Vec2, starting_location: Location) -> MapBuilder {
         MapBuilder {
             tile_size : tile_size.clone(),
-            current_tile : Tile (TileType::Key, starting_location.clone()),
+            current_location : starting_location,
             tiles: Box::new(Vec::new())
         }
     }
@@ -53,35 +53,35 @@ impl MapBuilder {
 
         for x in 0..area.0 as u32 {
             for y in 0..area.1 as u32 {                
-                tiles.push(Tile(tile_type, Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2)));            
+                tiles.push((Tile(tile_type), Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2)));            
             }
         }
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_type: TileType){
         let tiles = self.tiles.as_mut();
 
-        for i in 0..count {
-            let mut loc = &self.current_tile.1;
+        for _ in 0..count {
+            let mut loc = &self.current_location;
             let new_tile = match pos {
                 RelativePosition::LeftOf => {                                    
-                    Tile(tile_type, Location(loc.0 - self.tile_size.x(), loc.1, loc.2))
+                    (Tile(tile_type), Location(loc.0 - self.tile_size.x(), loc.1, loc.2))
                 }
                 RelativePosition::RightOf => {
-                    Tile(tile_type, Location(loc.0 + self.tile_size.x(), loc.1, loc.2))
+                    (Tile(tile_type), Location(loc.0 + self.tile_size.x(), loc.1, loc.2))
                 }
                 RelativePosition::Above => {
-                    Tile(tile_type, Location(loc.0, loc.1 + self.tile_size.y(), loc.2))
+                    (Tile(tile_type), Location(loc.0, loc.1 + self.tile_size.y(), loc.2))
                 }
                 RelativePosition::Below => {
-                    Tile(tile_type, Location(loc.0, loc.1 - self.tile_size.y(), loc.2))
+                    (Tile(tile_type), Location(loc.0, loc.1 - self.tile_size.y(), loc.2))
                 }
             };
 
             tiles.push(new_tile);
-            self.current_tile = new_tile;
+            self.current_location = new_tile.1;
         }
     }
-    pub fn iter(&mut self) -> std::slice::Iter<'_, Tile> {
+    pub fn iter(&mut self) -> std::slice::Iter<'_, (Tile, Location)> {
         self.tiles.iter()
     }
 }

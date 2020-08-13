@@ -54,7 +54,7 @@ fn add_player(mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
     mut query: Query<(Added<Player>, &Named, &world::Location)>
 ) {
-    for (player, name , loc) in &mut query.iter() {
+    for (_player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!
         let sprite = sprites.get("player");
         
@@ -76,15 +76,13 @@ fn make_room (
     mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
     texture_atlases: Res<Assets<TextureAtlas>>,    
-    mut query: Query<(Entity, Added<Tile>, &Visible)>,
+    mut query: Query<(Entity, Added<Tile>, &Visible, &Location)>,
     mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
     for (e, push, vis, &loc) in &mut p_query.iter() {
-        println!("Added an entity");
         let sprite = sprites.get("chair");
         
-        commands
-        .insert(e, SpriteSheetComponents {
+        commands.spawn( SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
@@ -93,50 +91,45 @@ fn make_room (
             ..Default::default()
         });
     }
-    for (e, tile, vis) in &mut query.iter() {
-        //println!("Found a tile named {:?} {}", tile.0, name.0);    
+    for (e, tile, vis, loc) in &mut query.iter() {
+        println!("Adding a tile entity {:?} {:?}", tile.0, loc);    
 
         let sprite = match tile.0 {
             TileType::Wall => sprites.get("wall"),
             _ => sprites.get("floor"),
         };
 
-        let loc = &tile.1;
-
-        commands
-        .insert(e, SpriteSheetComponents {
+        commands.spawn(SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
             draw: Draw { is_visible: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
             texture_atlas: sprite.atlas_handle.clone(),
             ..Default::default()
-        }).with(tile.clone());
+        });
     
     }
 }
 // generate a simple map
 
 fn simple_map(mut commands: Commands) {
-    let comp = commands
-        .spawn((AreaMap, Visible));
 
-        let mut mb = MapBuilder::new(Vec2::new(96.,96.), Location(-450.,300.,0.));
+    let mut mb = MapBuilder::new(Vec2::new(96.,96.), Location(-450.,300.,0.));
 
-        mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall);
-        mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
-        mb.add_tiles(RelativePosition::Below, 1, TileType::Floor);
-        mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
-        mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Wall);
-        mb.add_tiles(RelativePosition::Above, 5, TileType::Wall);
-        mb.add_tiles_to_area(Location(-450.,300.,0.), Area(5., 5.), TileType::Floor);
+    mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall);
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
+    mb.add_tiles(RelativePosition::Below, 1, TileType::Floor);
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
+    mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Wall);
+    mb.add_tiles(RelativePosition::Above, 5, TileType::Wall);
 
-        for n in mb.iter() {
-            comp.with_children(|parent| {
-                parent.spawn((Visible, n.clone()));                            
-            });
-        }
-        comp.spawn((Pushable, Location(-450. + 96.*2.,300. - 96.*2.,50.), Visible));
+    mb.add_tiles_to_area(Location(-450.,300.,0.), Area(5., 5.), TileType::Floor);
+
+    for (tile, location) in mb.iter() {
+        commands.spawn((Visible, tile.clone(), location.clone()));
+    }
+
+    commands.spawn((Pushable, Location(-450. + 96.*2.,300. - 96.*2.,50.), Visible));
 }
 
 fn collision_detection(
@@ -273,17 +266,14 @@ fn keyboard_input_system(
 
 }
 
-fn simple_movement() {
-
-}
-
 fn setup (
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
     
-    commands.spawn(Camera2dComponents::default())
-    .spawn(UiCameraComponents::default());
+    commands
+        .spawn(Camera2dComponents::default())
+        .spawn(UiCameraComponents::default());
     Player::add_to_world(commands, "Adam");
 }
