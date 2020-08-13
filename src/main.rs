@@ -7,7 +7,7 @@ use bevy::{
     prelude::*,
     render::{camera::Camera, pass::ClearColor},
     sprite::collide_aabb::{collide, Collision},
-    input::{keyboard::KeyCode, Input},
+    input::{keyboard::KeyCode, Input}, type_registry::TypeRegistry,
 };
 
 use assets::*;
@@ -82,7 +82,7 @@ fn make_room (
     for (e, push, vis, &loc) in &mut p_query.iter() {
         let sprite = sprites.get("chair");
         
-        commands.spawn( SpriteSheetComponents {
+        commands.insert(e, SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
@@ -99,7 +99,7 @@ fn make_room (
             _ => sprites.get("floor"),
         };
 
-        commands.spawn(SpriteSheetComponents {
+        commands.insert(e, SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
             draw: Draw { is_visible: true, ..Default::default() },
@@ -218,10 +218,24 @@ fn collision_detection(
 }
 
 fn keyboard_input_system(
+    world: Res<World>, 
+    type_registry: Res<TypeRegistry>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut query: Query<(&Player, &mut Translation)>) {
-    
+    if keyboard_input.just_pressed(KeyCode::F1) {
+
+        let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
+
+        // Scenes can be serialized like this:
+        println!(
+            "{}",
+            scene
+                .serialize_ron(&type_registry.property.read().unwrap())
+                .unwrap()
+        );
+    }
+
     for (player, mut loc) in &mut query.iter() {   
         if keyboard_input.just_pressed(KeyCode::W) {
             *loc.0.y_mut() += 32.;
