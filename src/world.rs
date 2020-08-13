@@ -20,6 +20,9 @@ pub enum TileType {
 pub struct Collidable;
 pub struct Visible;
 
+#[derive(Debug, Clone, Copy)]
+pub struct Pushable;
+
 
 pub struct AreaMap;
 

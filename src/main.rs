@@ -34,7 +34,6 @@ fn main() {
     .add_system(collision_detection.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
-    .add_system(make_room.system())
     
     //.add_system(test.system())
     .run();
@@ -76,7 +75,22 @@ fn make_room (
     sprites : ResMut<assets::SpriteLibrary>,
     texture_atlases: Res<Assets<TextureAtlas>>,    
     mut query: Query<(Added<Tile>, &Visible)>,
+    mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
+    for (e, push, vis, &loc) in &mut p_query.iter() {
+        println!("Added an entity");
+        let sprite = sprites.get("chair");
+        
+        commands
+        .insert(e, SpriteSheetComponents {
+            translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
+            scale: Scale(6.0),
+            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
+            sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
+            texture_atlas: sprite.atlas_handle.clone(),
+            ..Default::default()
+        });
+    }
     for (tile, vis) in &mut query.iter() {
         //println!("Found a tile named {:?} {}", tile.0, name.0);    
 
@@ -120,6 +134,7 @@ fn simple_map(mut commands: Commands) {
                 parent.spawn((Visible, n.clone()));                            
             });
         }
+        comp.spawn((Pushable, Location(-450. + 96.*2.,300. - 96.*2.,50.), Visible));
 }
 
 fn collision_detection(
@@ -132,6 +147,25 @@ fn collision_detection(
     
     for (cam, mut cam_trans) in &mut camera_query.iter(){
         for (player, mut player_translation) in &mut sprite_query.iter() {
+            for (push, mut push_translation) in &mut pushable.iter() {             
+                let collision = collide(player_translation.0, Vec2::new(32.,32.), push_translation.0, Vec2::new(96.,96.0));
+                if let Some(collision) = collision {
+                    match collision {
+                        Collision::Left => { 
+                            *push_translation.0.x_mut() += 32.;
+                        }, 
+                        Collision::Right => { 
+                            *push_translation.0.x_mut() -= 32.;  
+                        },
+                        Collision::Top => { 
+                            *push_translation.0.y_mut() -= 32.; 
+                        },
+                        Collision::Bottom => {
+                            *push_translation.0.y_mut() += 32.; 
+                        },
+                    }
+                } 
+            }
             for (tile, mut tile_translation) in &mut wall_query.iter() {
                 
                 if tile.0 != TileType::Wall {
@@ -158,6 +192,32 @@ fn collision_detection(
                     *cam_trans.0.y_mut() = player_translation.0.y();
                 }
             }
+        }
+    }
+
+    for (push, mut push_translation) in &mut pushable.iter() {         
+        for (tile, mut tile_translation) in &mut wall_query.iter() {
+                
+            if tile.0 != TileType::Wall {
+                continue;
+            }    
+            let collision = collide(tile_translation.0, Vec2::new(96.,96.), push_translation.0, Vec2::new(96.,96.0));
+            if let Some(collision) = collision {
+                match collision {
+                    Collision::Left => { 
+                        *push_translation.0.x_mut() += 32.;
+                    }, 
+                    Collision::Right => { 
+                        *push_translation.0.x_mut() -= 32.;  
+                    },
+                    Collision::Top => { 
+                        *push_translation.0.y_mut() -= 32.; 
+                    },
+                    Collision::Bottom => {
+                        *push_translation.0.y_mut() += 32.; 
+                    },
+                }
+            } 
         }
     }
 }
@@ -188,21 +248,21 @@ fn keyboard_input_system(
     }      
 
     for (camera, mut cam_trans) in &mut camera_query.iter() {    
-        if keyboard_input.just_pressed(KeyCode::W) {
+        if keyboard_input.just_pressed(KeyCode::Up) {
             //*loc.0.y_mut() += 32.;
             *cam_trans.0.y_mut() += 32.;
         }
 
-        if keyboard_input.just_pressed(KeyCode::S) {
+        if keyboard_input.just_pressed(KeyCode::Down) {
             //*loc.0.y_mut() -= 32.;
-            *cam_trans.0.y_mut() -= 32.;
+            *cam_trans.0.y_mut() -= 32.;    
         }
 
-        if keyboard_input.just_pressed(KeyCode::A) {
+        if keyboard_input.just_pressed(KeyCode::Left) {
             //*loc.0.x_mut() -= 32.;
             *cam_trans.0.x_mut() -= 32.;
         }
-        if keyboard_input.just_pressed(KeyCode::D) {
+        if keyboard_input.just_pressed(KeyCode::Right) {
             //*loc.0.x_mut() += 32.;
             *cam_trans.0.x_mut() += 32.;
         }

@@ -81,6 +81,7 @@ pub fn load_world_sprites(
 
     sprite_lib.add("wall", Sprite::new("wall", 1, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add("floor", Sprite::new("floor", 2, texture_atlas_handle.clone(), 16, 16));
+    sprite_lib.add("chair", Sprite::new("floor", 7, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add("player", Sprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
 
     commands
