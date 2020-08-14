@@ -36,6 +36,7 @@ fn main() {
     .add_system(collision_detection.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
+    .add_startup_system(save_world.thread_local_system())
     
     //.add_system(test.system())
     .run();
@@ -217,17 +218,13 @@ fn collision_detection(
     }
 }
 
-fn keyboard_input_system(
-    world: Res<World>, 
-    type_registry: Res<TypeRegistry>,
-    keyboard_input: Res<Input<KeyCode>>, 
-    mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut query: Query<(&Player, &mut Translation)>) {
-    if keyboard_input.just_pressed(KeyCode::F1) {
+fn save_world(world: &mut World, resources: &mut Resources) {
+    let type_registry = resources.get::<TypeRegistry>().unwrap();
+    let input = resources.get::<Input<KeyCode>>().unwrap();
+    let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
 
-        let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
-
-        // Scenes can be serialized like this:
+    // Scenes can be serialized like this:
+    input.just_pressed(KeyCode::F1) {
         println!(
             "{}",
             scene
@@ -235,6 +232,13 @@ fn keyboard_input_system(
                 .unwrap()
         );
     }
+}
+
+fn keyboard_input_system(
+    type_registry: Res<TypeRegistry>,
+    keyboard_input: Res<Input<KeyCode>>, 
+    mut camera_query: Query<(&Camera, &mut Translation)>,
+    mut query: Query<(&Player, &mut Translation)>) {
 
     for (player, mut loc) in &mut query.iter() {   
         if keyboard_input.just_pressed(KeyCode::W) {
