@@ -224,7 +224,7 @@ fn save_world(world: &mut World, resources: &mut Resources) {
     let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
 
     // Scenes can be serialized like this:
-    input.just_pressed(KeyCode::F1) {
+    if input.just_pressed(KeyCode::F1) {
         println!(
             "{}",
             scene
