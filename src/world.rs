@@ -1,8 +1,14 @@
 
-use bevy::math::Vec2;
+use bevy::{prelude::Translation, math::Vec2};
 
 #[derive(Clone, Debug, Copy, PartialEq)]
 pub struct Location (pub f32, pub f32, pub f32);
+
+impl Location {
+    pub fn from_translation(translation : Translation) -> Location {
+        Location(translation.x(), translation.y(), translation.z())
+    }
+}
 #[derive(Clone, PartialEq)]
 pub struct Area(pub f32, pub f32);
 

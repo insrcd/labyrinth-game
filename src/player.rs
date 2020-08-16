@@ -1,6 +1,7 @@
 
 use bevy::prelude::*;
 use std::fmt::*;
+use crate::world::Location;
 
 struct Position(u32, u32);
 
@@ -12,6 +13,18 @@ impl Named {
     }
 }
 
+#[derive(PartialEq, Debug)]
+pub struct Moving(pub Location, pub Location, pub Direction);
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+    Stationary
+}
+#[derive(Clone, Copy)]
 pub struct Player;
 
 

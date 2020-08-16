@@ -5,7 +5,7 @@ authors = ["Adam Shaw <discourse@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-bevy = "0.1.2"
+bevy = {git = "https://github.com/bevyengine/bevy"}
 rhai = "0.18.1" 
 log = { version = "0.4.8", features = ["serde"] }
 
