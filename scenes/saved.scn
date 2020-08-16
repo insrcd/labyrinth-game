@@ -1,6 +1,6 @@
 [
   (
-    entity: 480243749,
+    entity: 1308349690,
     components: [
       {
         "type": "Named",
@@ -11,7 +11,7 @@
     ],
   ),
   (
-    entity: 328008896,
+    entity: 192486062,
     components: [
       {
         "type": "Rotation",
@@ -27,7 +27,7 @@
         "map": {
           "value": {
             "type": "Mat4",
-            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 999.9, 1.0),
+            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 576.0, -192.0, 999.9, 1.0),
           },
           "sync": true,
         },
@@ -75,14 +75,14 @@
         "map": {
           "0": {
             "type": "Vec3",
-            "value": (0.0, 0.0, 999.9),
+            "value": (576.0, -192.0, 999.9),
           },
         },
       },
     ],
   ),
   (
-    entity: 3109421222,
+    entity: 962451843,
     components: [
       {
         "type": "Rotation",
@@ -98,7 +98,7 @@
         "map": {
           "value": {
             "type": "Mat4",
-            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 999.9, 1.0),
+            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 576.0, -192.0, 999.9, 1.0),
           },
           "sync": true,
         },
@@ -146,14 +146,14 @@
         "map": {
           "0": {
             "type": "Vec3",
-            "value": (0.0, 0.0, 999.9),
+            "value": (576.0, -192.0, 999.9),
           },
         },
       },
     ],
   ),
   (
-    entity: 1874878277,
+    entity: 3060445829,
     components: [
       {
         "type": "Named",
@@ -164,7 +164,7 @@
     ],
   ),
   (
-    entity: 3387699577,
+    entity: 3430981264,
     components: [
       {
         "type": "Rotation",
@@ -280,7 +280,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -291,7 +291,7 @@
     ],
   ),
   (
-    entity: 3263652124,
+    entity: 1168380750,
     components: [
       {
         "type": "Rotation",
@@ -407,7 +407,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -418,7 +418,7 @@
     ],
   ),
   (
-    entity: 3176681924,
+    entity: 3799719988,
     components: [
       {
         "type": "Rotation",
@@ -534,7 +534,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -545,7 +545,7 @@
     ],
   ),
   (
-    entity: 177715828,
+    entity: 77709156,
     components: [
       {
         "type": "Rotation",
@@ -661,7 +661,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -672,7 +672,7 @@
     ],
   ),
   (
-    entity: 4097091220,
+    entity: 3853603682,
     components: [
       {
         "type": "Rotation",
@@ -788,7 +788,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -799,7 +799,7 @@
     ],
   ),
   (
-    entity: 2376519449,
+    entity: 1753098275,
     components: [
       {
         "type": "Rotation",
@@ -915,7 +915,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -926,7 +926,7 @@
     ],
   ),
   (
-    entity: 109991059,
+    entity: 633528506,
     components: [
       {
         "type": "Rotation",
@@ -1042,7 +1042,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1053,7 +1053,7 @@
     ],
   ),
   (
-    entity: 4243557196,
+    entity: 3282802988,
     components: [
       {
         "type": "Rotation",
@@ -1169,7 +1169,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1180,7 +1180,7 @@
     ],
   ),
   (
-    entity: 531394657,
+    entity: 3421722225,
     components: [
       {
         "type": "Rotation",
@@ -1296,7 +1296,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1307,7 +1307,7 @@
     ],
   ),
   (
-    entity: 3739151953,
+    entity: 3056851767,
     components: [
       {
         "type": "Rotation",
@@ -1423,7 +1423,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1434,7 +1434,7 @@
     ],
   ),
   (
-    entity: 610965773,
+    entity: 2902804252,
     components: [
       {
         "type": "Rotation",
@@ -1550,7 +1550,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1561,7 +1561,7 @@
     ],
   ),
   (
-    entity: 636420922,
+    entity: 4207725472,
     components: [
       {
         "type": "Rotation",
@@ -1677,7 +1677,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1688,7 +1688,7 @@
     ],
   ),
   (
-    entity: 1456379811,
+    entity: 3869710806,
     components: [
       {
         "type": "Rotation",
@@ -1804,7 +1804,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1815,7 +1815,7 @@
     ],
   ),
   (
-    entity: 96019501,
+    entity: 380282969,
     components: [
       {
         "type": "Rotation",
@@ -1931,7 +1931,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -1942,7 +1942,7 @@
     ],
   ),
   (
-    entity: 2903143696,
+    entity: 82753694,
     components: [
       {
         "type": "Rotation",
@@ -2058,7 +2058,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2069,7 +2069,7 @@
     ],
   ),
   (
-    entity: 2901342684,
+    entity: 507978413,
     components: [
       {
         "type": "Rotation",
@@ -2185,7 +2185,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2196,7 +2196,7 @@
     ],
   ),
   (
-    entity: 1163720598,
+    entity: 3784877553,
     components: [
       {
         "type": "Rotation",
@@ -2312,7 +2312,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2323,7 +2323,7 @@
     ],
   ),
   (
-    entity: 2317904990,
+    entity: 824192871,
     components: [
       {
         "type": "Rotation",
@@ -2439,7 +2439,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2450,7 +2450,7 @@
     ],
   ),
   (
-    entity: 3239350877,
+    entity: 2613021152,
     components: [
       {
         "type": "Rotation",
@@ -2566,7 +2566,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2577,7 +2577,7 @@
     ],
   ),
   (
-    entity: 70636684,
+    entity: 3457485218,
     components: [
       {
         "type": "Rotation",
@@ -2693,7 +2693,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2704,7 +2704,7 @@
     ],
   ),
   (
-    entity: 3640392194,
+    entity: 3280754692,
     components: [
       {
         "type": "Rotation",
@@ -2820,7 +2820,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2831,7 +2831,7 @@
     ],
   ),
   (
-    entity: 3838599567,
+    entity: 1975043949,
     components: [
       {
         "type": "Rotation",
@@ -2947,7 +2947,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -2958,7 +2958,7 @@
     ],
   ),
   (
-    entity: 3967238460,
+    entity: 4077387567,
     components: [
       {
         "type": "Rotation",
@@ -3074,7 +3074,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3085,7 +3085,7 @@
     ],
   ),
   (
-    entity: 3814481370,
+    entity: 3940797289,
     components: [
       {
         "type": "Rotation",
@@ -3201,7 +3201,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3212,7 +3212,7 @@
     ],
   ),
   (
-    entity: 1253766027,
+    entity: 1106005878,
     components: [
       {
         "type": "Rotation",
@@ -3328,7 +3328,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3339,7 +3339,7 @@
     ],
   ),
   (
-    entity: 2118040160,
+    entity: 1987002191,
     components: [
       {
         "type": "Rotation",
@@ -3455,7 +3455,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3466,7 +3466,7 @@
     ],
   ),
   (
-    entity: 2889767991,
+    entity: 3485640112,
     components: [
       {
         "type": "Rotation",
@@ -3582,7 +3582,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3593,7 +3593,7 @@
     ],
   ),
   (
-    entity: 1662668332,
+    entity: 2329997267,
     components: [
       {
         "type": "Rotation",
@@ -3709,7 +3709,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3720,7 +3720,7 @@
     ],
   ),
   (
-    entity: 1890874051,
+    entity: 3026824660,
     components: [
       {
         "type": "Rotation",
@@ -3836,7 +3836,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3847,7 +3847,7 @@
     ],
   ),
   (
-    entity: 1766325629,
+    entity: 3429882744,
     components: [
       {
         "type": "Rotation",
@@ -3963,7 +3963,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -3974,7 +3974,7 @@
     ],
   ),
   (
-    entity: 1533220327,
+    entity: 2913146647,
     components: [
       {
         "type": "Rotation",
@@ -4090,7 +4090,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4101,7 +4101,7 @@
     ],
   ),
   (
-    entity: 2562450681,
+    entity: 2452977134,
     components: [
       {
         "type": "Rotation",
@@ -4217,7 +4217,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4228,7 +4228,7 @@
     ],
   ),
   (
-    entity: 642379256,
+    entity: 1447524570,
     components: [
       {
         "type": "Rotation",
@@ -4344,7 +4344,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4355,7 +4355,7 @@
     ],
   ),
   (
-    entity: 2345016878,
+    entity: 1714132802,
     components: [
       {
         "type": "Rotation",
@@ -4471,7 +4471,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4482,7 +4482,7 @@
     ],
   ),
   (
-    entity: 2839990784,
+    entity: 3895045087,
     components: [
       {
         "type": "Rotation",
@@ -4598,7 +4598,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4609,7 +4609,7 @@
     ],
   ),
   (
-    entity: 2900995851,
+    entity: 1002588383,
     components: [
       {
         "type": "Rotation",
@@ -4725,7 +4725,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4736,7 +4736,7 @@
     ],
   ),
   (
-    entity: 733793381,
+    entity: 890336357,
     components: [
       {
         "type": "Rotation",
@@ -4852,7 +4852,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4863,7 +4863,7 @@
     ],
   ),
   (
-    entity: 3694090367,
+    entity: 3599822097,
     components: [
       {
         "type": "Rotation",
@@ -4979,7 +4979,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -4990,7 +4990,7 @@
     ],
   ),
   (
-    entity: 3345999393,
+    entity: 1923488811,
     components: [
       {
         "type": "Rotation",
@@ -5106,7 +5106,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5117,7 +5117,7 @@
     ],
   ),
   (
-    entity: 2532068597,
+    entity: 931435920,
     components: [
       {
         "type": "Rotation",
@@ -5233,7 +5233,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5244,7 +5244,7 @@
     ],
   ),
   (
-    entity: 783134821,
+    entity: 2216281978,
     components: [
       {
         "type": "Rotation",
@@ -5360,7 +5360,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5371,7 +5371,7 @@
     ],
   ),
   (
-    entity: 1771851045,
+    entity: 1315349583,
     components: [
       {
         "type": "Rotation",
@@ -5487,7 +5487,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5498,7 +5498,7 @@
     ],
   ),
   (
-    entity: 3959511232,
+    entity: 2829173762,
     components: [
       {
         "type": "Rotation",
@@ -5614,7 +5614,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5625,7 +5625,7 @@
     ],
   ),
   (
-    entity: 2874332526,
+    entity: 2064455051,
     components: [
       {
         "type": "Rotation",
@@ -5741,7 +5741,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5752,7 +5752,7 @@
     ],
   ),
   (
-    entity: 2544963069,
+    entity: 2310885978,
     components: [
       {
         "type": "Rotation",
@@ -5868,7 +5868,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -5879,7 +5879,7 @@
     ],
   ),
   (
-    entity: 2365626476,
+    entity: 4134734875,
     components: [
       {
         "type": "Rotation",
@@ -5995,7 +5995,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("d41dc2fd-b5c0-456a-9369-f3b255364df3"),
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
           },
         },
       },
@@ -6006,7 +6006,7 @@
     ],
   ),
   (
-    entity: 3585183240,
+    entity: 2560910345,
     components: [
       {
         "type": "Rotation",
@@ -6022,7 +6022,7 @@
         "map": {
           "value": {
             "type": "Mat4",
-            "value": (3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 96.0, 96.0, 30.0, 1.0),
+            "value": (3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 576.0, -192.0, 30.0, 1.0),
           },
           "sync": true,
         },
@@ -6104,7 +6104,7 @@
         "map": {
           "0": {
             "type": "Vec3",
-            "value": (96.0, 96.0, 30.0),
+            "value": (576.0, -192.0, 30.0),
           },
         },
       },
@@ -6122,7 +6122,7 @@
         "map": {
           "id": {
             "type": "HandleId",
-            "value": ("2a0a6912-a7d1-4145-9107-cb4e62d96a68"),
+            "value": ("9d4aff18-d881-4cec-a82e-f8ed2013d137"),
           },
         },
       },
@@ -6131,5 +6131,17 @@
         "map": {},
       },
     ],
+  ),
+  (
+    entity: 3886739208,
+    components: [],
+  ),
+  (
+    entity: 1301843848,
+    components: [],
+  ),
+  (
+    entity: 81143381,
+    components: [],
   ),
 ]

@@ -1,5 +1,6 @@
 
-use bevy::{prelude::Translation, math::Vec2, ecs::Bundle, prelude::Properties};
+use bevy::{prelude::*, math::Vec2, ecs::Bundle, prelude::Properties};
+use crate::player::Job;
 
 #[derive(Clone, Debug, Copy, PartialEq, Properties)]
 pub struct Location (pub f32, pub f32, pub f32);
@@ -29,10 +30,21 @@ pub struct Visible;
 pub struct Hardness (pub f32);
 #[derive(Bundle, Copy, Clone, Debug)]
 pub struct TileComponents {
-    hardness: Hardness,
-    tile_type: TileType,
-    location: Location,
-    visible: Visible
+    pub hardness: Hardness,
+    pub tile_type: TileType,
+    pub location: Location,
+    pub visible: Visible
+}
+#[derive(Clone, Copy, Debug, Default, Properties)]
+pub struct Player { 
+    pub god_mode : bool
+}
+
+
+impl Player {
+    pub fn add_to_world(mut commands: Commands, name: &str) {
+        commands.spawn((Player { god_mode: false }, crate::Named(name.to_string()), Job::BeerWizard));
+    }
 }
 
 impl Default for TileComponents {

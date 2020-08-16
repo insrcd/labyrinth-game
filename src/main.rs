@@ -2,16 +2,16 @@
 use bevy::{
     prelude::*,
     render::{camera::Camera, pass::ClearColor},
-    input::{keyboard::KeyCode, Input}, type_registry::TypeRegistry,
+    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion}}, type_registry::TypeRegistry,
 };
 
 
 use serde::{Deserialize, Serialize};
 
-mod player;
 mod world;
 mod assets;
 mod scripting;
+mod player;
 
 
 use assets::*;
@@ -109,29 +109,23 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 fn main() {
     App::build()
     .add_default_plugins()
+    .init_resource::<State>()
     .register_component::<Named>()
-    .register_component::<Player>()
     .add_startup_system(setup.system())
     .add_startup_system(load_world_sprites.system())
     .add_startup_system(simple_map.system())
     .add_system(keyboard_input_system.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
+    .add_system(add_tiles.system())
     .add_system(save_world.thread_local_system())
     .add_system(collision_detection.system())
+    .add_system(track_mouse_movement.system())
+    .add_system(tile_added_debug.system())
     
     //.add_system(test.system())
     .run();
 }
-
-fn test (
-    player: &Player,
-    name: &Named
-) {
-    println!("{} {}", player, name.0)
-}
-
-
 
 fn add_player(mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
@@ -154,11 +148,17 @@ fn add_player(mut commands: Commands,
         }).with(p).with(Moving(*loc, *loc, player::Direction::Stationary));
     }
 }
+
+fn tile_added_debug(mut query: Query<(Entity, &TileType, &Visible, Without<Draw,(&Visible,)>)>){
+    for (e, push, vis, loc) in &mut query.iter() {
+        println!("{:?}", push);
+    }
+}
 // adds the sprites for the tiles
 fn make_room (
     mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,   
-    mut query: Query<(Entity, Added<TileType>, &Visible, &Location)>,
+    mut query: Query<(Entity, &TileType, &Visible, &Location, Without<Draw,(&Visible,)>)>,
     mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
     for (e, _push, vis, &loc) in &mut p_query.iter() {
@@ -173,7 +173,7 @@ fn make_room (
             ..Default::default()
         });
     }
-    for (e, tile, _vis, loc) in &mut query.iter() {
+    for (e, tile, &_vis, &loc, _w) in &mut query.iter() {
         println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
         let sprite = match *tile {
@@ -337,5 +337,122 @@ fn setup (
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    Player::add_to_world(commands, "Adam");
+    commands
+    .spawn(UiCameraComponents::default())
+    .spawn(Camera2dComponents::default())
+    .spawn(( Mouse { position: Vec2::new(0.,0.)},))
+    .spawn((Player { god_mode: false }, crate::Named("Adam".to_string()), Location(0., 0., 0.)));
+    //Player::add_to_world(commands, "Adam");
+}
+#[derive(Default)]
+struct State {
+    mouse_button_event_reader: EventReader<MouseButtonInput>,
+    mouse_motion_event_reader: EventReader<MouseMotion>,
+    cursor_moved_event_reader: EventReader<CursorMoved>,
+}
+pub struct Mouse {
+    position: Vec2
+}
+
+fn track_mouse_movement(
+    commands: Commands,
+    cursor_moved_events: Res<Events<CursorMoved>>,
+    mut state: ResMut<State>,
+    mut mouse_query: Query<&mut Mouse>,
+    mut camera_query: Query<(&Camera, &Translation)>) {
+        let mut camera_offset_x : f32 = 0.;
+        let mut camera_offset_y : f32 = 0.;
+        
+        for (c, t) in &mut camera_query.iter(){
+            if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
+                camera_offset_x = t.x();
+                camera_offset_y = t.y();
+            }
+        }
+
+        
+        for event in state.cursor_moved_event_reader.iter(&cursor_moved_events) {
+            //println!("{},{} - {},{}", camera_offset_x, camera_offset_y, event.position.x(), event.position.y() );
+
+            for mut mouse in &mut mouse_query.iter(){
+                mouse.position = Vec2::new(event.position.x() + camera_offset_x - 600., event.position.y() + camera_offset_y - 400.);
+            }
+        }
+}
+
+fn add_tiles (
+    mut commands: Commands,
+    input: Res<Input<KeyCode>>, 
+    mouse_input: Res<Input<MouseButton>>,
+    mut mouse_query: Query<&Mouse>,
+    mut query: Query<(&Player, &Translation, &Moving)>
+) {    
+    
+    for mouse in &mut mouse_query.iter(){
+        if mouse_input.just_pressed(MouseButton::Left) {
+            let mut x = mouse.position.x() ;
+            let mut y = mouse.position.y() ;
+
+            let mut grid_x = x  / 96.;
+            let mut grid_y = y  / 96.;
+
+            println!("{},{}", x as i32 % 96, grid_y as i32 % 96);
+            
+    
+
+            x = grid_x.floor() * 96.;
+            y = grid_y.floor() * 96. + 96.;
+
+            
+            println!("Placing tile at {:?},{:?}", x, y);
+
+            commands.spawn(TileComponents {
+                hardness: Hardness(1.),
+                tile_type: TileType::Wall(Hardness(1.)),
+                location: Location(x, y, 1.),
+                ..Default::default()
+            });
+        }
+    }
+    
+    for (p, t, m) in &mut query.iter(){
+        
+        if input.just_pressed(KeyCode::F2) {
+            let mut x = f32::abs ( t.0.x() );
+            let mut y = f32::abs ( t.0.y() );
+
+            if t.0.x() < 0. {
+                x = 0. - (x + (x as u32 % 96)  as f32)
+            } else {
+                x -= (x as u32 % 96) as f32
+            }
+            if t.0.y() < 0. {
+                y = 0. - (y + (y as u32 % 96)  as f32)
+            } else {
+                y -= (y as u32 % 96) as f32
+            }
+            println!("({},{}) ({},{})",x,y,t.0.x(),t.0.y());
+
+            match m.2 {
+                player::Direction::Left => x -= 96.,
+                player::Direction::Up => x += 96.,
+                player::Direction::Down =>  y -= 96.,
+                player::Direction::Right =>  y += 96.,
+                player::Direction::Stationary =>  x += 96.
+            }
+
+            let loc =  Location(x, y, 1.);
+            
+            println!("Adding wall to {:?}", loc);
+
+    
+            
+            commands.spawn(TileComponents {
+                hardness: Hardness(1.),
+                tile_type: TileType::Wall(Hardness(1.)),
+                location: loc,
+                ..Default::default()
+            });
+        }
+    }
 }
