@@ -92,11 +92,11 @@ fn main() {
     .add_startup_system(load_world_sprites.system())
     .add_startup_system(simple_map.system())
     .add_system(keyboard_input_system.system())
+    .add_system(collision_detection.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
     //.add_system(debug_move.system())
     .add_system(save_world.thread_local_system())
-    .add_system(collision_detection.system())
     
     //.add_system(test.system())
     .run();
