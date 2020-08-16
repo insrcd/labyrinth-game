@@ -19,6 +19,8 @@ use player::*;
 use world::*;
 use scripting::*;
 
+const tile_size : f32 = 96.;
+
 enum GameState {
     Init,
     MainMenu,
@@ -139,7 +141,7 @@ fn add_player(mut commands: Commands,
         let p = *player;
         commands
         .spawn(SpriteSheetComponents {
-            translation: Translation(Vec3::new(96., 96., 30.)),
+            translation: Translation(Vec3::new(tile_size, tile_size, 30.)),
             scale: Scale(3.0),
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
@@ -196,7 +198,7 @@ fn make_room (
 
 fn simple_map(mut commands: Commands) {
 
-    let mut mb = MapBuilder::new(Vec2::new(96.,96.), Location(0.,0.,0.));
+    let mut mb = MapBuilder::new(Vec2::new(tile_size,tile_size), Location(0.,0.,0.));
 
     mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall(Hardness(1.)));
     mb.add_tiles(RelativePosition::Below, 2, TileType::Wall(Hardness(1.)));
@@ -212,7 +214,7 @@ fn simple_map(mut commands: Commands) {
         commands.spawn(comp.clone());
     }
 
-    commands.spawn((Pushable, Location(96.*2.,96.*2.,2.), Visible));
+    commands.spawn((Pushable, Location(tile_size*2.,tile_size*2.,2.), Visible));
 }
 
 fn collision_detection(
@@ -254,7 +256,7 @@ fn collision_detection(
 
             //println!("{} {}",player_translation.0, tile_translation.0);
 
-            let collision = collide(player_translation.0, Vec2::new(96.,96.), tile_translation.0, Vec2::new(48.,48.0), false);
+            let collision = collide(player_translation.0, Vec2::new(tile_size,tile_size), tile_translation.0, Vec2::new(48.,48.0), false);
             
             if let Some(collision) = collision {
                 match collision {
@@ -393,15 +395,13 @@ fn add_tiles (
             let mut x = mouse.position.x() ;
             let mut y = mouse.position.y() ;
 
-            let mut grid_x = x  / 96.;
-            let mut grid_y = y  / 96.;
+            let grid_x = x  / tile_size;
+            let grid_y = y  / tile_size;
 
             println!("{},{}", x as i32 % 96, grid_y as i32 % 96);
             
-    
-
-            x = grid_x.floor() * 96.;
-            y = grid_y.floor() * 96. + 96.;
+            x = grid_x.floor() * tile_size;
+            y = grid_y.floor() * tile_size + tile_size;
 
             
             println!("Placing tile at {:?},{:?}", x, y);
@@ -434,11 +434,11 @@ fn add_tiles (
             println!("({},{}) ({},{})",x,y,t.0.x(),t.0.y());
 
             match m.2 {
-                player::Direction::Left => x -= 96.,
-                player::Direction::Up => x += 96.,
-                player::Direction::Down =>  y -= 96.,
-                player::Direction::Right =>  y += 96.,
-                player::Direction::Stationary =>  x += 96.
+                player::Direction::Left => x -= tile_size,
+                player::Direction::Up => x += tile_size,
+                player::Direction::Down =>  y -= tile_size,
+                player::Direction::Right =>  y += tile_size,
+                player::Direction::Stationary =>  x += tile_size
             }
 
             let loc =  Location(x, y, 1.);
