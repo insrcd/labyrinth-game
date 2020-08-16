@@ -1,13 +1,18 @@
-mod player;
-mod world;
-mod assets;
-mod scripting;
 
 use bevy::{
     prelude::*,
     render::{camera::Camera, pass::ClearColor},
     input::{keyboard::KeyCode, Input}, type_registry::TypeRegistry,
 };
+
+
+use serde::{Deserialize, Serialize};
+
+mod player;
+mod world;
+mod assets;
+mod scripting;
+
 
 use assets::*;
 use player::*;
@@ -29,6 +34,22 @@ pub enum Collision {
     Bottom,
     Unknown
 }
+
+#[derive(Properties, Serialize)]
+struct Named(pub String);
+
+impl Named {
+    fn new(name : &str) -> Named {
+        Named(name.to_string())
+    }
+}
+
+impl Default for Named {
+    fn default() -> Self {
+        Named ("No Name".to_string())
+    }
+}
+
 // resource for current location
 pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) -> Option<Collision> {
     let a_min = a_pos.truncate() - a_size / 2.0;
@@ -88,15 +109,16 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 fn main() {
     App::build()
     .add_default_plugins()
+    .register_component::<Named>()
+    .register_component::<Player>()
     .add_startup_system(setup.system())
     .add_startup_system(load_world_sprites.system())
     .add_startup_system(simple_map.system())
     .add_system(keyboard_input_system.system())
-    .add_system(collision_detection.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
-    //.add_system(debug_move.system())
     .add_system(save_world.thread_local_system())
+    .add_system(collision_detection.system())
     
     //.add_system(test.system())
     .run();
@@ -135,12 +157,11 @@ fn add_player(mut commands: Commands,
 // adds the sprites for the tiles
 fn make_room (
     mut commands: Commands,
-    sprites : ResMut<assets::SpriteLibrary>,
-    texture_atlases: Res<Assets<TextureAtlas>>,    
+    sprites : ResMut<assets::SpriteLibrary>,   
     mut query: Query<(Entity, Added<TileType>, &Visible, &Location)>,
     mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
-    for (e, push, vis, &loc) in &mut p_query.iter() {
+    for (e, _push, vis, &loc) in &mut p_query.iter() {
         let sprite = sprites.get("chair");
         
         commands.insert(e, SpriteSheetComponents {
@@ -152,7 +173,7 @@ fn make_room (
             ..Default::default()
         });
     }
-    for (e, tile, vis, loc) in &mut query.iter() {
+    for (e, tile, _vis, loc) in &mut query.iter() {
         println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
         let sprite = match *tile {
@@ -257,15 +278,15 @@ fn save_world(world: &mut World, resources: &mut Resources) {
     let type_registry = resources.get::<TypeRegistry>().unwrap();
     let input = resources.get::<Input<KeyCode>>().unwrap();
     let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
+    
+    use std::fs;
 
     // Scenes can be serialized like this:
     if input.just_pressed(KeyCode::F1) {
-        println!(
-            "{}",
-            scene
-                .serialize_ron(&type_registry.property.read().unwrap())
-                .unwrap()
-        );
+        let scene_ron = scene
+        .serialize_ron(&type_registry.property.read().unwrap())
+        .unwrap();
+        fs::write("scenes/saved.scn", scene_ron).expect("Unable to write file");
     }
 }
 
@@ -316,9 +337,5 @@ fn setup (
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    
-    commands
-        .spawn(Camera2dComponents::default())
-        .spawn(UiCameraComponents::default());
     Player::add_to_world(commands, "Adam");
 }

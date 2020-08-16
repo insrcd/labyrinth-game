@@ -88,7 +88,7 @@ pub fn load_world_sprites(
     .insert_resource(sprite_lib)
     .spawn(Camera2dComponents::default())
     .spawn(UiCameraComponents::default())
-    .spawn((Player, Named("Adam".to_string()), Location(0., 0., 0.)));
+    .spawn((Player, crate::Named("Adam".to_string()), Location(0., 0., 0.)));
 /*    .spawn(SpriteSheetComponents {
         translation: Translation(Vec3::new(0.0, 0.0, 0.0)),
         scale: Scale(6.0),

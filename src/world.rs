@@ -1,6 +1,5 @@
 
 use bevy::{prelude::Translation, math::Vec2, ecs::Bundle, prelude::Properties};
-use crate::assets::Sprite;
 
 #[derive(Clone, Debug, Copy, PartialEq, Properties)]
 pub struct Location (pub f32, pub f32, pub f32);
