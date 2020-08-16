@@ -24,6 +24,7 @@ pub enum Direction {
     Right,
     Stationary
 }
+
 #[derive(Clone, Copy)]
 pub struct Player;
 

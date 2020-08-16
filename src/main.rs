@@ -14,7 +14,6 @@ use player::*;
 use world::*;
 use scripting::*;
 
-use world::Tile;
 enum GameState {
     Init,
     MainMenu,
@@ -93,10 +92,11 @@ fn main() {
     .add_startup_system(load_world_sprites.system())
     .add_startup_system(simple_map.system())
     .add_system(keyboard_input_system.system())
-    .add_system(collision_detection.system())
     .add_system(make_room.system())
     .add_system(add_player.system())
-    .add_startup_system(save_world.thread_local_system())
+    //.add_system(debug_move.system())
+    .add_system(save_world.thread_local_system())
+    .add_system(collision_detection.system())
     
     //.add_system(test.system())
     .run();
@@ -137,7 +137,7 @@ fn make_room (
     mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
     texture_atlases: Res<Assets<TextureAtlas>>,    
-    mut query: Query<(Entity, Added<Tile>, &Visible, &Location)>,
+    mut query: Query<(Entity, Added<TileType>, &Visible, &Location)>,
     mut p_query: Query<(Entity, Added<Pushable>, &Visible, &Location)>,
 ) {
     for (e, push, vis, &loc) in &mut p_query.iter() {
@@ -153,10 +153,10 @@ fn make_room (
         });
     }
     for (e, tile, vis, loc) in &mut query.iter() {
-        println!("Adding a tile entity {:?} {:?}", tile.0, loc);    
+        println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
-        let sprite = match tile.0 {
-            TileType::Wall => sprites.get("wall"),
+        let sprite = match *tile {
+            TileType::Wall(_) => sprites.get("wall"),
             _ => sprites.get("floor"),
         };
 
@@ -177,33 +177,34 @@ fn simple_map(mut commands: Commands) {
 
     let mut mb = MapBuilder::new(Vec2::new(96.,96.), Location(0.,0.,0.));
 
-    mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall);
-    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
+    mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall(Hardness(1.)));
     mb.add_tiles(RelativePosition::Below, 1, TileType::Floor);
-    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall);
-    mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Wall);
-    mb.add_tiles(RelativePosition::Above, 5, TileType::Wall);
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall(Hardness(1.)));
+    mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Wall(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Above, 5, TileType::Wall(Hardness(1.)));
 
     mb.add_tiles_to_area(Location(0.,0.,0.), Area(5., 5.), TileType::Floor);
 
-    for (tile, location) in mb.iter() {
-        commands.spawn((Visible, tile.clone(), location.clone()));
+    for comp in mb.iter() {
+        println!("{:?}", comp);
+        commands.spawn(comp.clone());
     }
 
     commands.spawn((Pushable, Location(96.*2.,96.*2.,2.), Visible));
 }
 
 fn collision_detection(
-    mut commands: Commands,
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(&Tile, &mut Translation)>,
+    mut wall_query: Query<(&Hardness, &mut Translation)>,
     mut pushable: Query<(&Pushable, &mut Translation)>,
-    mut player_moved_query: Query<(Entity, &Player, &mut Translation, Changed<Moving>)>
+    mut player_moved_query: Query<(&Player, &mut Translation, Mutated<Moving>)>
 ) {
 
-    for (e, _p, mut player_translation, m) in &mut player_moved_query.iter() {
+
+    for (_p, mut player_translation, m) in &mut player_moved_query.iter() {
         for (push, mut push_translation) in &mut pushable.iter() {             
-            let collision = collide(player_translation.0, Vec2::new(48.,48.), push_translation.0, Vec2::new(32.,32.0), true);
+            let collision = collide(player_translation.0, Vec2::new(48.,48.), push_translation.0, Vec2::new(32.,32.0), false);
             if let Some(collision) = collision {
                 println!("Collision pushed {:?} {:?}", collision, *m);
                 match collision {
@@ -224,9 +225,9 @@ fn collision_detection(
                 }
             } 
         }
-        for (tile, mut tile_translation) in &mut wall_query.iter() {
-            
-            if tile.0 != TileType::Wall {
+        for (hardness, mut tile_translation) in &mut wall_query.iter() {
+            //println!("{:?} {:?}", hardness, tile_translation.0);
+            if hardness.0 == 0. {
                 continue;
             }
 
@@ -237,20 +238,18 @@ fn collision_detection(
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
-                        println!("Collision Detected");
                         *player_translation.0.x_mut() = (m.0).0;
                         *player_translation.0.y_mut() = (m.0).1;
                     }
                 }
             } else {     
+                // move the camera if the player moves.
                 for (_c, mut cam_trans) in &mut camera_query.iter(){  
                     *cam_trans.0.x_mut() = player_translation.0.x();             
                     *cam_trans.0.y_mut() = player_translation.0.y();
                 }
             }
-            //commands.remove_one::<Moving>(e);
         }
-        
     }
 }
 
@@ -272,10 +271,9 @@ fn save_world(world: &mut World, resources: &mut Resources) {
 
 fn keyboard_input_system(
     mut commands : Commands,
-    type_registry: Res<TypeRegistry>,
     keyboard_input: Res<Input<KeyCode>>, 
-    mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut query: Query<(Entity, &Player, &mut Translation, &mut Moving)>) {
+    mut query: Query<(&Player, &mut Translation, &mut Moving)>) {
+
     let player_speed = 48.;
 
     let mut movement = player::Direction::Stationary;
@@ -290,14 +288,12 @@ fn keyboard_input_system(
 
     if keyboard_input.just_pressed(KeyCode::A) {
         movement = player::Direction::Left;
-        //*cam_trans.0.x_mut() -= 32.;
     }
     if keyboard_input.just_pressed(KeyCode::D) {
         movement = player::Direction::Right;
-        //*cam_trans.0.x_mut() += 32.;
     }
 
-    for (e, player, mut loc, mut moving) in &mut query.iter() {   
+    for (_player, mut loc, mut moving) in &mut query.iter() {   
         let old_loc = Location::from_translation(*loc);
 
         match movement {
@@ -309,12 +305,8 @@ fn keyboard_input_system(
             }
         }
 
-
         if movement != player::Direction::Stationary {
-            moving.0 = old_loc;
-            moving.1 = Location::from_translation(*loc);
-            moving.2 = movement;
-            //commands.insert_one(e, Moving(old_loc, Location::from_translation(*loc)));
+            *moving = Moving(old_loc, Location::from_translation(*loc), movement);
         }
     }      
 }
