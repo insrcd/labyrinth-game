@@ -18,6 +18,25 @@ impl Default for Moving {
     }
 }
 
+#[derive(Clone, Copy, Debug, Properties)]
+pub struct Player { 
+    pub god_mode : bool
+}
+
+impl Default for Player {
+    fn default() -> Player {
+        Player {
+            god_mode: false
+        }
+    }
+}
+
+impl Player {
+    pub fn add_to_world(mut commands: Commands, name: &str) {
+        commands.spawn((Player { god_mode: false }, crate::Named(name.to_string()), Job::BeerWizard));
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Direction {
     Stationary,

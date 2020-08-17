@@ -37,22 +37,6 @@ pub struct TileComponents {
     pub visible: Visible
 }
 
-#[derive(Clone, Copy, Debug, Default, Properties)]
-pub struct Player { 
-    pub god_mode : bool
-}
-
-impl Player {
-    pub fn default() -> Player {
-        Player {
-            god_mode: false
-        }
-    }
-    pub fn add_to_world(mut commands: Commands, name: &str) {
-        commands.spawn((Player { god_mode: false }, crate::Named(name.to_string()), Job::BeerWizard));
-    }
-}
-
 impl Default for TileComponents {
     fn default() -> Self {
         TileComponents {
@@ -70,7 +54,7 @@ pub struct Pushable;
 pub struct MapBuilder {
     tile_size : Vec2,
     current_location : Location,
-    tiles : Box<Vec<TileComponents>>
+    tiles : Vec<TileComponents>
 }
 
 pub enum RelativePosition {
@@ -85,11 +69,11 @@ impl MapBuilder {
         MapBuilder {
             tile_size : tile_size.clone(),
             current_location : starting_location,
-            tiles: Box::new(Vec::new())
+            tiles: mut Vec::new()
         }
     }
     pub fn add_tiles_to_area(&mut self, loc : Location, area: Area, tile_type: TileType){
-        let tiles = self.tiles.as_mut();
+        let mut tiles = self.tiles();
                  
 
         for x in 0..area.0 as u32 {
@@ -104,7 +88,7 @@ impl MapBuilder {
         }
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_type: TileType){
-        let tiles = self.tiles.as_mut();
+        let mut tiles = self.tiles;
 
         for _ in 0..count {
             let mut loc = &self.current_location;
