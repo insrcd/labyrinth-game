@@ -131,7 +131,7 @@ fn main() {
 
 fn add_player(mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
-    mut query: Query<(Added<&mut Player>, &Named, &world::Location)>
+    mut query: Query<(Added<Player>, &Named, &world::Location)>
 ) {
     for (player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!

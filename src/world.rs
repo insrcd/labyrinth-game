@@ -2,7 +2,7 @@
 use bevy::{prelude::*, math::Vec2, ecs::Bundle, prelude::Properties};
 use crate::player::Job;
 
-#[derive(Clone, Debug, Copy, PartialEq, Properties)]
+#[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
 pub struct Location (pub f32, pub f32, pub f32);
 
 impl Location {
@@ -28,6 +28,7 @@ pub struct Visible;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Hardness (pub f32);
+
 #[derive(Bundle, Copy, Clone, Debug)]
 pub struct TileComponents {
     pub hardness: Hardness,
@@ -35,13 +36,18 @@ pub struct TileComponents {
     pub location: Location,
     pub visible: Visible
 }
+
 #[derive(Clone, Copy, Debug, Default, Properties)]
 pub struct Player { 
     pub god_mode : bool
 }
 
-
 impl Player {
+    pub fn default() -> Player {
+        Player {
+            god_mode: false
+        }
+    }
     pub fn add_to_world(mut commands: Commands, name: &str) {
         commands.spawn((Player { god_mode: false }, crate::Named(name.to_string()), Job::BeerWizard));
     }
