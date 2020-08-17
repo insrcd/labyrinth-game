@@ -1,17 +1,14 @@
 
 
-
-
 use bevy::{ prelude::* , prelude::Properties};
 
 
-
+use crate::objs::*;
 use crate::world::Location;
-
-struct Position(u32, u32);
 
 #[derive(PartialEq, Debug)]
 pub struct Moving(pub Location, pub Location, pub Direction);
+
 impl Default for Moving {
     fn default() -> Moving {
         Moving(Location::default(), Location::default(), Direction::Stationary)
@@ -31,10 +28,16 @@ impl Default for Player {
     }
 }
 
-impl Player {
-    pub fn add_to_world(mut commands: Commands, name: &str) {
-        commands.spawn((Player { god_mode: false }, crate::Named(name.to_string()), Job::BeerWizard));
-    }
+#[derive(Debug, Bundle)]
+struct PlayerComponents {
+    player : Player,
+    job : Job,
+    inventory : Inventory
+}
+
+#[derive(Debug)]
+struct Inventory {
+    items: Vec<Handle<Item>>
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -46,6 +49,7 @@ pub enum Direction {
     Right
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Job {
     BeerWizard,
     Brewer,
@@ -53,3 +57,15 @@ pub enum Job {
     Regular,
     Undecided
 }
+
+pub struct Power <'a> {
+    name: String,
+    cost: u32,
+    effect: fn(crate::world::Solid) -> &'a crate::world::InteractionResult
+}
+
+
+pub struct Damage (f32);
+
+#[derive(Copy, Clone)]
+pub struct NonPlayer;

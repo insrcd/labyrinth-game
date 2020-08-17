@@ -1,4 +1,5 @@
-use std::collections::hashmap::HashMap;
+
+use std::collections::HashMap;
 
 pub enum ItemType {
     Weapon,
@@ -12,39 +13,60 @@ pub struct Item {
     id: u32,
     item_type: ItemType,
     weight: f64,
-    attributes: Box<HashMap<String, String>>
+    attributes: HashMap<String, String>
 }
 
-impl Map {
-    fn load_map_from_file(filename : &str) -> Map {
+pub struct Weight {
 
-    }
 }
- 
-enum WeaponSpecialPowers {
+pub enum WeaponSpecialPowers {
     Keen(u32),
     PlusDamage(u32),
-    Cursed(&str),
+    Cursed(String),
 }
 
-struct Weapon {
+pub struct Weapon {
     attack_power : u32,
-    special_powers: &[WeaponSpecialPowers]
+    special_powers: Vec<WeaponSpecialPowers>
 }
 
 struct Brew {
-    name: &str,
-    ingredients: &[dyn Mixable]
+    name: String,
+    ingredients: Vec<Box<dyn Mixable>>
 }
 
 trait Mixable {
-    fn mix_with(item : &mut Item);
+    fn mix_with(&self, item : &mut Item);
 }
 
-pub struct ObjectMaker;
+struct Herb { 
+    
+}
+struct Grain { 
 
-impl ObjectMaker {
-    pub fn make_tile(&commands: Commands, texture_name: &str){
-        
+}
+struct Extract { }
+struct Fluid { }
+
+impl Mixable for Herb {
+    fn mix_with(&self, item : &mut Item) {
+        todo!()
     }
 }
+impl Mixable for Grain {    
+    fn mix_with(&self, item : &mut Item) {
+        todo!()
+    } 
+}
+impl Mixable for Extract { 
+    fn mix_with(&self, item : &mut Item) {
+        todo!()
+    }
+}
+
+impl Mixable for Fluid { 
+    fn mix_with(&self, item : &mut Item) {
+        todo!()
+    }
+}
+

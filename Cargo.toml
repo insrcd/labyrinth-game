@@ -9,5 +9,6 @@ bevy = {git = "https://github.com/bevyengine/bevy"}
 rhai = "0.18.1" 
 log = { version = "0.4.8", features = ["serde"] }
 serde = "1.0.115"   
+rand = "0.7.3"
 
 [features]
