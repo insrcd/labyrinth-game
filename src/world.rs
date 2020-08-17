@@ -52,9 +52,9 @@ impl Default for TileComponents {
 pub struct Pushable;
 
 pub struct MapBuilder {
-    tile_size : Vec2,
-    current_location : Location,
-    tiles : Vec<TileComponents>
+    pub tile_size : Vec2,
+    pub current_location : Location,
+    pub tiles : Vec<TileComponents>
 }
 
 pub enum RelativePosition {
@@ -69,7 +69,7 @@ impl MapBuilder {
         MapBuilder {
             tile_size : tile_size.clone(),
             current_location : starting_location,
-            tiles: mut Vec::new()
+            tiles: Vec::new()
         }
     }
     pub fn add_tiles_to_area(&mut self, loc : Location, area: Area, tile_type: TileType){
@@ -112,7 +112,7 @@ impl MapBuilder {
                 }, 
                 _ => Hardness(0.),
             };
-
+            
             self.tiles.push(TileComponents {
                 tile_type: tile_type, 
                 location: location,
