@@ -1,24 +1,27 @@
 
-use bevy::prelude::*;
-use std::fmt::*;
+
+
+
+use bevy::{ prelude::* , prelude::Properties};
+
+    
+use std::fmt::{Formatter, Result};
+
+
+use crate::world::Location;
 
 struct Position(u32, u32);
 
-pub struct Named(pub String);
+#[derive(PartialEq, Debug, Default)]
+pub struct Moving(pub Location, pub Location, pub Direction);
 
-impl Named {
-    fn new(name : &str) -> Named {
-        Named(name.to_string())
-    }
-}
-
-pub struct Player;
-
-
-impl Player {
-    pub fn add_to_world(mut commands: Commands, name: &str) {
-        commands.spawn((Player, Named(name.to_string()), Job::BeerWizard));
-    }
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum Direction {
+    Stationary,
+    Up,
+    Down,
+    Left,
+    Right
 }
 
 impl std::fmt::Display for Player {
@@ -28,7 +31,7 @@ impl std::fmt::Display for Player {
     }
 }
 
-enum Job {
+pub enum Job {
     BeerWizard,
     Brewer,
     BeerBitch,

@@ -85,32 +85,5 @@ pub fn load_world_sprites(
     sprite_lib.add("player", Sprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
 
     commands
-    .insert_resource(sprite_lib)
-    .spawn(Camera2dComponents::default())
-    .spawn(UiCameraComponents::default())
-    .spawn((Player, Named("Adam".to_string()), Location(0., 0., 0.)));
-/*    .spawn(SpriteSheetComponents {
-        translation: Translation(Vec3::new(0.0, 0.0, 0.0)),
-        scale: Scale(6.0),
-        sprite: TextureAtlasSprite::new(1 as u32),
-        texture_atlas: texture_atlas_handle,
-        ..Default::default()
-    }).with(Tile(TileType::Wall)).with(Named("wall".to_string()))
-    .spawn(SpriteSheetComponents {
-        translation: Translation(Vec3::new(16.0*6., 16.0*6., 0.0)),
-        scale: Scale(6.0),
-        sprite: TextureAtlasSprite::new(2 as u32),
-        texture_atlas: texture_atlas_handle,
-        ..Default::default()
-    }).with(Tile(TileType::Floor)).with(Named("rock".to_string()));*/
-
-    /*
-    commands
-        .spawn(Camera2dComponents::default())
-        .spawn(UiCameraComponents::default())
-        .spawn(SpriteComponents {
-            material: materials.add(texture_handle.into()),
-            translation:  Translation(Vec3::new(300.0, 100.0, 0.0)),
-            ..Default::default()
-        });*/
+        .insert_resource(sprite_lib);
 }

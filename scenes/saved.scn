@@ -1,0 +1,6147 @@
+[
+  (
+    entity: 1308349690,
+    components: [
+      {
+        "type": "Named",
+        "map": {
+          "0": "Adam",
+        },
+      },
+    ],
+  ),
+  (
+    entity: 192486062,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 576.0, -192.0, 999.9, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Camera",
+        "map": {
+          "projection_matrix": {
+            "type": "Mat4",
+            "value": (0.0015625, 0.0, 0.0, 0.0, 0.0, 0.0027777778, 0.0, 0.0, 0.0, 0.0, -0.001, 0.0, 0.0, 0.0, 0.0, 1.0),
+          },
+          "name": {
+            "type": "Option<String>",
+            "value": Some("Camera2d"),
+          },
+        },
+      },
+      {
+        "type": "VisibleEntities",
+        "map": {},
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 1.0,
+        },
+      },
+      {
+        "type": "OrthographicProjection",
+        "map": {
+          "left": -640.0,
+          "right": 640.0,
+          "bottom": -360.0,
+          "top": 360.0,
+          "near": 0.0,
+          "far": 1000.0,
+          "window_origin": {
+            "type": "bevy_render::camera::projection::WindowOrigin",
+            "value": Center,
+          },
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (576.0, -192.0, 999.9),
+          },
+        },
+      },
+    ],
+  ),
+  (
+    entity: 962451843,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 576.0, -192.0, 999.9, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Camera",
+        "map": {
+          "projection_matrix": {
+            "type": "Mat4",
+            "value": (0.0015625, 0.0, 0.0, 0.0, 0.0, 0.0027777778, 0.0, 0.0, 0.0, 0.0, -0.001, 0.0, -1.0, -1.0, 0.0, 1.0),
+          },
+          "name": {
+            "type": "Option<String>",
+            "value": Some("UiCamera"),
+          },
+        },
+      },
+      {
+        "type": "VisibleEntities",
+        "map": {},
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 1.0,
+        },
+      },
+      {
+        "type": "OrthographicProjection",
+        "map": {
+          "left": 0.0,
+          "right": 1280.0,
+          "bottom": 0.0,
+          "top": 720.0,
+          "near": 0.0,
+          "far": 1000.0,
+          "window_origin": {
+            "type": "bevy_render::camera::projection::WindowOrigin",
+            "value": BottomLeft,
+          },
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (576.0, -192.0, 999.9),
+          },
+        },
+      },
+    ],
+  ),
+  (
+    entity: 3060445829,
+    components: [
+      {
+        "type": "Named",
+        "map": {
+          "0": "Adam",
+        },
+      },
+    ],
+  ),
+  (
+    entity: 3430981264,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, 192.0, 2.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": true,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, 192.0, 2.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1168380750,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3799719988,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 77709156,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3853603682,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1753098275,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 633528506,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3282802988,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3421722225,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3056851767,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2902804252,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 480.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (480.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 4207725472,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3869710806,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 380282969,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 82753694,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 507978413,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -480.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -480.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3784877553,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 824192871,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2613021152,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3457485218,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3280754692,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1975043949,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 4077387567,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3940797289,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1106005878,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1987002191,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (0.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3485640112,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2329997267,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3026824660,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3429882744,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2913146647,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 96.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (96.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2452977134,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1447524570,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1714132802,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3895045087,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1002588383,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 192.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (192.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 890336357,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3599822097,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1923488811,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 931435920,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2216281978,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 288.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (288.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 1315349583,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, 0.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, 0.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2829173762,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, -96.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, -96.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2064455051,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, -192.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, -192.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2310885978,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, -288.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, -288.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 4134734875,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 6.0, 0.0, 384.0, -384.0, 0.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": false,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 6.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (384.0, -384.0, 0.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("3bbd9582-6f55-497a-bcb7-9760b80af5b9"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 2560910345,
+    components: [
+      {
+        "type": "Rotation",
+        "map": {
+          "0": {
+            "type": "Quat",
+            "value": (0.0, 0.0, 0.0, 1.0),
+          },
+        },
+      },
+      {
+        "type": "Transform",
+        "map": {
+          "value": {
+            "type": "Mat4",
+            "value": (3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 576.0, -192.0, 30.0, 1.0),
+          },
+          "sync": true,
+        },
+      },
+      {
+        "type": "Draw",
+        "map": {
+          "is_visible": true,
+          "is_transparent": true,
+        },
+      },
+      {
+        "type": "RenderPipelines",
+        "map": {
+          "pipelines": {
+            "type": "alloc::vec::Vec<bevy_render::pipeline::render_pipelines::RenderPipeline>",
+            "seq": [
+              {
+                "type": "bevy_render::pipeline::render_pipelines::RenderPipeline",
+                "map": {
+                  "pipeline": {
+                    "type": "Handle<PipelineDescriptor>",
+                    "map": {
+                      "id": {
+                        "type": "HandleId",
+                        "value": ("43d5e3ef-c491-414b-8e7d-8432db3e34f7"),
+                      },
+                    },
+                  },
+                  "specialization": {
+                    "type": "PipelineSpecialization",
+                    "map": {
+                      "shader_specialization": {
+                        "type": "ShaderSpecialization",
+                        "value": (
+                          shader_defs: [],
+                        ),
+                      },
+                      "primitive_topology": {
+                        "type": "PrimitiveTopology",
+                        "value": TriangleList,
+                      },
+                      "dynamic_bindings": {
+                        "type": "alloc::vec::Vec<bevy_render::pipeline::pipeline_compiler::DynamicBinding>",
+                        "seq": [
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 0,
+                            ),
+                          },
+                          {
+                            "type": "DynamicBinding",
+                            "value": (
+                              bind_group: 2,
+                              binding: 1,
+                            ),
+                          },
+                        ],
+                      },
+                      "sample_count": 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "type": "Scale",
+        "map": {
+          "0": 3.0,
+        },
+      },
+      {
+        "type": "Translation",
+        "map": {
+          "0": {
+            "type": "Vec3",
+            "value": (576.0, -192.0, 30.0),
+          },
+        },
+      },
+      {
+        "type": "Handle<Mesh>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("6b2221d4-ac05-4ab9-9399-c7562cd26905"),
+          },
+        },
+      },
+      {
+        "type": "Handle<TextureAtlas>",
+        "map": {
+          "id": {
+            "type": "HandleId",
+            "value": ("9d4aff18-d881-4cec-a82e-f8ed2013d137"),
+          },
+        },
+      },
+      {
+        "type": "MainPass",
+        "map": {},
+      },
+    ],
+  ),
+  (
+    entity: 3886739208,
+    components: [],
+  ),
+  (
+    entity: 1301843848,
+    components: [],
+  ),
+  (
+    entity: 81143381,
+    components: [],
+  ),
+]
