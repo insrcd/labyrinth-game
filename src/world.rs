@@ -73,12 +73,11 @@ impl MapBuilder {
         }
     }
     pub fn add_tiles_to_area(&mut self, loc : Location, area: Area, tile_type: TileType){
-        let mut tiles = self.tiles();
                  
 
         for x in 0..area.0 as u32 {
             for y in 0..area.1 as u32 {                
-                tiles.push(TileComponents {
+                self.tiles.push(TileComponents {
                    tile_type: tile_type, 
                    location: Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2),
                    hardness: Hardness(0.),
@@ -88,7 +87,7 @@ impl MapBuilder {
         }
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_type: TileType){
-        let mut tiles = self.tiles;
+       
 
         for _ in 0..count {
             let mut loc = &self.current_location;
@@ -114,7 +113,7 @@ impl MapBuilder {
                 _ => Hardness(0.),
             };
 
-            tiles.push(TileComponents {
+            self.tiles.push(TileComponents {
                 tile_type: tile_type, 
                 location: location,
                 hardness: hardness,
