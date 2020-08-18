@@ -1,12 +1,27 @@
 use bevy::{
     prelude::*,
     render::{camera::Camera, pass::ClearColor},
+    window::{WindowCreated, WindowResized},
     input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion}}, type_registry::TypeRegistry,
 };
 use crate::world::*;
 use crate::player;
+#[derive(Default)]
+pub struct WindowState {
+    window_resized_event_reader: EventReader<WindowResized>,
+    window_created_event_reader: EventReader<WindowCreated>,
+}
 
 
+pub struct SelectedTile {
+    tile_type: TileType
+}
+
+impl Default for SelectedTile {
+    fn default() -> SelectedTile {
+        SelectedTile { tile_type:TileType::Wall(Hardness(1.)) }
+    }
+}
 pub struct InputPlugin;
 
 pub mod stage {
@@ -16,6 +31,7 @@ pub mod stage {
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .init_resource::<SelectedTile>()
             .add_system(add_tiles_system.system())
             .add_system(keyboard_input_system.system())
             .add_system(track_mouse_movement.system());
@@ -36,6 +52,7 @@ fn track_mouse_movement(
     commands: Commands,
     cursor_moved_events: Res<Events<CursorMoved>>,
     mut state: ResMut<State>,
+    windows: Res<Windows>,
     mut mouse_query: Query<&mut Mouse>,
     mut camera_query: Query<(&Camera, &Translation)>) {
         let mut camera_offset_x : f32 = 0.;
@@ -48,18 +65,26 @@ fn track_mouse_movement(
             }
         }
 
+        /*for window in windows.iter() {
+            println!("{:?}",window);
+        }*/
+
+        let window = windows.iter().last().unwrap();
+        let x_window_offset = window.width;
+        let y_window_offset = window.height;
         
         for event in state.cursor_moved_event_reader.iter(&cursor_moved_events) {
             //println!("{},{} - {},{}", camera_offset_x, camera_offset_y, event.position.x(), event.position.y() );
 
             for mut mouse in &mut mouse_query.iter(){
-                mouse.position = Vec2::new(event.position.x() + camera_offset_x - 400. as f32, event.position.y() + camera_offset_y - 200. as f32);
+                mouse.position = Vec2::new(event.position.x() + camera_offset_x - (x_window_offset/2) as f32, event.position.y() + camera_offset_y - (y_window_offset/2) as f32);
             }
         }
 }
 
 fn add_tiles_system (
     mut commands: Commands,
+     selected_tile: Res<SelectedTile>, 
     input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
     mut mouse_query: Query<&Mouse>,
@@ -71,21 +96,28 @@ fn add_tiles_system (
         if mouse_input.just_pressed(MouseButton::Left) {
             let mut x = mouse.position.x() ;
             let mut y = mouse.position.y() ;
+            
+            println!("Mouse at {:?},{:?}", x, y);
 
             let grid_x = x  / tile_size;
             let grid_y = y  / tile_size;
-
-            println!("{},{}", x as i32 % 96, grid_y as i32 % 96);
             
-            x = grid_x.floor() * tile_size;
-            y = grid_y.floor() * tile_size * 2.;
+            println!("{},{}", grid_x as i32 % 96, grid_y as i32 % 96);
+            
+            x = grid_x.round() * tile_size;
+            y = grid_y.round() * tile_size;
 
             
             println!("Placing tile at {:?},{:?}", x, y);
 
+            let hardness = match selected_tile.tile_type {
+                TileType::Wall(hardness) => hardness,
+                _ => Hardness(0.)
+            };
+
             commands.spawn(TileComponents {
-                hardness: Hardness(1.),
-                tile_type: TileType::Wall(Hardness(1.)),
+                hardness: hardness,
+                tile_type: selected_tile.tile_type,
                 location: Location(x, y, 1.),
                 ..Default::default()
             });
@@ -120,13 +152,11 @@ fn add_tiles_system (
 
             let loc =  Location(x, y, 1.);
             
-            println!("Adding wall to {:?}", loc);
-
-    
+            println!("Adding tile to {:?}", loc);
             
             commands.spawn(TileComponents {
                 hardness: Hardness(1.),
-                tile_type: TileType::Wall(Hardness(1.)),
+                tile_type: selected_tile.tile_type,
                 location: loc,
                 ..Default::default()
             });
@@ -140,11 +170,20 @@ fn add_tiles_system (
 fn keyboard_input_system(
     mut commands : Commands,
     keyboard_input: Res<Input<KeyCode>>, 
+    mut selected_tile: ResMut<SelectedTile>, 
     mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {
 
     let player_speed = 48.;
 
     let mut movement = player::Direction::Stationary;
+    
+    if keyboard_input.just_pressed(KeyCode::RBracket) {
+        selected_tile.tile_type = TileType::Wall(Hardness(1.));
+    }
+
+    if keyboard_input.just_pressed(KeyCode::LBracket) {
+       selected_tile.tile_type = TileType::Floor;
+    }
 
     if keyboard_input.just_pressed(KeyCode::W) {
         movement = player::Direction::Up;
