@@ -11,12 +11,11 @@ items will be gone!
 
 Solving the mystery of the Labynrith Below Labyrinth.
 
-Currently, this codebase is merely being used to design the basic systems and datatypes needed for the game. It is going to leverage the rust scripting engine RHAI for NPC
-/ Powers / AI development.
+Currently, this codebase is merely being used to design the basic systems and datatypes needed for the game. It is going to leverage the rust scripting engine RHAI for NPC / Powers / AI development.
 
 ## Design Goals 
 
-- Create a character for every Regular and Employee of
+- Create a character for every Regular and Employee of Labyrinth
 - Celler Trolls, Beer Wizards, Cantankerous owners oh my.
 - Sprites designed by Hadria Beth (https://hadriabeth.com)
 
