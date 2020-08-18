@@ -1,6 +1,7 @@
 
 use bevy::{prelude::*, math::Vec2, ecs::Bundle, prelude::Properties, render::camera::Camera, type_registry::TypeRegistry};
 use crate::player;
+use strum_macros::EnumIter;
 
 pub mod stage {
     pub const WORLD: &'static str = "world";
@@ -33,6 +34,7 @@ use rand::{
 const world_tile_size : f32 = 96.;
 
 use crate::{Named, player::*, assets};
+use std::collections::HashMap;
 #[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
 pub struct Location (pub f32, pub f32, pub f32);
 
@@ -45,13 +47,23 @@ impl Location {
 #[derive(Clone, PartialEq)]
 pub struct Area(pub f32, pub f32);
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, EnumIter)]
 pub enum TileType {
     Wall(Hardness),
     Floor,
+    Brick(Hardness),
+    BrickDoorOpen,
+    BrickDoorClosed(Hardness),
+    BrickWindow(Hardness),
+    BrickWindowBroken,
     Lava,
     Bar,
     Grass,
+    Chair,
+    Shelf,
+    Bed,
+    Table,
+    Fridge,
     Key
 }
 
@@ -61,12 +73,36 @@ pub struct Visible;
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Hardness (pub f32);
 
+impl Default for Hardness {
+    fn default() -> Hardness {
+        return Hardness(1.)
+    }
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct Interaction {
+    pub call : fn (Attributes) -> (bool, TileType)
+}
+
 #[derive(Bundle, Copy, Clone, Debug)]
 pub struct TileComponents {
     pub hardness: Hardness,
     pub tile_type: TileType,
     pub location: Location,
-    pub visible: Visible
+    pub visible: Visible,
+    pub interaction: Interaction
+}
+
+impl TileComponents {
+    fn hardness_from_tile(tile_type: TileType) -> Hardness {
+        match tile_type {
+            TileType::Wall(h ) => h, 
+            TileType::Brick(h ) =>  h,
+            TileType::BrickWindow(h ) =>  h,
+            TileType::BrickDoorClosed(h ) => h, 
+            _ => Hardness(0.),
+        }
+    }
 }
 
 impl Default for TileComponents {
@@ -75,11 +111,15 @@ impl Default for TileComponents {
             hardness: Hardness(0.),
             tile_type: TileType::Key,
             location: Location::default(),
-            visible: Visible
+            visible: Visible,
+            interaction: Interaction { call: |attributes| { (false, TileType::Key) } }
         }
     }
 }
 
+pub struct Attributes; /* {
+    settings: HashMap<String, u32>
+}*/
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;
 
@@ -121,7 +161,7 @@ impl MapBuilder {
                 self.tiles.push(TileComponents {
                    tile_type: tile_type, 
                    location: Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2),
-                   hardness: Hardness(0.),
+                   hardness:TileComponents::hardness_from_tile(tile_type),
                    ..Default::default()
                 });            
             }
@@ -131,7 +171,7 @@ impl MapBuilder {
        
 
         for _ in 0..count {
-            let mut loc = &self.current_location;
+            let loc = &self.current_location;
             let location = match pos {
                 RelativePosition::LeftOf => {                                    
                     Location(loc.0 - self.tile_size.x(), loc.1, loc.2)
@@ -146,18 +186,11 @@ impl MapBuilder {
                     Location(loc.0, loc.1 - self.tile_size.y(), loc.2)
                 }
             };
-
-            let hardness = match tile_type {
-                TileType::Wall(h ) =>  {
-                    h
-                }, 
-                _ => Hardness(0.),
-            };
             
             self.tiles.push(TileComponents {
                 tile_type: tile_type, 
                 location: location,
-                hardness: hardness,
+                hardness: TileComponents::hardness_from_tile(tile_type),
                 ..Default::default()
              });
 
@@ -218,24 +251,27 @@ fn make_room (
     mut query: Query<(Entity, &TileType, &Visible, &Location, Without<Draw,(&Visible,)>)>,
     mut p_query: Query<(Entity, Added<Moveable>, &Visible, &Location)>,
 ) {
-    for (e, _push, vis, &loc) in &mut p_query.iter() {
-        let sprite = sprites.get("chair");
-        
-        commands.insert(e, SpriteSheetComponents {
-            translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
-            scale: Scale(6.0),
-            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
-            sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
-            texture_atlas: sprite.atlas_handle.clone(),
-            ..Default::default()
-        });
-    }
     for (e, tile, &_vis, &loc, _w) in &mut query.iter() {
         println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
         let sprite = match *tile {
             TileType::Wall(_) => sprites.get("wall"),
-            _ => sprites.get("floor"),
+            TileType::Brick(_) => sprites.get("brick"),
+            TileType::BrickDoorOpen => sprites.get("brick_door_open"),
+            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed"),
+            TileType::BrickWindow(_) => sprites.get("brick_window"),
+            TileType::BrickWindowBroken => sprites.get("brick_window_broken"),
+            TileType::Floor => sprites.get("floor"),
+            TileType::Lava => sprites.get("floor"),
+            TileType::Bar => sprites.get("floor"),
+            TileType::Grass => sprites.get("floor"),
+            TileType::Chair => sprites.get("chair"),
+            TileType::Shelf => sprites.get("shelf"),
+            TileType::Bed => sprites.get("bed"),
+            TileType::Table => sprites.get("table"),
+            TileType::Fridge => sprites.get("fridge"),
+            TileType::Key => sprites.get("floor"),
+            _ => sprites.get("floor")
         };
 
         commands.insert(e, SpriteSheetComponents {
@@ -317,16 +353,16 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 /// Collision detection system
 /// 
 fn collision_detection(
+    mut commands: Commands,
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(&Hardness, &mut Translation)>,
+    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
     mut moveables: Query<(&Moveable, &mut Translation)>,
     mut player_moved_query: Query<(&Player, &mut Translation, Mutated<Moving>)>,
     mut nonplayer_moved_query: Query<(&NonPlayer, &mut Translation, Mutated<Moving>)>,
 ) {
 
     for (p, mut move_transition, m) in &mut nonplayer_moved_query.iter() {
-        println!("NPC Moved");
-        for (hardness, mut tile_translation) in &mut wall_query.iter() {
+        for (e, mut tt, hardness, mut tile_translation, i) in &mut wall_query.iter() {
             if hardness.0 == 0. {
                 continue;
             }
@@ -336,7 +372,9 @@ fn collision_detection(
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
-                        println!("Collision!");
+                        let ret = (i.call)(Attributes);
+                        *tt = ret.1;
+
                         *move_transition.0.x_mut() = (m.0).0;
                         *move_transition.0.y_mut() = (m.0).1;
                     }
@@ -367,7 +405,7 @@ fn collision_detection(
                 }
             } 
         }
-        for (hardness, mut tile_translation) in &mut wall_query.iter() {
+        for (e, mut tt, hardness, mut tile_translation, i) in &mut wall_query.iter() {
             //println!("{:?} {:?}", hardness, tile_translation.0);
             if hardness.0 == 0. {
                 continue;
@@ -380,6 +418,20 @@ fn collision_detection(
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
+                        let ret = (i.call)(Attributes);
+                        
+                        // if the transition says to change, change.
+                        if ret.0 == true {
+                            commands.despawn(e);
+                            commands.spawn(TileComponents {
+                                tile_type: ret.1, 
+                                location: Location::from_translation(*tile_translation),
+                                hardness: Hardness(0.),
+                                ..Default::default()
+                             });
+                        }
+                        
+
                         *move_transition.0.x_mut() = (m.0).0;
                         *move_transition.0.y_mut() = (m.0).1;
                     }

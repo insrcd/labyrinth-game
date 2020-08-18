@@ -95,7 +95,7 @@ pub fn load_world_sprites(
     sprite_lib.add(Sprite::new("floor", 2, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("tile", 3, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("gravel_h", 4, texture_atlas_handle.clone(), 16, 16));
-    sprite_lib.add(Sprite::new("brick_wall", 5, texture_atlas_handle.clone(), 16, 16));
+    sprite_lib.add(Sprite::new("brick", 5, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("brick_door_closed", 6, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("chair", 7, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("gravel_v", 8, texture_atlas_handle.clone(), 16, 16));

@@ -19,7 +19,7 @@ pub struct SelectedTile {
 
 impl Default for SelectedTile {
     fn default() -> SelectedTile {
-        SelectedTile { tile_type:TileType::Wall(Hardness(1.)) }
+        SelectedTile { tile_type:TileType::Floor }
     }
 }
 pub struct InputPlugin;
@@ -110,15 +110,31 @@ fn add_tiles_system (
             
             println!("Placing tile at {:?},{:?}", x, y);
 
+            let mut interaction : fn (Attributes) -> (bool,TileType) = |x| { (false, TileType::Key ) };
             let hardness = match selected_tile.tile_type {
-                TileType::Wall(hardness) => hardness,
+                TileType::Wall(h ) =>  {
+                    h
+                }, 
+                TileType::Brick(h ) =>  {
+                    h
+                }, TileType::BrickWindow(h ) =>  {
+                    interaction = |x| { ( true, TileType::BrickWindowBroken ) };
+                    h
+                }, TileType::BrickDoorClosed(h ) =>  {
+                    interaction = |x| { ( true, TileType::BrickDoorOpen ) };
+                    h
+                }, 
                 _ => Hardness(0.)
             };
+            
+
+
 
             commands.spawn(TileComponents {
                 hardness: hardness,
                 tile_type: selected_tile.tile_type,
                 location: Location(x, y, 1.),
+                interaction: crate::world::Interaction { call: interaction },
                 ..Default::default()
             });
         }
@@ -177,12 +193,63 @@ fn keyboard_input_system(
 
     let mut movement = player::Direction::Stationary;
     
+    use strum::IntoEnumIterator; 
+
+
     if keyboard_input.just_pressed(KeyCode::RBracket) {
-        selected_tile.tile_type = TileType::Wall(Hardness(1.));
+        let mut tile_types :  Vec<TileType> = Vec::new();
+
+        for ty in TileType::iter() {
+            tile_types.push(ty);
+        }
+    
+        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
+
+        match idx {
+            Some(i) => {
+                let final_type = match tile_types[(i+1) % (tile_types.len()-1)] {
+                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
+                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
+                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
+                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
+                    _ => tile_types[(i+1) % (tile_types.len()-1)]
+                };
+                selected_tile.tile_type = final_type;
+
+                println!("Tile Selected: {:?}", final_type);
+            },
+            None => {}
+        }
     }
 
     if keyboard_input.just_pressed(KeyCode::LBracket) {
-       selected_tile.tile_type = TileType::Floor;
+        let mut tile_types :  Vec<TileType> = Vec::new();
+
+        for ty in TileType::iter() {
+            tile_types.push(ty);
+        }
+    
+        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
+        match idx {
+            Some(mut i) => {
+                if i == 0 {
+                    i = tile_types.len() -1;
+                }
+
+                let final_type = match tile_types[i-1] {
+                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
+                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
+                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
+                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
+                    _ => tile_types[i-1]
+                };
+
+                selected_tile.tile_type = final_type;
+                
+                println!("Tile Selected: {:?}", final_type);
+            },
+            None => {}
+        }
     }
 
     if keyboard_input.just_pressed(KeyCode::W) {

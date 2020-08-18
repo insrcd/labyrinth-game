@@ -58,7 +58,7 @@ fn main() {
     .add_default_plugins()
     .add_startup_system(setup.system())
     .add_startup_system(load_world_sprites.system())
-    .add_plugin(demo::DemoPlugin)
+    //.add_plugin(demo::DemoPlugin)
     .add_plugin(input::InputPlugin)
     .add_plugin(WorldPlugin)
     //.add_system(test.system())
