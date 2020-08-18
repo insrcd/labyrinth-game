@@ -13,6 +13,12 @@ Solving the mystery of the Labynrith Below Labyrinth.
 
 Currently, this codebase is merely being used to design the basic systems and datatypes needed for the game. It is going to leverage the rust scripting engine RHAI for NPC / Powers / AI development.
 
+## Quickstart for Development
+
+- clone the repo
+- install https://rustup.rs/
+- cargo run --release in the repo directory
+
 ## Design Goals 
 
 - Create a character for every Regular and Employee of Labyrinth
