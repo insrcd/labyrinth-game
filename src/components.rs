@@ -6,16 +6,10 @@ use bevy::{
     prelude::*
 };
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
-#[derive(Properties, Serialize)]
+#[derive(Properties, Serialize, Debug)]
 pub struct Named(pub String);
-
-impl Named {
-    fn new(name : &str) -> Named {
-        Named(name.to_string())
-    }
-}
 
 impl Default for Named {
     fn default() -> Self {

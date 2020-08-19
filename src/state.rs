@@ -5,6 +5,7 @@
 use crate::menu::*;
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub enum StateType {
     Init,
     Menu(Menu),
@@ -14,6 +15,7 @@ pub enum StateType {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct GameState {
     state: StateType,
     edit_mode: bool

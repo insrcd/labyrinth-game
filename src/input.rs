@@ -1,17 +1,10 @@
 use bevy::{
     prelude::*,
-    render::{camera::Camera, pass::ClearColor},
-    window::{WindowCreated, WindowResized},
-    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion}}, type_registry::TypeRegistry,
+    render::{camera::Camera},
+    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion} },
 };
 use crate::world::*;
 use crate::player;
-#[derive(Default)]
-pub struct WindowState {
-    window_resized_event_reader: EventReader<WindowResized>,
-    window_created_event_reader: EventReader<WindowCreated>,
-}
-
 
 pub struct SelectedTile {
     tile_type: TileType
@@ -24,6 +17,7 @@ impl Default for SelectedTile {
 }
 pub struct InputPlugin;
 
+#[allow(dead_code)]
 pub mod stage {
     pub const INPUT: &'static str = "input";
 }
@@ -38,6 +32,7 @@ impl Plugin for InputPlugin {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Default)]
 pub struct State {
     mouse_button_event_reader: EventReader<MouseButtonInput>,
@@ -49,7 +44,6 @@ pub struct Mouse {
 }
 
 fn track_mouse_movement(
-    commands: Commands,
     cursor_moved_events: Res<Events<CursorMoved>>,
     mut state: ResMut<State>,
     windows: Res<Windows>,
@@ -110,7 +104,8 @@ fn add_tiles_system (
             
             println!("Placing tile at {:?},{:?}", x, y);
 
-            let mut interaction : fn (Attributes) -> (bool,TileType) = |x| { (false, TileType::Key ) };
+            
+            let mut interaction : fn (Attributes) -> (bool,TileType) = |_| { (false, TileType::Key ) };
             let hardness = match selected_tile.tile_type {
                 TileType::Wall(h ) =>  {
                     h
@@ -118,10 +113,10 @@ fn add_tiles_system (
                 TileType::Brick(h ) =>  {
                     h
                 }, TileType::BrickWindow(h ) =>  {
-                    interaction = |x| { ( true, TileType::BrickWindowBroken ) };
+                    interaction = |_| { ( true, TileType::BrickWindowBroken ) };
                     h
                 }, TileType::BrickDoorClosed(h ) =>  {
-                    interaction = |x| { ( true, TileType::BrickDoorOpen ) };
+                    interaction = |_| { ( true, TileType::BrickDoorOpen ) };
                     h
                 }, 
                 _ => Hardness(0.)
@@ -140,7 +135,7 @@ fn add_tiles_system (
         }
     }
     
-    for (p, t, m) in &mut query.iter(){
+    for (_p, t, m) in &mut query.iter(){
         
         if input.just_pressed(KeyCode::F2) {
             let mut x = f32::abs ( t.0.x() );
@@ -184,7 +179,6 @@ fn add_tiles_system (
 
 
 fn keyboard_input_system(
-    mut commands : Commands,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
     mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {

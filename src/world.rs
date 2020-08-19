@@ -3,6 +3,7 @@ use bevy::{prelude::*, math::Vec2, ecs::Bundle, prelude::Properties, render::cam
 use crate::player;
 use strum_macros::EnumIter;
 
+#[allow(dead_code)]
 pub mod stage {
     pub const WORLD: &'static str = "world";
 }
@@ -31,10 +32,10 @@ use rand::{
 }; 
 
 
-const world_tile_size : f32 = 96.;
+const WORLD_TILE_SIZE : f32 = 96.;
 
 use crate::{Named, player::*, assets};
-use std::collections::HashMap;
+
 use assets::SpriteLibrary;
 #[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
 pub struct Location (pub f32, pub f32, pub f32);
@@ -86,8 +87,7 @@ impl TileType {
             TileType::Bed => sprites.get("bed"),
             TileType::Table => sprites.get("table"),
             TileType::Fridge => sprites.get("fridge"),
-            TileType::Key => sprites.get("floor"),
-            _ => sprites.get("floor")
+            TileType::Key => sprites.get("floor")
         }
     }
 }
@@ -137,7 +137,7 @@ impl Default for TileComponents {
             tile_type: TileType::Key,
             location: Location::default(),
             visible: Visible,
-            interaction: Interaction { call: |attributes| { (false, TileType::Key) } }
+            interaction: Interaction { call: |_attributes| { (false, TileType::Key) } }
         }
     }
 }
@@ -234,16 +234,15 @@ fn add_player_sprites(mut commands: Commands,
     mut query: Query<(Entity, Added<Player>, &Named, &Location)>,
     mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location)>
 ) {
-    for (e, player, name , loc) in &mut query.iter() {
+    for (e, _player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!
         let sprite = sprites.get("player");
         
         println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
 
-        let p = *player;
         commands
         .insert(e, SpriteSheetComponents {
-            translation: Translation(Vec3::new(world_tile_size, world_tile_size, 30.)),
+            translation: Translation(Vec3::new(WORLD_TILE_SIZE, WORLD_TILE_SIZE, 30.)),
             scale: Scale(3.0),
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
@@ -251,12 +250,12 @@ fn add_player_sprites(mut commands: Commands,
             ..Default::default()
         }).insert_one(e, Moving(*loc, *loc, player::Direction::Stationary));
     }
-    for (e, nonplayer, name , loc) in &mut npc_query.iter() {
+    for (e, _npc, name , loc) in &mut npc_query.iter() {
         // new player was added, lets render them!
         let sprite = sprites.get("npc");
         
         println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-        let p = *nonplayer;
+       
         commands
         .insert(e,SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, 30.)),
@@ -269,13 +268,6 @@ fn add_player_sprites(mut commands: Commands,
     }
 }
 
-fn change_tile (
-    mut commands: Commands,
-    sprites : ResMut<assets::SpriteLibrary>,   
-    mut query: Query<(Entity, &TileType, &Visible, &Location, Added<TileType>)>,
-) {
-
-}
 // adds the sprites for the tiles
 fn make_room (
     mut commands: Commands,
@@ -315,7 +307,7 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
     let b_min = b_pos.truncate() - b_size / 2.0;
     let b_max = b_pos.truncate() + b_size / 2.0;
 
-    if (d){
+    if  d {
         println!("a: {} {} b: {} {}", a_min, a_max,b_min,b_max);
     }
     // check to see if the two rectangles are intersecting
@@ -367,7 +359,7 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 /// 
 fn collision_detection(
     mut commands: Commands,
-    mut sprites : ResMut<assets::SpriteLibrary>,   
+    sprites : ResMut<assets::SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
     mut moveables: Query<(&Moveable, &mut Translation)>,
@@ -375,13 +367,13 @@ fn collision_detection(
     mut nonplayer_moved_query: Query<(&NonPlayer, &mut Translation, Mutated<Moving>)>,
 ) {
 
-    for (p, mut move_transition, m) in &mut nonplayer_moved_query.iter() {
-        for (e, mut tt, hardness, mut tile_translation, i) in &mut wall_query.iter() {
+    for (_p, mut move_transition, m) in &mut nonplayer_moved_query.iter() {
+        for (_e, _tt, hardness, tile_translation, _i) in &mut wall_query.iter() {
             if hardness.0 == 0. {
                 continue;
             }
 
-            let collision = collide(move_transition.0, Vec2::new(world_tile_size,world_tile_size), tile_translation.0, Vec2::new(48.,48.0), false);
+            let collision = collide(move_transition.0, Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE), tile_translation.0, Vec2::new(48.,48.0), false);
             
             if let Some(collision) = collision {
                 match collision {
@@ -394,8 +386,8 @@ fn collision_detection(
             } 
         }
     }
-    for (p, mut move_transition, m) in &mut player_moved_query.iter() {
-        for (push, mut push_translation) in &mut moveables.iter() {             
+    for (_p, mut move_transition, m) in &mut player_moved_query.iter() {
+        for (_push, mut push_translation) in &mut moveables.iter() {             
             let collision = collide(move_transition.0, Vec2::new(48.,48.), push_translation.0, Vec2::new(32.,32.0), false);
             if let Some(collision) = collision {
                 println!("Collision pushed {:?} {:?}", collision, *m);
@@ -417,7 +409,7 @@ fn collision_detection(
                 }
             } 
         }
-        for (e, mut tt, hardness, mut tile_translation, i) in &mut wall_query.iter() {
+        for (e,_tile_type, hardness, tile_translation, i) in &mut wall_query.iter() {
             //println!("{:?} {:?}", hardness, tile_translation.0);
             if hardness.0 == 0. {
                 continue;
@@ -425,20 +417,18 @@ fn collision_detection(
 
             //println!("{} {}",player_translation.0, tile_translation.0);
 
-            let collision = collide(move_transition.0, Vec2::new(world_tile_size,world_tile_size), tile_translation.0, Vec2::new(48.,48.0), false);
+            let collision = collide(move_transition.0, 
+                Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
             
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
+                        // run the lambda that tells us what to do if a collision happens with a tile
                         let ret = (i.call)(Attributes);
                         
-                        // if the transition says to change, change.
+                        // if the transition says to change, then change.
                         if ret.0 == true {
                             let sprite = ret.1.sprite_for_tiletype(&sprites);
-                            
-                            println!("Changin tile to {:?} {:?}", tt, ret.1);
-
-            
 
                             commands.insert(e, TileComponents {
                                 tile_type: ret.1, 
@@ -451,7 +441,6 @@ fn collision_detection(
                             
                         }
                         
-
                         *move_transition.0.x_mut() = (m.0).0;
                         *move_transition.0.y_mut() = (m.0).1;
                     }
@@ -496,19 +485,18 @@ impl Distribution<player::Direction> for Standard {
     }
 }
 
+/// Move all NPCs in the scene every 1.5 seconds
 fn npc_move(mut query: Query<(&NonPlayer, &mut Timer, &mut Translation, &mut Moving, &mut Moveable)>) {
-    for (np, mut timer, mut trans, mut m, _mm) in &mut query.iter() {
+    for (_npc, mut timer, mut trans, mut m, _mm) in &mut query.iter() {
         if  timer.finished {
             let old_loc = Location::from_translation(*trans);
             let direction = rand::random::<player::Direction>();
 
-            match (direction)  {
-                player::Direction::Left =>  {
-                    *trans.0.x_mut() -= world_tile_size;
-                },
-                player::Direction::Up => *trans.0.y_mut() += world_tile_size,
-                player::Direction::Down =>  *trans.0.y_mut() -= world_tile_size,
-                player::Direction::Right => *trans.0.x_mut() += world_tile_size,
+            match direction {
+                player::Direction::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE,
+                player::Direction::Up => *trans.0.y_mut() += WORLD_TILE_SIZE,
+                player::Direction::Down =>  *trans.0.y_mut() -= WORLD_TILE_SIZE,
+                player::Direction::Right => *trans.0.x_mut() += WORLD_TILE_SIZE,
                 player::Direction::Stationary =>  {}
             }
 

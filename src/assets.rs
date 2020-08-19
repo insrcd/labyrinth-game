@@ -2,8 +2,6 @@ use bevy::{
     prelude::*
 };
 
-use crate::world::Location;
-use crate::player::*;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
@@ -51,7 +49,6 @@ impl Sprite {
 pub fn load_world_sprites(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     mut textures: ResMut<Assets<Texture>>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
 ) { 

@@ -50,6 +50,7 @@ pub enum Direction {
 }
 
 #[derive(Debug, PartialEq)]
+#[allow(dead_code)]
 pub enum Job {
     BeerWizard,
     Brewer,
@@ -58,6 +59,8 @@ pub enum Job {
     Undecided
 }
 
+
+#[allow(dead_code)]
 pub struct Power <'a> {
     name: String,
     cost: u32,
@@ -65,6 +68,7 @@ pub struct Power <'a> {
 }
 
 
+#[allow(dead_code)]
 pub struct Damage (f32);
 
 #[derive(Copy, Clone)]
