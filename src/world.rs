@@ -1,5 +1,5 @@
 
-use bevy::{prelude::*, math::Vec2, ecs::Bundle, prelude::Properties, render::camera::Camera, type_registry::TypeRegistry};
+use bevy::{prelude::*, math::Vec2, ecs::{DynamicBundle, Bundle}, prelude::Properties, render::camera::Camera, type_registry::TypeRegistry};
 use crate::player;
 use strum_macros::EnumIter;
 
@@ -229,8 +229,24 @@ impl MapBuilder {
 
 }
 
+
+fn add_sprite(asset_server: &AssetServer, assets: &mut Assets<ColorMaterial>, filename: &str, loc: &Location) -> SpriteComponents {
+       
+    let npc_sprite = asset_server.load(&filename).unwrap();
+
+    SpriteComponents {
+        translation: Translation(Vec3::new(loc.0, loc.1, 30.)),
+        scale: Scale(3.0),
+        draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
+        material: assets.add(npc_sprite.into()),
+        ..Default::default()
+    }
+}
+
 fn add_player_sprites(mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,
+    asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
     mut query: Query<(Entity, Added<Player>, &Named, &Location)>,
     mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location)>
 ) {
@@ -241,30 +257,17 @@ fn add_player_sprites(mut commands: Commands,
         println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
 
         commands
-        .insert(e, SpriteSheetComponents {
-            translation: Translation(Vec3::new(WORLD_TILE_SIZE, WORLD_TILE_SIZE, 30.)),
-            scale: Scale(3.0),
-            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
-            sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
-            texture_atlas: sprite.atlas_handle.clone(),
-            ..Default::default()
-        }).insert_one(e, Moving(*loc, *loc, player::Direction::Stationary));
+            .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/sensei.png", loc))
+            .insert_one(e, Moving(*loc, *loc, player::Direction::Stationary));
     }
     for (e, _npc, name , loc) in &mut npc_query.iter() {
         // new player was added, lets render them!
         let sprite = sprites.get("npc");
         
         println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-       
         commands
-        .insert(e,SpriteSheetComponents {
-            translation: Translation(Vec3::new(loc.0, loc.1, 30.)),
-            scale: Scale(3.0),
-            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
-            sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
-            texture_atlas: sprite.atlas_handle.clone(),
-            ..Default::default()
-        }).insert(e, (Moveable, Timer::from_seconds(1.5), Moving(*loc, *loc, player::Direction::Stationary)));
+            .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc))
+            .insert(e, (Moveable, Timer::from_seconds(1.5), Moving(*loc, *loc, player::Direction::Stationary)));
     }
 }
 

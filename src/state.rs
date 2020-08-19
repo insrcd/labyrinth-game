@@ -48,14 +48,16 @@ pub fn state_transition (
 
         println!("{:?}", font_handle);
             
-        /*let material_handle = asset_server
-            .load_sync(&mut materials, "resources/backgrounds/logo.png")
+       /*let material_handle = asset_server
+            .load_sync(&mut materials, "resources/sprites/world.png")
             .unwrap();*/
+
+        //println!("material handle {:?}", material_handle);
 
         match &state.next_state {
             
             StateType::Init => { 
-                    commands
+                commands
                     .spawn(TextComponents {
                         text: Text {
                             value: "Initializing".to_string(),
@@ -67,7 +69,7 @@ pub fn state_transition (
                         },
                         ..Default::default()
                     });
-                    /*commands
+                   /* commands
                     .spawn(ImageComponents {
                         style: Style {
                             size: Size::new(Val::Px(200.0), Val::Auto),
