@@ -29,9 +29,11 @@ pub mod stage {
 fn main() {
     App::build()
     .init_resource::<input::State>()
+    .init_resource::<state::GameState>()
     .add_default_plugins()
     .add_startup_system(setup.system())
     .add_startup_system(load_world_sprites.system())
+    .add_system(state::state_transition.system())
     //.add_plugin(demo::DemoPlugin)
     .add_plugin(input::InputPlugin)
     .add_plugin(WorldPlugin)
@@ -42,11 +44,14 @@ fn main() {
 
 
 fn setup (
-    mut commands: Commands
+    mut commands: Commands,
 ) {
+    
+
     commands
     .spawn(UiCameraComponents::default())
     .spawn(Camera2dComponents::default())
+    .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
     .spawn(( input::Mouse { position: Vec2::new(0.,0.)},))
     .spawn((Player { god_mode: false }, Named("Adam".to_string()), Location(0., 0., 51.)))
     .spawn((NonPlayer, Named("OldDude".to_string()), Location(TILE_SIZE*3., -TILE_SIZE*4., 50.)));

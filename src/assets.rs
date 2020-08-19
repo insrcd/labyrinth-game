@@ -50,8 +50,11 @@ pub fn load_world_sprites(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut textures: ResMut<Assets<Texture>>,
+    mut fonts: ResMut<Assets<Font>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
 ) { 
+    
 
     // Refactor this, make grabbing textures easier.
     let texture_handle = asset_server
