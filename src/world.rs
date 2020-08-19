@@ -35,6 +35,7 @@ const world_tile_size : f32 = 96.;
 
 use crate::{Named, player::*, assets};
 use std::collections::HashMap;
+use assets::SpriteLibrary;
 #[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
 pub struct Location (pub f32, pub f32, pub f32);
 
@@ -65,6 +66,30 @@ pub enum TileType {
     Table,
     Fridge,
     Key
+}
+
+impl TileType {
+    fn sprite_for_tiletype(&self, sprites: &SpriteLibrary) -> crate::assets::Sprite {
+        match self {
+            TileType::Wall(_) => sprites.get("wall"),
+            TileType::Brick(_) => sprites.get("brick"),
+            TileType::BrickDoorOpen => sprites.get("brick_door_open"),
+            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed"),
+            TileType::BrickWindow(_) => sprites.get("brick_window"),
+            TileType::BrickWindowBroken => sprites.get("brick_window_broken"),
+            TileType::Floor => sprites.get("floor"),
+            TileType::Lava => sprites.get("floor"),
+            TileType::Bar => sprites.get("floor"),
+            TileType::Grass => sprites.get("floor"),
+            TileType::Chair => sprites.get("chair"),
+            TileType::Shelf => sprites.get("shelf"),
+            TileType::Bed => sprites.get("bed"),
+            TileType::Table => sprites.get("table"),
+            TileType::Fridge => sprites.get("fridge"),
+            TileType::Key => sprites.get("floor"),
+            _ => sprites.get("floor")
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -244,35 +269,23 @@ fn add_player_sprites(mut commands: Commands,
     }
 }
 
+fn change_tile (
+    mut commands: Commands,
+    sprites : ResMut<assets::SpriteLibrary>,   
+    mut query: Query<(Entity, &TileType, &Visible, &Location, Added<TileType>)>,
+) {
+
+}
 // adds the sprites for the tiles
 fn make_room (
     mut commands: Commands,
     sprites : ResMut<assets::SpriteLibrary>,   
     mut query: Query<(Entity, &TileType, &Visible, &Location, Without<Draw,(&Visible,)>)>,
-    mut p_query: Query<(Entity, Added<Moveable>, &Visible, &Location)>,
 ) {
     for (e, tile, &_vis, &loc, _w) in &mut query.iter() {
         println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
-        let sprite = match *tile {
-            TileType::Wall(_) => sprites.get("wall"),
-            TileType::Brick(_) => sprites.get("brick"),
-            TileType::BrickDoorOpen => sprites.get("brick_door_open"),
-            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed"),
-            TileType::BrickWindow(_) => sprites.get("brick_window"),
-            TileType::BrickWindowBroken => sprites.get("brick_window_broken"),
-            TileType::Floor => sprites.get("floor"),
-            TileType::Lava => sprites.get("floor"),
-            TileType::Bar => sprites.get("floor"),
-            TileType::Grass => sprites.get("floor"),
-            TileType::Chair => sprites.get("chair"),
-            TileType::Shelf => sprites.get("shelf"),
-            TileType::Bed => sprites.get("bed"),
-            TileType::Table => sprites.get("table"),
-            TileType::Fridge => sprites.get("fridge"),
-            TileType::Key => sprites.get("floor"),
-            _ => sprites.get("floor")
-        };
+        let sprite = tile.sprite_for_tiletype(&sprites);
 
         commands.insert(e, SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
@@ -354,6 +367,7 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 /// 
 fn collision_detection(
     mut commands: Commands,
+    mut sprites : ResMut<assets::SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
     mut moveables: Query<(&Moveable, &mut Translation)>,
@@ -372,9 +386,7 @@ fn collision_detection(
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
-                        let ret = (i.call)(Attributes);
-                        *tt = ret.1;
-
+                    
                         *move_transition.0.x_mut() = (m.0).0;
                         *move_transition.0.y_mut() = (m.0).1;
                     }
@@ -422,13 +434,21 @@ fn collision_detection(
                         
                         // if the transition says to change, change.
                         if ret.0 == true {
-                            commands.despawn(e);
-                            commands.spawn(TileComponents {
+                            let sprite = ret.1.sprite_for_tiletype(&sprites);
+                            
+                            println!("Changin tile to {:?} {:?}", tt, ret.1);
+
+            
+
+                            commands.insert(e, TileComponents {
                                 tile_type: ret.1, 
                                 location: Location::from_translation(*tile_translation),
                                 hardness: Hardness(0.),
                                 ..Default::default()
                              });
+
+                             commands.insert_one(e, TextureAtlasSprite::new(sprite.atlas_sprite));
+                            
                         }
                         
 

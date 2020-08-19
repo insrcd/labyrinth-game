@@ -12,7 +12,7 @@ impl Plugin for DemoPlugin {
 
 const tile_size : f32 = 96.;
 
-/// Adds a simple map for the purposes of a demo.
+/// Adds a simple map using the map builder for the purposes of a demo.
 
 fn simple_map(mut commands: Commands) {
 

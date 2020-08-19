@@ -56,7 +56,7 @@ pub fn load_world_sprites(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
 ) { 
 
-   
+    // Refactor this, make grabbing textures easier.
     let texture_handle = asset_server
     .load_sync(
         &mut textures,
@@ -114,6 +114,5 @@ pub fn load_world_sprites(
 
     commands
         .insert_resource(sprite_lib);
-    
-        todo!("Refactor this method");
+
 }
