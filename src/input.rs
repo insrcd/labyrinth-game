@@ -28,7 +28,6 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .init_resource::<SelectedTile>()
-            .add_system(add_tiles_system.system())
             .add_system(keyboard_input_system.system())
             .add_system(track_mouse_movement.system());
     }
@@ -43,6 +42,10 @@ pub struct State {
 }
 pub struct Mouse {
     pub position: Vec2
+}
+pub struct MouseClick {
+    ui_position: Vec2,
+    map_position: Vec3
 }
 
 fn track_mouse_movement(

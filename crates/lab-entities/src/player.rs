@@ -1,6 +1,7 @@
 
 
-use bevy::{ prelude::* , prelude::Properties};
+use bevy::{ prelude::* };
+use crate::objs::Item;
 use crate::world::Location;
 
 #[derive(PartialEq, Debug)]
@@ -37,6 +38,9 @@ struct Inventory {
     items: Vec<Handle<Item>>
 }
 
+use rand::distributions::{Standard, Distribution};
+use rand::Rng;
+
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Direction {
     Stationary,
@@ -45,6 +49,20 @@ pub enum Direction {
     Left,
     Right
 }
+
+
+impl Distribution<Direction> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
+        match rng.gen_range(0, 5) {
+            0 => Direction::Up,
+            1 => Direction::Down,
+            2 => Direction::Left,
+            3 => Direction::Right,
+            _ => Direction::Stationary
+        }
+    }
+}
+
 
 #[derive(Debug, PartialEq)]
 #[allow(dead_code)]

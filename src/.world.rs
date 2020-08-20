@@ -1,6 +1,5 @@
 
-use bevy::{prelude::*, math::Vec2, ecs::{DynamicBundle, Bundle}, prelude::Properties, render::camera::Camera, type_registry::TypeRegistry};
-use crate::lab_entities::prelude::*;
+
 use strum_macros::EnumIter;
 
 #[allow(dead_code)]
@@ -18,11 +17,11 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_system(npc_move.system())
-            .add_system(make_room.system())
-            .add_system(add_player_sprites.system())
-            .add_system(save_world.thread_local_system())
-            .add_system(collision_detection.system());
+            .add_system(npc_move_system.system())
+            .add_system(add_world_sprites.system())
+            .add_system(add_interaction_sprites_system.system())
+            .add_system(save_world_system.thread_local_system())
+            .add_system(collision_detection_system.system());
     }
 }
 

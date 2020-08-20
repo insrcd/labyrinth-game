@@ -1514,8 +1514,14 @@ name = "lab-builders"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-entities",
+ "lab-input",
+ "lab-sprites",
+ "lab-world",
  "log",
  "serde",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -1523,8 +1529,59 @@ name = "lab-demo"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-entities",
+ "lab-input",
+ "lab-sprites",
+ "lab-world",
  "log",
  "serde",
+]
+
+[[package]]
+name = "lab-entities"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "log",
+ "rand",
+ "serde",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
+name = "lab-input"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-entities",
+ "lab-world",
+ "log",
+ "serde",
+]
+
+[[package]]
+name = "lab-sprites"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-entities",
+ "log",
+ "serde",
+]
+
+[[package]]
+name = "lab-world"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-entities",
+ "lab-sprites",
+ "log",
+ "rand",
+ "serde",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -1534,6 +1591,8 @@ dependencies = [
  "bevy",
  "lab-builders",
  "lab-demo",
+ "lab-entities",
+ "lab-world",
  "log",
  "rand",
  "rhai",

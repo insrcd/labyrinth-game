@@ -1,12 +1,20 @@
-fn add_tiles_to_World_system (
+use bevy::{prelude::*};
+
+use lab_entities::prelude::*;
+use lab_sprites::*;
+use lab_input::*;
+use lab_entities::player;
+use std::time::Duration;
+
+fn add_tiles_to_world_system (
     mut commands: Commands,
      selected_tile: Res<SelectedTile>, 
     input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
     mut mouse_query: Query<&Mouse>,
-    mut query: Query<(&crate::player::Player, &Translation, &crate::player::Moving)>
+    mut query: Query<(&player::Player, &Translation, &player::Moving)>
 ) {    
-    let tile_size = crate::world::settings::TILE_SIZE;
+    let tile_size = lab_world::settings::TILE_SIZE;
 
     for mouse in &mut mouse_query.iter(){
         if mouse_input.just_pressed(MouseButton::Left) {
@@ -51,7 +59,7 @@ fn add_tiles_to_World_system (
                 hardness: hardness,
                 tile_type: selected_tile.tile_type,
                 location: Location(x, y, selected_tile.level),
-                interaction: crate::world::Interaction { call: interaction },
+                interaction: lab_entities::world::Interaction { call: interaction },
                 ..Default::default()
             });
         }
@@ -93,6 +101,93 @@ fn add_tiles_to_World_system (
                 location: loc,
                 ..Default::default()
             });
+        }
+    }
+}
+
+fn keyboard_input_system(
+    mut commands: Commands,
+    windows : Res<Windows>,
+    keyboard_input: Res<Input<KeyCode>>, 
+    mut selected_tile: ResMut<SelectedTile>, 
+    lib : Res<SpriteLibrary>,
+    mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {
+
+    let player_speed = 48.;
+
+    let mut movement = player::Direction::Stationary;
+    
+    use strum::IntoEnumIterator; 
+
+    let window = windows.iter().last().unwrap();
+
+    if keyboard_input.just_pressed(KeyCode::RBracket) {
+        let mut tile_types :  Vec<TileType> = Vec::new();
+
+        for ty in TileType::iter() {
+            tile_types.push(ty);
+        }
+    
+        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
+
+        match idx {
+            Some(i) => {
+                let final_type = match tile_types[(i+1) % (tile_types.len()-1)] {
+                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
+                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
+                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
+                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
+                    _ => tile_types[(i+1) % (tile_types.len()-1)]
+                };
+                selected_tile.tile_type = final_type;
+
+                println!("Tile Selected: {:?}", final_type);
+            },
+            None => {}
+        }
+    }
+    
+    if keyboard_input.just_pressed(KeyCode::Add) {
+        selected_tile.level += 1.;
+        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                        Duration::from_secs(5), 
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
+                    )
+    }
+    if keyboard_input.just_pressed(KeyCode::Subtract) {
+        selected_tile.level += 1.;
+        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                        Duration::from_secs(5), 
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
+                    )
+    }
+    if keyboard_input.just_pressed(KeyCode::LBracket) {
+        let mut tile_types :  Vec<TileType> = Vec::new();
+
+        for ty in TileType::iter() {
+            tile_types.push(ty);
+        }
+    
+        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
+        match idx {
+            Some(mut i) => {
+                if i == 0 {
+                    i = tile_types.len() -1;
+                }
+
+                let final_type = match tile_types[i-1] {
+                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
+                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
+                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
+                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
+                    _ => tile_types[i-1]
+                };
+
+                selected_tile.tile_type = final_type;
+                
+                println!("Tile Selected: {:?}", final_type);
+            },
+            None => {}
         }
     }
 }

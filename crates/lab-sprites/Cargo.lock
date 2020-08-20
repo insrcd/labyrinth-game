@@ -1510,10 +1510,19 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "log",
- "rand",
  "serde",
  "strum",
  "strum_macros",
+]
+
+[[package]]
+name = "lab-sprites"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-entities",
+ "log",
+ "serde",
 ]
 
 [[package]]

@@ -14,8 +14,10 @@ rand = "0.7.3"
 strum = "0.19.2"
 strum_macros = "0.19.2"
 
-# Local dependencies
+# Local 
 
+lab-world = { path = "crates/lab-world", version = "0.1.0" }
+lab-entities = { path = "crates/lab-entities", version = "0.1.0" }
 lab-builders = { path = "crates/lab-builders", version = "0.1.0" }
 lab-demo = { path = "crates/lab-demo", version = "0.1.0" }
 

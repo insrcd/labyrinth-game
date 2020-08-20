@@ -84,7 +84,7 @@ impl Sprite {
     }
 }
 
-pub fn text_despawn(
+pub fn text_despawn_system (
         mut commands: Commands,
         mut query : Query<(Entity, &TextureAtlasSprite, &crate::world::Despawn, &Timer)>
 ){
@@ -94,7 +94,8 @@ pub fn text_despawn(
         }
     }
 }
-pub fn load_world_sprites(
+
+pub fn load_world_sprites_system(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut textures: ResMut<Assets<Texture>>,

@@ -1,10 +1,10 @@
 use bevy::{prelude::*};
 
-mod player;
-mod systems;
-mod objs;
-mod npcs;
-mod world;
+pub mod player;
+pub mod systems;
+pub mod objs;
+pub mod npcs;
+pub mod world;
 
 pub mod prelude {
     pub use crate::{
@@ -12,6 +12,20 @@ pub mod prelude {
         objs::*,
         player::*,
         systems::*,
-        world::*
+        world::*,
+        *
     };     
+}
+
+
+
+use serde::Serialize;
+
+#[derive(Properties, Serialize, Debug)]
+pub struct Named(pub String);
+
+impl Default for Named {
+    fn default() -> Self {
+        Named ("No Name".to_string())
+    }
 }

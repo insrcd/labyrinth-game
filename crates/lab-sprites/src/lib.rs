@@ -1,19 +1,16 @@
 use bevy::{prelude::*};
 
 
+use std::{time::Duration, collections::HashMap};
+use lab_entities::world;
+
+
 #[allow(dead_code)]
 pub mod stage {
     pub const WORLD: &'static str = "init";
 }
 
 mod systems;
-
-use bevy::{
-    prelude::*
-};
-
-use std::{time::Duration, collections::HashMap};
-use crate::world::Despawn;
 
 #[derive(Clone, Debug)]
 pub struct Sprite {
@@ -66,7 +63,7 @@ impl SpriteLibrary {
         duration : Duration, 
         mut location : Vec3){
         self.make_string(st, location).into_iter().for_each(move |c| {
-            commands.spawn(c).with(Despawn).with(Timer::new(duration));
+            commands.spawn(c).with(world::Despawn).with(Timer::new(duration));
         });
     }
 }
@@ -96,7 +93,7 @@ impl Sprite {
 
 pub fn text_despawn(
         mut commands: Commands,
-        mut query : Query<(Entity, &TextureAtlasSprite, &crate::world::Despawn, &Timer)>
+        mut query : Query<(Entity, &TextureAtlasSprite, &world::Despawn, &Timer)>
 ){
     for (e, sprite, _dspawn, timer) in &mut query.iter(){
         if timer.finished {

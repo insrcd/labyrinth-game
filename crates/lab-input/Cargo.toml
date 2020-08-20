@@ -1,8 +1,10 @@
 [package]
-name = "lab-sprites"
+name = "lab-input"
 version = "0.1.0"
 authors = ["Adam Shaw <discourse@gmail.com>"]
 edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
@@ -12,3 +14,4 @@ serde = { version = "1.0", features = ["derive"]}
 bevy = {git = "https://github.com/Bobox214/bevy.git", branch = "fix_134_135" }
 
 lab-entities = { path = "../lab-entities" }
+lab-world = { path = "../lab-world" }

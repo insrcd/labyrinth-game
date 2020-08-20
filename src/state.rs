@@ -3,7 +3,8 @@
 /// 
 
 use bevy::{prelude::*, render::*};
-use crate::{assets::SpriteLibrary, menu::*, world::Despawn};
+use crate::{assets::SpriteLibrary, menu::*};
+use lab_entities::world::Despawn;
 use std::time::Duration;
 
 #[derive(Clone, Debug)]
@@ -63,25 +64,8 @@ pub fn state_transition (
                     
                     sprite_library.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
                         Duration::from_secs(5), 
-                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
-                    )
-                    
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.));   
                 }
-                   /* commands
-                    .spawn(ImageComponents {
-                        style: Style {
-                            size: Size::new(Val::Px(200.0), Val::Auto),
-                            position_type: PositionType::Absolute,
-                            position: Rect {
-                                top: Val::Px(10.0),
-                                right: Val::Px(10.0),
-                                ..Default::default()
-                            },
-                            ..Default::default()
-                        },
-                        material: material_handle,
-                        ..Default::default()
-                    });*/
             }
             StateType::Menu(menu) => {}
             StateType::CharacterScreen => {}
