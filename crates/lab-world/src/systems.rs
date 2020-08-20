@@ -33,7 +33,8 @@ impl TileLoader  {
             TileType::Bed => sprites.get("bed").unwrap(),
             TileType::Table => sprites.get("table").unwrap(),
             TileType::Fridge => sprites.get("fridge").unwrap(),
-            TileType::Key => sprites.get("floor").unwrap()
+            TileType::Key => sprites.get("floor").unwrap(),
+            TileType::Mug => sprites.get("mug").unwrap(),
         }
     }
 }

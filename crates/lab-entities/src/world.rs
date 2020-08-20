@@ -31,7 +31,8 @@ pub enum TileType {
     Bed,
     Table,
     Fridge,
-    Key
+    Key,
+    Mug
 }
 
 #[derive(Copy, Clone, Debug)]

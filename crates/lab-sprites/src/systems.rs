@@ -55,19 +55,30 @@ pub fn load_world_sprites_system(
     )
     .unwrap();
 
+    
+    let mug_texture_handle = asset_server
+    .load_sync(
+        &mut textures,
+        "resources/sprites/mug.png",
+    )
+    .unwrap();
+
     let texture = textures.get(&texture_handle).unwrap();
     let player_texture = textures.get(&player_texture_handle).unwrap();
     let npc_texture = textures.get(&npc_texture_handle).unwrap();
     let ab_texture = textures.get(&alphabet_texture_handle).unwrap();
+    let mug_texture = textures.get(&mug_texture_handle).unwrap();
 
     let texture_atlas = TextureAtlas::from_grid(texture_handle, texture.size, 4, 4);
     let player_texture_atlas = TextureAtlas::from_grid(player_texture_handle, player_texture.size, 7, 1);
     let ab_texture_atlas = TextureAtlas::from_grid(alphabet_texture_handle, ab_texture.size, 15, 8);
     let npc_texture_atlas = TextureAtlas::from_grid(alphabet_texture_handle, npc_texture.size, 1, 1);
+    let mug_texture_atlas = TextureAtlas::from_grid(mug_texture_handle, mug_texture.size, 1, 1);
     
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     let player_texture_atlas_handle = texture_atlases.add(player_texture_atlas);
     let npc_texture_atlas_handle = texture_atlases.add(npc_texture_atlas);
+    let mug_texture_atlas_handle = texture_atlases.add(mug_texture_atlas);
     let ab_texture_atlas_handle = texture_atlases.add(ab_texture_atlas);
 
     let mut sprite_lib = SpriteLibrary::new();
@@ -100,6 +111,7 @@ pub fn load_world_sprites_system(
     }
     sprite_lib.add(LabSprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
     sprite_lib.add(LabSprite::new("npc", 0, npc_texture_atlas_handle.clone(), npc_texture.size.x() as u32, npc_texture.size.y() as u32));
+    sprite_lib.add(LabSprite::new("mug", 0,mug_texture_atlas_handle.clone(), mug_texture.size.x() as u32, mug_texture.size.y() as u32));
 
     commands
         .insert_resource(sprite_lib);

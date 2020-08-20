@@ -132,12 +132,12 @@ pub fn builder_keyboard_system (
 
         match idx {
             Some(i) => {
-                let final_type = match tile_types[(i+1) % (tile_types.len()-1)] {
+                let final_type = match tile_types[(i+1) % tile_types.len()] {
                     TileType::Brick(_) => TileType::Brick(Hardness(1.)),
                     TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
                     TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
                     TileType::Wall(_) => TileType::Wall(Hardness(1.)),
-                    _ => tile_types[(i+1) % (tile_types.len()-1)]
+                    _ => tile_types[(i+1) % (tile_types.len())]
                 };
                 selected_tile.tile_type = final_type;
 
