@@ -1,5 +1,5 @@
 [package]
-name = "lab-builders"
+name = "lab-builder"
 version = "0.1.0"
 authors = ["Adam Shaw <discourse@gmail.com>"]
 edition = "2018"

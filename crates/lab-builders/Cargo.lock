@@ -1505,7 +1505,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lab-builders"
+name = "lab-builder"
 version = "0.1.0"
 dependencies = [
  "bevy",

@@ -1,4 +1,7 @@
-use crate::world::*;
+use lab_world::*;
+use lab_editor::*;
+use lab_entities::prelude::*;
+use crate::*;
 use bevy::prelude::*;
 
 const TILE_SIZE : f32 = 96.;
