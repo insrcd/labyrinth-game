@@ -59,7 +59,7 @@ pub fn state_transition (
         match &state.next_state {
 
             StateType::Init => { 
-                let it = sprites.make_string("This is a test!".to_string(), Vec3::new(0.,96.,100.)).into_iter();
+                let it = sprites.make_string("This is a test! A&B".to_string(), Vec3::new(0.,96.,100.)).into_iter();
         
                 commands
                     .spawn_batch(

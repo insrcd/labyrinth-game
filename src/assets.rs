@@ -154,11 +154,14 @@ pub fn load_world_sprites(
     sprite_lib.add(Sprite::new("table", 14, texture_atlas_handle.clone(), 16, 16));
     sprite_lib.add(Sprite::new("fridge", 15, texture_atlas_handle.clone(), 16, 16));
 
-    let letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+    let letters = [" ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".", "/","0","1","2","3","4",
+                             "5","6","7","8","9",":",";","<","=",">","?","@",
+                             "a","b","c","d","e","f","g","h","i","j","k","l","m","n"
+                            ,"o","p","q","r","s","t","u","v","w","x","y","z"];
     for n in 0..25 {
         let label = String::from(format!("l_{}", letters[n]));
         println!("Adding letter {}", label);
-        sprite_lib.add(Sprite::new(Box::leak(label.into_boxed_str()), (n+33) as u32, ab_texture_atlas_handle.clone(), 24, 24));
+        sprite_lib.add(Sprite::new(Box::leak(label.into_boxed_str()), n as u32, ab_texture_atlas_handle.clone(), 24, 24));
     }
     sprite_lib.add(Sprite::new("player", 0, player_texture_atlas_handle.clone(), player_texture.size.x() as u32, player_texture.size.y() as u32));
     sprite_lib.add(Sprite::new("npc", 0, npc_texture_atlas_handle.clone(), npc_texture.size.x() as u32, npc_texture.size.y() as u32));
