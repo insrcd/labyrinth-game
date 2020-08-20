@@ -33,7 +33,6 @@ fn simple_map(mut commands: Commands) {
     mb.add_tiles_to_area(&starting_location, Area(5., 5.), TileType::Floor);
 
     for comp in mb.iter() {
-        println!("{:?}", comp);
         commands.spawn(comp.clone());
     }
 
