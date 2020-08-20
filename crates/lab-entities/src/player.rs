@@ -1,9 +1,6 @@
 
 
 use bevy::{ prelude::* , prelude::Properties};
-
-
-use crate::objs::*;
 use crate::world::Location;
 
 #[derive(PartialEq, Debug)]
@@ -61,10 +58,10 @@ pub enum Job {
 
 
 #[allow(dead_code)]
-pub struct Power <'a> {
+pub struct Power <'a, T> {
     name: String,
     cost: u32,
-    effect: fn(crate::world::Solid) -> &'a crate::world::InteractionResult
+    effect: fn() -> &'a T
 }
 
 

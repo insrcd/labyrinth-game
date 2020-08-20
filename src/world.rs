@@ -1,6 +1,6 @@
 
 use bevy::{prelude::*, math::Vec2, ecs::{DynamicBundle, Bundle}, prelude::Properties, render::camera::Camera, type_registry::TypeRegistry};
-use crate::player;
+use crate::lab_entities::prelude::*;
 use strum_macros::EnumIter;
 
 #[allow(dead_code)]
@@ -37,37 +37,6 @@ const WORLD_TILE_SIZE : f32 = 96.;
 use crate::{Named, player::*, assets};
 
 use assets::SpriteLibrary;
-#[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
-pub struct Location (pub f32, pub f32, pub f32);
-
-impl Location {
-    pub fn from_translation(translation : Translation) -> Location {
-        Location(translation.x(), translation.y(), translation.z())
-    }
-}
-
-#[derive(Clone, PartialEq)]
-pub struct Area(pub f32, pub f32);
-
-#[derive(Debug, Clone, Copy, PartialEq, EnumIter)]
-pub enum TileType {
-    Wall(Hardness),
-    Floor,
-    Brick(Hardness),
-    BrickDoorOpen,
-    BrickDoorClosed(Hardness),
-    BrickWindow(Hardness),
-    BrickWindowBroken,
-    Lava,
-    Bar,
-    Grass,
-    Chair,
-    Shelf,
-    Bed,
-    Table,
-    Fridge,
-    Key
-}
 
 impl TileType {
     fn sprite_for_tiletype(&self, sprites: &SpriteLibrary) -> crate::assets::Sprite {
@@ -89,18 +58,6 @@ impl TileType {
             TileType::Fridge => sprites.get("fridge"),
             TileType::Key => sprites.get("floor")
         }
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Visible;
-
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub struct Hardness (pub f32);
-
-impl Default for Hardness {
-    fn default() -> Hardness {
-        return Hardness(1.)
     }
 }
 
