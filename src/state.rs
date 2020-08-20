@@ -38,42 +38,30 @@ pub struct SceneState {
 pub fn state_transition (
     mut commands : Commands,
     windows : Res<Windows>,
-    mut state : ResMut<GameState>,
-    mut lib : Res<SpriteLibrary>,
+    sprite_library: Res<SpriteLibrary>,
     asset_server: Res<AssetServer>,
     mut fonts: ResMut<Assets<Font>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     mut query : Query<(Changed<SceneState>,)>
 ) {
     for (state,) in &mut query.iter() {
-        let font_handle = asset_server
-            .load_sync(&mut fonts, "resources/fonts/FiraSans-Bold.ttf");
-
-        println!("{:?}", font_handle);
-            
-       /*let material_handle = asset_server
-            .load_sync(&mut materials, "resources/sprites/world.png")
-            .unwrap();*/
-
-        //println!("material handle {:?}", material_handle);
-
        
         match &state.next_state {
 
             StateType::Init => { 
                 
                 let window = windows.iter().last().unwrap();
-                let sprites = lib.make_string("This is a test & Stuff".to_string(), 
+                let sprites = sprite_library.make_string("This is a test & Stuff".to_string(), 
                                 Vec3::new(0. - window.width as f32/2. + 48. , window.height as f32/2. as f32 -96.,100.)).into_iter();
                 for it in sprites
                  {
                     commands
                         .spawn(
                         it
-                        ).with(Timer::new(Duration::from_secs(2)))
+                        )
+                        .with(Timer::new(Duration::from_secs(2)))
                         .with(Despawn);
                     
-                    lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                    sprite_library.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
                         Duration::from_secs(5), 
                         Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
                     )
