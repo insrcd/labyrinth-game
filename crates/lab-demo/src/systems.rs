@@ -1,5 +1,5 @@
 use lab_world::*;
-use lab_editor::*;
+use lab_builder::prelude::*;
 use lab_entities::prelude::*;
 use crate::*;
 use bevy::prelude::*;
@@ -8,7 +8,7 @@ const TILE_SIZE : f32 = 96.;
 
 /// Adds a simple map using the map builder for the purposes of a demo.
 
-fn create_simple_map_system(mut commands: Commands) {
+pub fn create_simple_map_system(mut commands: Commands) {
 
     let starting_location = Location(TILE_SIZE * 5., TILE_SIZE * 5.   ,0.);
 

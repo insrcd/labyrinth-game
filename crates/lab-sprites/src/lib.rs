@@ -12,6 +12,16 @@ pub mod stage {
 
 mod systems;
 
+pub struct SpritesPlugin;
+
+impl Plugin for SpritesPlugin {
+    fn build(&self, app: &mut AppBuilder) {
+        app
+            .add_system(crate::systems::text_despawn.system());
+    }
+}
+
+
 #[derive(Clone, Debug)]
 pub struct Sprite {
     pub name:  &'static str,
@@ -87,17 +97,6 @@ impl Sprite {
             sprite: TextureAtlasSprite::new(self.atlas_sprite),
             texture_atlas: self.atlas_handle.clone(),
             ..Default::default()
-        }
-    }
-}
-
-pub fn text_despawn(
-        mut commands: Commands,
-        mut query : Query<(Entity, &TextureAtlasSprite, &world::Despawn, &Timer)>
-){
-    for (e, sprite, _dspawn, timer) in &mut query.iter(){
-        if timer.finished {
-            commands.despawn(e);
         }
     }
 }

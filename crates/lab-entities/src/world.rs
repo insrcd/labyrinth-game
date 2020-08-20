@@ -62,7 +62,7 @@ pub struct TileComponents {
 }
 
 impl TileComponents {
-    fn hardness_from_tile(tile_type: TileType) -> Hardness {
+    pub fn hardness_from_tile(tile_type: TileType) -> Hardness {
         match tile_type {
             TileType::Wall(h ) => h, 
             TileType::Brick(h ) =>  h,
@@ -101,9 +101,4 @@ pub struct Solid;
 pub struct InteractionResult {
     message: String,
     colliding_entity : Option<Entity>
-}
-pub struct MapBuilder {
-    pub tile_size : Vec2,
-    pub current_location : Location,
-    pub tiles : Vec<TileComponents>
 }

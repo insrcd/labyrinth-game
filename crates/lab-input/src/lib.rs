@@ -13,6 +13,13 @@ use lab_entities::player;
 
 use std::time::Duration;
 
+mod menu;
+
+pub mod prelude {
+    pub use crate::*;
+    pub use menu::*;
+}
+
 pub struct SelectedTile {
     pub tile_type: TileType,
     pub level : f32
@@ -35,6 +42,7 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .init_resource::<SelectedTile>()
+            .init_resource::<State>()
             .add_system(systems::player_movement_system.system())
             .add_system(systems::track_mouse_movement_system.system());
     }
