@@ -6,7 +6,7 @@ use lab_input::*;
 use lab_entities::player;
 use std::time::Duration;
 
-fn add_tiles_to_world_system (
+pub fn add_tiles_to_world_system (
     mut commands: Commands,
      selected_tile: Res<SelectedTile>, 
     input: Res<Input<KeyCode>>, 
@@ -105,7 +105,7 @@ fn add_tiles_to_world_system (
     }
 }
 
-fn keyboard_input_system(
+pub fn builder_keyboard_system (
     mut commands: Commands,
     windows : Res<Windows>,
     keyboard_input: Res<Input<KeyCode>>, 

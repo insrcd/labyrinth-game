@@ -15,25 +15,25 @@ use crate::settings::*;
 
 struct TileLoader;
 
-impl TileLoader {
-    fn sprite_for_tiletype(tile_type: &TileType, sprites: &SpriteLibrary) -> lab_sprites::Sprite {
+impl TileLoader  {
+    pub fn sprite_for_tiletype<'a>(tile_type: &TileType, sprites: &'a SpriteLibrary) -> &'a lab_sprites::Sprite {
         match tile_type {
-            TileType::Wall(_) => sprites.get("wall"),
-            TileType::Brick(_) => sprites.get("brick"),
-            TileType::BrickDoorOpen => sprites.get("brick_door_open"),
-            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed"),
-            TileType::BrickWindow(_) => sprites.get("brick_window"),
-            TileType::BrickWindowBroken => sprites.get("brick_window_broken"),
-            TileType::Floor => sprites.get("floor"),
-            TileType::Lava => sprites.get("floor"),
-            TileType::Bar => sprites.get("floor"),
-            TileType::Grass => sprites.get("floor"),
-            TileType::Chair => sprites.get("chair"),
-            TileType::Shelf => sprites.get("shelf"),
-            TileType::Bed => sprites.get("bed"),
-            TileType::Table => sprites.get("table"),
-            TileType::Fridge => sprites.get("fridge"),
-            TileType::Key => sprites.get("floor")
+            TileType::Wall(_) => sprites.get("wall").clone().unwrap(),
+            TileType::Brick(_) => sprites.get("brick").unwrap(),
+            TileType::BrickDoorOpen => sprites.get("brick_door_open").unwrap(),
+            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed").unwrap(),
+            TileType::BrickWindow(_) => sprites.get("brick_window").unwrap(),
+            TileType::BrickWindowBroken => sprites.get("brick_window_broken").unwrap(),
+            TileType::Floor => sprites.get("floor").unwrap(),
+            TileType::Lava => sprites.get("floor").unwrap(),
+            TileType::Bar => sprites.get("floor").unwrap(),
+            TileType::Grass => sprites.get("floor").unwrap(),
+            TileType::Chair => sprites.get("chair").unwrap(),
+            TileType::Shelf => sprites.get("shelf").unwrap(),
+            TileType::Bed => sprites.get("bed").unwrap(),
+            TileType::Table => sprites.get("table").unwrap(),
+            TileType::Fridge => sprites.get("fridge").unwrap(),
+            TileType::Key => sprites.get("floor").unwrap()
         }
     }
 }
@@ -60,22 +60,23 @@ pub fn add_interaction_sprites_system(mut commands: Commands,
 ) {
     for (e, _player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!
-        let sprite = sprites.get("player");
-        
-        println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
+        if let Some(sprite) = sprites.get("player"){
+            println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
 
-        commands
-            .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/sensei.png", loc))
-            .insert_one(e, Moving(*loc, *loc, Dir::Stationary));
+            commands
+                .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/sensei.png", loc))
+                .insert_one(e, Moving(*loc, *loc, Dir::Stationary));
+        }
     }
     for (e, _npc, name , loc) in &mut npc_query.iter() {
         // new player was added, lets render them!
-        let sprite = sprites.get("npc");
-        
-        println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-        commands
-            .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc))
-            .insert(e, (Moveable, Timer::from_seconds(1.5), Moving(*loc, *loc, Dir::Stationary)));
+        if let Some(sprite) = sprites.get("npc"){
+            println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
+
+            commands
+                .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc))
+                .insert(e, (Moveable, Timer::from_seconds(1.5), Moving(*loc, *loc, Dir::Stationary)));
+            }
     }
 }
 

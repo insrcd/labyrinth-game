@@ -17,6 +17,8 @@ pub struct SpritesPlugin;
 impl Plugin for SpritesPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .add_resource(SpriteLibrary::new())
+            .add_startup_system(crate::systems::load_world_sprites_system.system())
             .add_system(crate::systems::text_despawn.system());
     }
 }
@@ -48,8 +50,9 @@ impl SpriteLibrary {
         self.library.as_mut().insert(sprite.name, sprite);
     }
 
-    pub fn get(&self, name : &str) -> Sprite {
-        self.library.as_ref().get(name).unwrap().clone()
+    pub fn get(&self, name : &str) -> Option<&Sprite> {
+        println!("Trying to get {} as a sprite",name);
+        self.library.get(name)
     }
 
     pub fn make_string(&self, st : String, mut location : Vec3) -> Vec<SpriteSheetComponents> {
@@ -60,8 +63,10 @@ impl SpriteLibrary {
                 *location.x_mut() += 8.;
                 continue;
             }
-            sprites.push(self.get(&format!("l_{}", c)).to_components(location));
-            *location.x_mut() += 14.;
+            if let Some(sprite) = self.get(&format!("l_{}", c)){
+                sprites.push(sprite.to_components(location));
+                *location.x_mut() += 14.;
+            }
         }
 
         sprites
