@@ -23,12 +23,12 @@ fn simple_map(mut commands: Commands) {
         &starting_location 
 );
 
-    mb.add_tiles(RelativePosition::RightOf, 5, TileType::Wall(Hardness(1.)));
-    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall(Hardness(1.)));
-    mb.add_tiles(RelativePosition::Below, 1, TileType::Floor);
-    mb.add_tiles(RelativePosition::Below, 2, TileType::Wall(Hardness(1.)));
-    mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Wall(Hardness(1.)));
-    mb.add_tiles(RelativePosition::Above, 5, TileType::Wall(Hardness(1.)));
+    mb.add_tiles(RelativePosition::RightOf, 5, TileType::Brick(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Brick(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 1, TileType::BrickDoorClosed(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 2, TileType::Brick(Hardness(1.)));
+    mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Brick(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Above, 5, TileType::Brick(Hardness(1.)));
 
     mb.add_tiles_to_area(&starting_location, Area(5., 5.), TileType::Floor);
 
