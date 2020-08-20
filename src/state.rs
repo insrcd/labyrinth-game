@@ -3,7 +3,8 @@
 /// 
 
 use bevy::{prelude::*, render::*};
-use crate::{assets::SpriteLibrary, menu::*};
+use crate::{assets::SpriteLibrary, menu::*, world::Despawn};
+use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum StateType {
@@ -36,8 +37,9 @@ pub struct SceneState {
 
 pub fn state_transition (
     mut commands : Commands,
+    windows : Res<Windows>,
     mut state : ResMut<GameState>,
-    mut sprites : Res<SpriteLibrary>,
+    mut lib : Res<SpriteLibrary>,
     asset_server: Res<AssetServer>,
     mut fonts: ResMut<Assets<Font>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -59,12 +61,24 @@ pub fn state_transition (
         match &state.next_state {
 
             StateType::Init => { 
-                let it = sprites.make_string("This is a test! A&B".to_string(), Vec3::new(0.,96.,100.)).into_iter();
-        
-                commands
-                    .spawn_batch(
-                       it
-                    );
+                
+                let window = windows.iter().last().unwrap();
+                let sprites = lib.make_string("This is a test & Stuff".to_string(), 
+                                Vec3::new(0. - window.width as f32/2. + 48. , window.height as f32/2. as f32 -96.,100.)).into_iter();
+                for it in sprites
+                 {
+                    commands
+                        .spawn(
+                        it
+                        ).with(Timer::new(Duration::from_secs(2)))
+                        .with(Despawn);
+                    
+                    lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                        Duration::from_secs(5), 
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
+                    )
+                    
+                }
                    /* commands
                     .spawn(ImageComponents {
                         style: Style {

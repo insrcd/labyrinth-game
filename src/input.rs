@@ -4,15 +4,17 @@ use bevy::{
     input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion} },
 };
 use crate::world::*;
-use crate::player;
+use crate::{assets::SpriteLibrary, player};
+use std::time::Duration;
 
 pub struct SelectedTile {
-    tile_type: TileType
+    tile_type: TileType,
+    level : f32
 }
 
 impl Default for SelectedTile {
     fn default() -> SelectedTile {
-        SelectedTile { tile_type:TileType::Floor }
+        SelectedTile { tile_type:TileType::Floor , level: 0.}
     }
 }
 pub struct InputPlugin;
@@ -128,7 +130,7 @@ fn add_tiles_system (
             commands.spawn(TileComponents {
                 hardness: hardness,
                 tile_type: selected_tile.tile_type,
-                location: Location(x, y, 1.),
+                location: Location(x, y, selected_tile.level),
                 interaction: crate::world::Interaction { call: interaction },
                 ..Default::default()
             });
@@ -179,8 +181,11 @@ fn add_tiles_system (
 
 
 fn keyboard_input_system(
+    mut commands: Commands,
+    windows : Res<Windows>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
+    lib : Res<SpriteLibrary>,
     mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {
 
     let player_speed = 48.;
@@ -189,6 +194,8 @@ fn keyboard_input_system(
     
     use strum::IntoEnumIterator; 
 
+
+    let window = windows.iter().last().unwrap();
 
     if keyboard_input.just_pressed(KeyCode::RBracket) {
         let mut tile_types :  Vec<TileType> = Vec::new();
@@ -244,6 +251,21 @@ fn keyboard_input_system(
             },
             None => {}
         }
+    }
+
+    if keyboard_input.just_pressed(KeyCode::Add) {
+        selected_tile.level += 1.;
+        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                        Duration::from_secs(5), 
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
+                    )
+    }
+    if keyboard_input.just_pressed(KeyCode::Subtract) {
+        selected_tile.level += 1.;
+        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
+                        Duration::from_secs(5), 
+                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
+                    )
     }
 
     if keyboard_input.just_pressed(KeyCode::W) {

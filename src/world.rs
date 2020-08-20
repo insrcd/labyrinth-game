@@ -287,7 +287,7 @@ fn make_room (
         commands.insert(e, SpriteSheetComponents {
             translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
             scale: Scale(6.0),
-            draw: Draw { is_visible: true, ..Default::default() },
+            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
             texture_atlas: sprite.atlas_handle.clone(),
             ..Default::default()

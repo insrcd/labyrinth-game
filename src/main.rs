@@ -37,6 +37,7 @@ fn main() {
     .add_plugin(input::InputPlugin)
     .add_plugin(WorldPlugin)
     .add_system(state::state_transition.system())
+    .add_system(text_despawn.system())
     //.add_system(test.system())
     .run();
 }

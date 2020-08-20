@@ -2,7 +2,8 @@ use bevy::{
     prelude::*
 };
 
-use std::collections::HashMap;
+use std::{time::Duration, collections::HashMap};
+use crate::world::Despawn;
 
 #[derive(Clone, Debug)]
 pub struct Sprite {
@@ -39,14 +40,24 @@ impl SpriteLibrary {
         
         for c in st.to_lowercase().chars().into_iter() {
             if c == ' ' {
-                *location.x_mut() += 16.;
+                *location.x_mut() += 8.;
                 continue;
             }
             sprites.push(self.get(&format!("l_{}", c)).to_components(location));
-            *location.x_mut() += 16.;
+            *location.x_mut() += 14.;
         }
 
         sprites
+    }
+
+    pub fn write_despawning_text(&self,  
+        mut commands :&mut Commands,
+        st : String, 
+        duration : Duration, 
+        mut location : Vec3){
+        self.make_string(st, location).into_iter().for_each(move |c| {
+            commands.spawn(c).with(Despawn).with(Timer::new(duration));
+        });
     }
 }
 
@@ -158,7 +169,7 @@ pub fn load_world_sprites(
                              "5","6","7","8","9",":",";","<","=",">","?","@",
                              "a","b","c","d","e","f","g","h","i","j","k","l","m","n"
                             ,"o","p","q","r","s","t","u","v","w","x","y","z"];
-    for n in 0..25 {
+    for n in 0..letters.len() {
         let label = String::from(format!("l_{}", letters[n]));
         println!("Adding letter {}", label);
         sprite_lib.add(Sprite::new(Box::leak(label.into_boxed_str()), n as u32, ab_texture_atlas_handle.clone(), 24, 24));
