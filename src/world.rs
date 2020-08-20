@@ -142,6 +142,8 @@ impl Default for TileComponents {
     }
 }
 
+pub struct Despawn;
+
 pub struct Attributes; /* {
     settings: HashMap<String, u32>
 }*/

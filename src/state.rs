@@ -3,7 +3,7 @@
 /// 
 
 use bevy::{prelude::*, render::*};
-use crate::menu::*;
+use crate::{assets::SpriteLibrary, menu::*};
 
 #[derive(Clone, Debug)]
 pub enum StateType {
@@ -37,6 +37,7 @@ pub struct SceneState {
 pub fn state_transition (
     mut commands : Commands,
     mut state : ResMut<GameState>,
+    mut sprites : Res<SpriteLibrary>,
     asset_server: Res<AssetServer>,
     mut fonts: ResMut<Assets<Font>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -54,21 +55,16 @@ pub fn state_transition (
 
         //println!("material handle {:?}", material_handle);
 
+       
         match &state.next_state {
-            
+
             StateType::Init => { 
+                let it = sprites.make_string("This is a test!".to_string(), Vec3::new(0.,96.,100.)).into_iter();
+        
                 commands
-                    .spawn(TextComponents {
-                        text: Text {
-                            value: "Initializing".to_string(),
-                            font: font_handle.unwrap(),
-                            style: TextStyle {
-                                font_size: 25.0,
-                                color: Color::WHITE,
-                            },
-                        },
-                        ..Default::default()
-                    });
+                    .spawn_batch(
+                       it
+                    );
                    /* commands
                     .spawn(ImageComponents {
                         style: Style {

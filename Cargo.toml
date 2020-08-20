@@ -5,7 +5,7 @@ authors = ["Adam Shaw <discourse@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-bevy = {git = "https://github.com/insrcd/bevy"}
+bevy = {git = "https://github.com/Bobox214/bevy.git", branch = "fix_134_135" }
 rhai = "0.18.1" 
 log = { version = "0.4.8", features = ["serde"] }
 serde = "1.0.115"   
