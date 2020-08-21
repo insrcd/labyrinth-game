@@ -52,12 +52,20 @@ impl<'a>  MapBuilder {
                     Location(loc.0, loc.1 - self.tile_size.y(), loc.2, world::WorldLocation::World)
                 }
             };
+
+            let interaction: fn (Attributes) -> InteractionResult = match tile_type {
+                TileType::BrickWindow(_) => |_| {InteractionResult::ChangeTile(TileType::BrickWindowBroken)},
+                TileType::BrickDoorClosed(_) => |_| {InteractionResult::ChangeTile(TileType::BrickDoorOpen)},
+                _ => |_| {InteractionResult::None}
+            };
+
             
             self.tiles.push(TileComponents {
                 tile_type: tile_type, 
                 location: location.clone(),
                 hardness: TileComponents::hardness_from_tile(tile_type),
-                ..Default::default()
+                interaction: lab_entities::world::Interaction { call: interaction },
+                visible: Visible
              });
 
             self.current_location = location.to_owned();

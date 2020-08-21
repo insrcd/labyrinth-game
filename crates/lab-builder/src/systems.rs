@@ -1,10 +1,12 @@
-use bevy::{prelude::*};
+use bevy::{prelude::*, 
+    render::{camera::Camera},};
 
 use lab_entities::prelude::*;
 use lab_sprites::*;
 use lab_input::*;
 use lab_entities::player;
 use std::time::Duration;
+
 
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
@@ -111,7 +113,17 @@ pub fn builder_keyboard_system (
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
     lib : Res<SpriteLibrary>,
-    mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>) {
+    mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>,
+    mut camera_query: Query<(&Camera, &Translation)>) {
+    let mut camera_offset_x : f32 = 0.;
+    let mut camera_offset_y : f32 = 0.;
+    
+    for (c, t) in &mut camera_query.iter(){
+        if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
+            camera_offset_x = t.x();
+            camera_offset_y = t.y();
+        }
+    }
 
     let player_speed = 48.;
 
@@ -121,6 +133,14 @@ pub fn builder_keyboard_system (
 
     let window = windows.iter().last().unwrap();
 
+    let text_duration: u64 = 750 ;
+    let mut write_message = |message| {
+        lib.write_despawning_text(&mut commands, message, 
+        Duration::from_millis(text_duration), 
+                        Vec3::new(16. + camera_offset_x - (window.width/2) as f32, 16. +camera_offset_y - (window.height/2) as f32, 100.)
+                    );
+    };
+        
     if keyboard_input.just_pressed(KeyCode::RBracket) {
         let mut tile_types :  Vec<TileType> = Vec::new();
 
@@ -139,9 +159,10 @@ pub fn builder_keyboard_system (
                     TileType::Wall(_) => TileType::Wall(Hardness(1.)),
                     _ => tile_types[(i+1) % (tile_types.len())]
                 };
+                
                 selected_tile.tile_type = final_type;
 
-                println!("Tile Selected: {:?}", final_type);
+                write_message(format!("Tile changed to {:?}",final_type).to_string());         
             },
             None => {}
         }
@@ -149,17 +170,11 @@ pub fn builder_keyboard_system (
     
     if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
-        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
-                        Duration::from_secs(5), 
-                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
-                    )
+        write_message(format!("Level changed to {}",selected_tile.level));         
     }
     if keyboard_input.just_pressed(KeyCode::Subtract) {
         selected_tile.level += 1.;
-        lib.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
-                        Duration::from_secs(5), 
-                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.)
-                    )
+        write_message(format!("Level changed to {}",selected_tile.level));         
     }
     if keyboard_input.just_pressed(KeyCode::LBracket) {
         let mut tile_types :  Vec<TileType> = Vec::new();
@@ -184,8 +199,7 @@ pub fn builder_keyboard_system (
                 };
 
                 selected_tile.tile_type = final_type;
-                
-                println!("Tile Selected: {:?}", final_type);
+                write_message(format!("Tile changed to {:?}",final_type).to_string());         
             },
             None => {}
         }

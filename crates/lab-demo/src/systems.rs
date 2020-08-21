@@ -10,7 +10,7 @@ const TILE_SIZE : f32 = 96.;
 
 pub fn create_simple_map_system(mut commands: Commands) {
 
-    let starting_location = Location(TILE_SIZE * 5., TILE_SIZE * 5.   ,0.,  world::WorldLocation::World);
+    let starting_location = Location(TILE_SIZE * 2., TILE_SIZE * 2.   ,0.,  world::WorldLocation::World);
 
     let mut mb = MapBuilder::new(
         Vec2::new(TILE_SIZE,TILE_SIZE),
@@ -20,7 +20,8 @@ pub fn create_simple_map_system(mut commands: Commands) {
     mb.add_tiles(RelativePosition::RightOf, 5, TileType::Brick(Hardness(1.)));
     mb.add_tiles(RelativePosition::Below, 2, TileType::Brick(Hardness(1.)));
     mb.add_tiles(RelativePosition::Below, 1, TileType::BrickDoorClosed(Hardness(1.)));
-    mb.add_tiles(RelativePosition::Below, 2, TileType::Brick(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 1, TileType::BrickWindow(Hardness(1.)));
+    mb.add_tiles(RelativePosition::Below, 1, TileType::Brick(Hardness(1.)));
     mb.add_tiles(RelativePosition::LeftOf, 5, TileType::Brick(Hardness(1.)));
     mb.add_tiles(RelativePosition::Above, 5, TileType::Brick(Hardness(1.)));
 

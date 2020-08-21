@@ -12,6 +12,7 @@ use dialog::*;
 use lab_sprites::SpriteLibrary;
 use lab_core::stage;
 
+
 const TILE_SIZE : f32 = 96.;
 fn main() {
     App::build()
@@ -27,7 +28,7 @@ fn main() {
     .add_startup_system_to_stage(stage::POST_INIT, setup.system())        
     .add_system(npc_dialog_system.system())
     .add_system_to_stage(stage::PROCESSING, dialog_system.system())
-    //.add_plugin(demo::DemoPlugin)
+    .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
     //.add_system(test.system())
     .run();
@@ -50,6 +51,7 @@ fn setup (
    
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
     .spawn(( Mouse { position: Vec2::new(0.,0.)},))
-    .spawn((Player { god_mode: false }, Named("Adam".to_string()), Location(0., 0., 51.,  world::WorldLocation::World)))
-    .spawn((NonPlayer, Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite),);
+    .spawn( PlayerComponents::new("Adam", Location(0., 0., 51.,  world::WorldLocation::World)))
+    
+    .spawn((NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite),);
 }

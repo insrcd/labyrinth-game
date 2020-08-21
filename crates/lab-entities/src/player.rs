@@ -2,7 +2,12 @@
 
 use bevy::{ prelude::* };
 use crate::objs::Item;
-use crate::world::Location;
+use crate::{Named, world::Location, prelude::Visible};
+
+
+use rand::distributions::{Standard, Distribution};
+use rand::Rng;
+use std::marker::PhantomData;
 
 #[derive(PartialEq, Debug)]
 pub struct Movement(pub Location, pub Location, pub Direction);
@@ -30,16 +35,101 @@ impl Default for Player {
 pub struct PlayerComponents {
     player : Player,
     job : Job,
-    inventory : Inventory
+    inventory : Inventory,
+    stats : Stats,
+    abilities : Abilities,
+    skills : Skills,
+    named : Named,
+    visible: Visible,
+    location: Location
 }
 
+impl PlayerComponents {
+    pub fn new(name : &'static str, loc : Location) -> PlayerComponents{
+        PlayerComponents {
+            named: Named(String::from(name)),       
+            location: loc,     
+            ..Default::default()
+        }
+    }
+}
+
+impl Default for PlayerComponents {
+    fn default() -> Self {
+        PlayerComponents {
+            player : Player { god_mode: false },
+            job : Job::Undecided,
+            inventory : Inventory::new(),
+            stats : Stats::new(),
+            abilities : Abilities::new(),
+            skills : Skills::new(),
+            named: Named("Unnamed".to_string()),
+            visible: Visible,
+            location: Location::default()
+        }
+    }
+    
+}
+
+pub struct ItemHandle<T> {
+    pub entity_id : u128,
+    _pd : PhantomData<T>
+}
 #[derive(Debug, Default, Clone)]
 pub struct Inventory {
     items: Vec<Handle<Item>>
 }
 
-use rand::distributions::{Standard, Distribution};
-use rand::Rng;
+impl Inventory {
+    pub fn new() -> Inventory {
+        Inventory {
+            items: Vec::<Handle<Item>>::new()
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Properties)]
+pub struct Stats {
+    strength: u32,
+    dextarity: u32,
+    wit: u32,
+    creativity: u32,
+    wisdom: u32,
+    charisma: u32
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Properties)]
+pub struct Abilities {
+    magic_power: u32,
+    brewing_power: u32
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Properties)]
+pub struct Skills {
+    brewing: u32,
+    stealth: u32,
+    melee: u32,
+    throwing: u32,
+    diplomacy: u32
+}
+
+impl Abilities {
+    pub fn new() -> Abilities {
+        Abilities { ..Default::default() }
+    }
+}
+
+impl Skills {
+    pub fn new() -> Skills {
+        Skills { ..Default::default() }
+    }
+}
+
+impl Stats {
+    pub fn new() -> Stats {
+        Stats { ..Default::default() }
+    }
+}
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Direction {
@@ -71,7 +161,8 @@ pub enum Job {
     Brewer,
     BeerBitch,
     Regular,
-    Undecided
+    Undecided,
+    Custom(Stats, Abilities)
 }
 
 

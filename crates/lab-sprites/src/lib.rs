@@ -15,7 +15,8 @@ impl Plugin for SpritesPlugin {
         app
             .add_resource(SpriteLibrary::new())
             .add_startup_system_to_stage(stage::INIT, crate::systems::load_world_sprites_system.system())
-            .add_system(crate::systems::sprite_despawn_system.system());
+            .add_system(systems::sprite_despawn_system.system())
+            .add_system_to_stage(stage::PROCESSING, systems::static_text_system.system());
     }
 }
 
@@ -29,7 +30,8 @@ pub struct Sprite {
     pub width: u32
 }
 
-struct Letter;
+pub struct Letter;
+pub struct StationaryLetter;
 
 pub struct SpriteLibrary {
     library: Box<HashMap<&'static str, Sprite>>
@@ -113,7 +115,7 @@ impl SpriteLibrary {
         duration : Duration, 
         mut location : Vec3){
         self.make_string(st, location).into_iter().for_each(move |c| {            
-            commands.spawn(c).with(world::Despawn).with(Timer::new(duration));
+            commands.spawn(c).with_bundle((StationaryLetter,world::Despawn,Timer::new(duration)));
         });
     }
     pub fn write_text(&self,  
