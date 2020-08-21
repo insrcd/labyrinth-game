@@ -12,7 +12,7 @@ pub fn add_tiles_to_world_system (
     input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
     mut mouse_query: Query<&Mouse>,
-    mut query: Query<(&player::Player, &Translation, &player::Moving)>
+    mut query: Query<(&player::Player, &Translation, &player::Movement)>
 ) {    
     let tile_size = lab_world::settings::TILE_SIZE;
 
@@ -34,8 +34,11 @@ pub fn add_tiles_to_world_system (
             
             println!("Placing tile at {:?},{:?}", x, y);
 
+            // setup a simple interaction
+            // TODO refactor
             
-            let mut interaction : fn (Attributes) -> (bool,TileType) = |_| { (false, TileType::Key ) };
+            let mut interaction : fn (Attributes) -> InteractionResult = |_| { InteractionResult::None };
+
             let hardness = match selected_tile.tile_type {
                 TileType::Wall(h ) =>  {
                     h
@@ -43,17 +46,14 @@ pub fn add_tiles_to_world_system (
                 TileType::Brick(h ) =>  {
                     h
                 }, TileType::BrickWindow(h ) =>  {
-                    interaction = |_| { ( true, TileType::BrickWindowBroken ) };
+                    interaction = |_| { InteractionResult::ChangeTile( TileType::BrickWindowBroken) };
                     h
                 }, TileType::BrickDoorClosed(h ) =>  {
-                    interaction = |_| { ( true, TileType::BrickDoorOpen ) };
+                    interaction = |_| { InteractionResult::ChangeTile( TileType::BrickDoorOpen ) };
                     h
                 }, 
                 _ => Hardness(0.)
-            };
-            
-
-
+            };    
 
             commands.spawn(TileComponents {
                 hardness: hardness,
@@ -111,7 +111,7 @@ pub fn builder_keyboard_system (
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
     lib : Res<SpriteLibrary>,
-    mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {
+    mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>) {
 
     let player_speed = 48.;
 

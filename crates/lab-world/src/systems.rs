@@ -3,7 +3,7 @@ use bevy::{ prelude::*, type_registry::TypeRegistry, render::camera::Camera};
 use lab_entities::prelude::*;
 
 use lab_entities::{
-    world::{Interaction, InteractionResult },
+    world::{Interaction, InteractionResult, Location },
     player:: { Direction as Dir },
     Named
 };
@@ -57,7 +57,7 @@ pub fn add_interaction_sprites_system(mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut query: Query<(Entity, Added<Player>, &Named, &Location)>,
-    mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location)>
+    mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location, &lab_sprites::Sprite)>
 ) {
     for (e, _player, name , loc) in &mut query.iter() {
         // new player was added, lets render them!
@@ -66,17 +66,18 @@ pub fn add_interaction_sprites_system(mut commands: Commands,
 
             commands
                 .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/sensei.png", loc))
-                .insert_one(e, Moving(*loc, *loc, Dir::Stationary));
+                .insert_one(e, Movement(*loc, *loc, Dir::Stationary));
         }
     }
-    for (e, _npc, name , loc) in &mut npc_query.iter() {
+    
+    for (e, _npc, name , loc, s) in &mut npc_query.iter() {
         // new player was added, lets render them!
         if let Some(sprite) = sprites.get("npc"){
             println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-
+            //add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc)
             commands
-                .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc))
-                .insert(e, (Moveable, Timer::from_seconds(1.5), Moving(*loc, *loc, Dir::Stationary)));
+                .insert(e, s.to_components((*loc).into(), Scale(3.)))
+                .insert(e, (Moveable, MoveTimer(Timer::from_seconds(1.5)), Movement(*loc, *loc, Dir::Stationary)));
             }
     }
 }
@@ -131,7 +132,6 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
         && a_min.y() <= b_max.y()
         && a_max.y() >= b_min.y()
     {
-        println!("Intersecting");
         // check to see if we hit on the left or right side
         let (x_collision, x_depth) =
             if a_min.x() < b_min.x() && a_max.x() > b_min.x() && a_max.x() < b_max.x() {
@@ -169,38 +169,95 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
         None
     }
 }
-
+pub fn object_interaction_system (
+    mut commands: Commands,
+    sprites : ResMut<SpriteLibrary>,   
+    mut camera_query: Query<(&Camera, &mut Translation)>,
+    mut placeable: Query<(Entity, &Interactable, &mut Translation, &Interaction)>,
+    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>)>>
+) {
+}
 /// Collision detection system
 /// 
-pub fn collision_detection_system (
+pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
-    mut moveables: Query<(&Moveable, &mut Translation)>,
-    mut player_moved_query: Query<(&Player, &mut Translation, Mutated<Moving>)>,
-    mut nonplayer_moved_query: Query<(&NonPlayer, &mut Translation, Mutated<Moving>)>,
+    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>)>>
 ) {
+    let mut player_collision: Option<Translation> = None;
+    
+    // tile based collision
+    for (tile_entity, _tt, hardness, tile_translation, i) in &mut wall_query.iter() {
+        if hardness.0 == 0. {
+            continue;
+        }
 
-    for (_p, mut move_transition, m) in &mut nonplayer_moved_query.iter() {
-        for (_e, _tt, hardness, tile_translation, _i) in &mut wall_query.iter() {
-            if hardness.0 == 0. {
-                continue;
-            }
-
+        for ( _m, mut move_transition, movement) in &mut moveables.iter() {
             let collision = collide(move_transition.0, Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE), tile_translation.0, Vec2::new(48.,48.0), false);
             
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
                     
-                        *move_transition.0.x_mut() = (m.0).0;
-                        *move_transition.0.y_mut() = (m.0).1;
+                        *move_transition.0.x_mut() = (movement.0).0;
+                        *move_transition.0.y_mut() = (movement.0).1;
                     }
                 }
-            } 
+            } else {
+            //    player_collision = Some(move_transition.clone());
+            }
+        } 
+        for (e, mut move_translation, movement) in &mut player_moved.iter() {
+            
+            let collision = collide(move_translation.0, 
+                Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
+
+            if let Some(collision) = collision {
+                match collision {
+                    _ => { 
+                        // run the lambda that tells us what to do if a collision happens with a tile
+                        // if the transition says to change, then change.
+                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes) {      
+                            println!("Got change tile");                          
+                            let sprite = TileLoader::sprite_for_tiletype(&tile_type, &sprites);
+                            
+                            commands.insert(tile_entity, TileComponents {
+                                tile_type:tile_type, 
+                                location: Location::from(*tile_translation),
+                                hardness: Hardness(0.),
+                                ..Default::default()
+                            });
+
+                            commands.insert_one(tile_entity, TextureAtlasSprite::new(sprite.atlas_sprite));
+                        }
+                        
+                        // reset the sprite back to where it moved from
+
+                        *move_translation.0.x_mut() = (movement.0).0;
+                        *move_translation.0.y_mut() = (movement.0).1;
+                    }
+                }
+            } else {     
+                // move the camera if the player moves.
+                for (_c, mut cam_trans) in &mut camera_query.iter(){  
+                    *cam_trans.0.x_mut() = move_translation.0.x();             
+                    *cam_trans.0.y_mut() = move_translation.0.y();
+                }
+            }
         }
     }
+    
+    if let Some(movement) = player_collision {
+        for (_c, mut cam_trans) in &mut camera_query.iter(){  
+            *cam_trans.0.x_mut() = movement.0.x();             
+            *cam_trans.0.y_mut() = movement.0.y();
+        }
+    }
+    /*
     for (_p, mut move_transition, m) in &mut player_moved_query.iter() {
         for (_push, mut push_translation) in &mut moveables.iter() {             
             let collision = collide(move_transition.0, Vec2::new(48.,48.), push_translation.0, Vec2::new(32.,32.0), false);
@@ -247,7 +304,7 @@ pub fn collision_detection_system (
 
                             commands.insert(e, TileComponents {
                                 tile_type: ret.1, 
-                                location: Location::from_translation(*tile_translation),
+                                location: Location::from(*tile_translation),
                                 hardness: Hardness(0.),
                                 ..Default::default()
                              });
@@ -268,7 +325,7 @@ pub fn collision_detection_system (
                 }
             }
         }
-    }
+    }*/
 }
 
 pub fn save_world_system(world: &mut World, resources: &mut Resources) {
@@ -287,11 +344,15 @@ pub fn save_world_system(world: &mut World, resources: &mut Resources) {
     }
 }
 
+pub struct MoveTimer (pub Timer);
+pub struct DialogTimer (pub Timer);
+
 /// Move all NPCs in the scene every 1.5 seconds
-pub fn npc_move_system(mut query: Query<(&NonPlayer, &mut Timer, &mut Translation, &mut Moving, &mut Moveable)>) {
+pub fn npc_move_system(time: Res<Time>, mut query: Query<(&NonPlayer, &mut MoveTimer, &mut Translation, &mut Movement, &mut Moveable)>) {
     for (_npc, mut timer, mut trans, mut m, _mm) in &mut query.iter() {
-        if  timer.finished {
-            let old_loc = Location::from_translation(*trans);
+        timer.0.tick(time.delta_seconds);
+        if  timer.0.finished {
+            let old_loc = Location::from(*trans);
             let direction = rand::random::<Dir>();
 
             match direction {
@@ -302,9 +363,9 @@ pub fn npc_move_system(mut query: Query<(&NonPlayer, &mut Timer, &mut Translatio
                 Dir::Stationary =>  {}
             }
 
-            *m = Moving(old_loc, Location::from_translation(*trans), direction);
+            *m = Movement(old_loc, Location::from(*trans), direction);
 
-            timer.reset();
+            timer.0.reset();
         }
     }
 }

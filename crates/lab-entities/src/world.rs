@@ -1,16 +1,29 @@
 
 use bevy::prelude::*;
 use strum_macros::EnumIter;
+use crate::objs::Item;
 
 #[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
 pub struct Location (pub f32, pub f32, pub f32);
-
-impl Location {
-    pub fn from_translation(translation : Translation) -> Location {
-        Location(translation.x(), translation.y(), translation.z())
+/*
+impl Into<Vec3> for Location {
+    fn into(self) -> Vec3 {
+        Vec3::new(self.0, self.1, self.2)
     }
+}*/
+
+impl From<Location> for Vec3 {
+    fn from(x: Location) -> Self {
+        Vec3::new(x.0, x.1, x.2)
+    }
+    
 }
 
+impl From<Translation> for Location {
+    fn from(t : Translation) -> Self {
+        Location (t.0.x(), t.0.y(), t.0.z())
+    }
+}
 #[derive(Clone, PartialEq)]
 pub struct Area(pub f32, pub f32);
 
@@ -48,9 +61,17 @@ impl Default for Hardness {
 }
 
 
+pub enum InteractionResult {
+    ChangeTile(TileType),
+    Damage(u32),
+    ChangeSprite(Sprite),
+    Move(Location),
+    PickUp(Item),
+    None
+}
 #[derive(Copy, Clone, Debug)]
 pub struct Interaction {
-    pub call : fn (Attributes) -> (bool, TileType)
+    pub call : fn (Attributes) -> InteractionResult
 }
 
 #[derive(Bundle, Copy, Clone, Debug)]
@@ -81,7 +102,7 @@ impl Default for TileComponents {
             tile_type: TileType::Key,
             location: Location::default(),
             visible: Visible,
-            interaction: Interaction { call: |_attributes| { (false, TileType::Key) } }
+            interaction: Interaction { call: |_attributes| { InteractionResult::None } }
         }
     }
 }
@@ -97,9 +118,10 @@ pub struct Moveable;
 #[derive(Debug, Clone, Copy)]
 pub struct Solid;
 
-
+/*
 #[derive(Debug)]
 pub struct InteractionResult {
     message: String,
     colliding_entity : Option<Entity>
 }
+*/

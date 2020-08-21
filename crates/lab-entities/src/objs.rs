@@ -1,5 +1,5 @@
-
-use std::collections::HashMap;
+use bevy::prelude::Bundle;
+use crate::world::{Visible, Location, Interaction, InteractionResult};
 
 #[allow(dead_code)]
 pub enum ItemType {
@@ -11,17 +11,34 @@ pub enum ItemType {
 }
 
 #[allow(dead_code)]
-pub struct Item {
-    id: u32,
-    item_type: ItemType,
-    weight: f64,
-    attributes: HashMap<String, String>
+pub struct Item;
+
+#[derive(Copy, Clone, Debug)]
+pub struct Interactable;
+#[derive(Bundle, Copy, Clone, Debug)]
+pub struct InteractableComponents {
+    pub interactable: Interactable,
+    pub location: Location,
+    pub visible: Visible,
+    pub interaction: Interaction
 }
 
+impl InteractableComponents {
+   
+}
+
+impl Default for InteractableComponents {
+    fn default() -> Self {
+        InteractableComponents {
+            location: Location::default(),
+            visible: Visible,
+            interaction: Interaction { call: |_attributes| { InteractionResult::None } },
+            interactable: Interactable
+        }
+    }
+}
 #[allow(dead_code)]
-pub struct Weight {
-
-}
+pub struct Weight (f32);
 #[allow(dead_code)]
 pub enum WeaponSpecialPowers {
     Keen(u32),
@@ -45,14 +62,10 @@ trait Mixable {
     fn mix_with(&self, item : &mut Item);
 }
 
-struct Herb { 
-    
-}
-struct Grain { 
-
-}
-struct Extract { }
-struct Fluid { }
+struct Herb;
+struct Grain;
+struct Extract;
+struct Fluid;
 
 impl Mixable for Herb {
     fn mix_with(&self, _item : &mut Item) {

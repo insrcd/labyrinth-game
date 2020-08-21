@@ -51,7 +51,7 @@ pub fn player_movement_system (
     windows : Res<Windows>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
-    mut query: Query<(&player::Player, &mut Translation, &mut player::Moving)>) {
+    mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>) {
 
     let mut movement = player::Direction::Stationary;
 
@@ -72,8 +72,8 @@ pub fn player_movement_system (
         movement = player::Direction::Right;
     }
 
-    for (_player, mut loc, mut moving) in &mut query.iter() {   
-        let old_loc = Location::from_translation(*loc);
+    for (_player, mut loc, mut Movement) in &mut query.iter() {   
+        let old_loc = Location::from(*loc);
 
         match movement {
             player::Direction::Up => *loc.0.y_mut() += PLAYER_SPEED,
@@ -85,7 +85,7 @@ pub fn player_movement_system (
         }
 
         if movement != player::Direction::Stationary {
-            *moving = player::Moving(old_loc, Location::from_translation(*loc), movement);
+            *Movement = player::Movement(old_loc, Location::from(*loc), movement);
         }
     }      
 }

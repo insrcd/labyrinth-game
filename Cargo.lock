@@ -1525,6 +1525,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lab-core"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "log",
+ "serde",
+]
+
+[[package]]
 name = "lab-demo"
 version = "0.1.0"
 dependencies = [
@@ -1566,6 +1575,7 @@ name = "lab-sprites"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
  "lab-entities",
  "log",
  "serde",
@@ -1591,6 +1601,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "lab-builder",
+ "lab-core",
  "lab-demo",
  "lab-entities",
  "lab-input",

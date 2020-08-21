@@ -4,7 +4,7 @@ fn add_tiles_to_World_system (
     input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
     mut mouse_query: Query<&Mouse>,
-    mut query: Query<(&crate::player::Player, &Translation, &crate::player::Moving)>
+    mut query: Query<(&crate::player::Player, &Translation, &crate::player::Movement)>
 ) {    
     let tile_size = crate::world::settings::TILE_SIZE;
 

@@ -51,22 +51,6 @@ pub fn state_transition (
 
             StateType::Init => { 
                 
-                let window = windows.iter().last().unwrap();
-                let sprites = sprite_library.make_string("This is a test & Stuff".to_string(), 
-                                Vec3::new(0. - window.width as f32/2. + 48. , window.height as f32/2. as f32 -96.,100.)).into_iter();
-                for it in sprites
-                 {
-                    commands
-                        .spawn(
-                        it
-                        )
-                        .with(Timer::new(Duration::from_secs(2)))
-                        .with(Despawn);
-                    
-                    sprite_library.write_despawning_text(&mut commands, "Welcome to Labyrinth, the Game!".to_string(), 
-                        Duration::from_secs(5), 
-                        Vec3::new(16. - (window.width/2) as f32, 16. - (window.height/2) as f32, 100.));   
-                }
             }
             StateType::Menu(menu) => {}
             StateType::CharacterScreen => {}

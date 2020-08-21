@@ -26,6 +26,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::add_world_sprites_system.system())
             .add_system(systems::add_interaction_sprites_system.system())
             .add_system(systems::save_world_system.thread_local_system())
-            .add_system(systems::collision_detection_system.system());
+            .add_system(systems::tile_interaction_system.system())
+            .add_system(systems::object_interaction_system.system());
     }
 }
