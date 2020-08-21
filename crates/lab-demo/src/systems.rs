@@ -10,7 +10,7 @@ const TILE_SIZE : f32 = 96.;
 
 pub fn create_simple_map_system(mut commands: Commands) {
 
-    let starting_location = Location(TILE_SIZE * 5., TILE_SIZE * 5.   ,0.);
+    let starting_location = Location(TILE_SIZE * 5., TILE_SIZE * 5.   ,0.,  world::WorldLocation::World);
 
     let mut mb = MapBuilder::new(
         Vec2::new(TILE_SIZE,TILE_SIZE),

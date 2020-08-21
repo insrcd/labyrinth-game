@@ -50,6 +50,6 @@ fn setup (
    
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
     .spawn(( Mouse { position: Vec2::new(0.,0.)},))
-    .spawn((Player { god_mode: false }, Named("Adam".to_string()), Location(0., 0., 51.)))
-    .spawn((NonPlayer, Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50.), sprite));
+    .spawn((Player { god_mode: false }, Named("Adam".to_string()), Location(0., 0., 51.,  world::WorldLocation::World)))
+    .spawn((NonPlayer, Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite),);
 }

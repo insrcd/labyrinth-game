@@ -1,10 +1,19 @@
 
 use bevy::prelude::*;
 use strum_macros::EnumIter;
-use crate::objs::Item;
+use crate::objs::*;
+use crate::player::*;
 
-#[derive(Clone, Debug, Copy, PartialEq, Properties, Default)]
-pub struct Location (pub f32, pub f32, pub f32);
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum WorldLocation {
+    World,
+    Inventory,
+    Labyrinth,
+    BarRoom
+}
+#[derive(Clone, Debug, Copy, PartialEq, Properties)]
+pub struct Location (pub f32, pub f32, pub f32, 
+    #[property(ignore)] pub WorldLocation);
 /*
 impl Into<Vec3> for Location {
     fn into(self) -> Vec3 {
@@ -12,6 +21,12 @@ impl Into<Vec3> for Location {
     }
 }*/
 
+impl Default for Location {
+    fn default() -> Self {
+        return Location(0.,0.,0.,WorldLocation::World)
+    }
+    
+}
 impl From<Location> for Vec3 {
     fn from(x: Location) -> Self {
         Vec3::new(x.0, x.1, x.2)
@@ -21,7 +36,7 @@ impl From<Location> for Vec3 {
 
 impl From<Translation> for Location {
     fn from(t : Translation) -> Self {
-        Location (t.0.x(), t.0.y(), t.0.z())
+        Location (t.0.x(), t.0.y(), t.0.z(), WorldLocation::World)
     }
 }
 #[derive(Clone, PartialEq)]
@@ -109,9 +124,13 @@ impl Default for TileComponents {
 
 pub struct Despawn;
 
-pub struct Attributes; /* {
-    settings: HashMap<String, u32>
-}*/
+#[derive(Default, Clone)]
+pub struct Attributes {
+    pub inventory: Option<Inventory>,
+    pub player: Option<Entity>,
+    pub player_location: Option<Location>,
+    pub interaction_location: Option<Location>
+}
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;
 

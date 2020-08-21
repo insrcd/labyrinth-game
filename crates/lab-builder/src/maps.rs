@@ -25,7 +25,7 @@ impl<'a>  MapBuilder {
             for y in 0..area.1 as u32 {                
                 self.tiles.push(TileComponents {
                    tile_type: tile_type, 
-                   location: Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2),
+                   location: Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2,  world::WorldLocation::World),
                    hardness:TileComponents::hardness_from_tile(tile_type),
                    visible: Visible,
                    ..Default::default()
@@ -40,16 +40,16 @@ impl<'a>  MapBuilder {
             let loc = self.current_location;
             let location = match pos {
                 RelativePosition::LeftOf => {                                    
-                    Location(loc.0 - self.tile_size.x(), loc.1, loc.2)
+                    Location(loc.0 - self.tile_size.x(), loc.1, loc.2, world::WorldLocation::World)
                 }
                 RelativePosition::RightOf => {
-                    Location(loc.0 + self.tile_size.x(), loc.1, loc.2)
+                    Location(loc.0 + self.tile_size.x(), loc.1, loc.2, world::WorldLocation::World)
                 }
                 RelativePosition::Above => {
-                    Location(loc.0, loc.1 + self.tile_size.y(), loc.2)
+                    Location(loc.0, loc.1 + self.tile_size.y(), loc.2, world::WorldLocation::World)
                 }
                 RelativePosition::Below => {
-                    Location(loc.0, loc.1 - self.tile_size.y(), loc.2)
+                    Location(loc.0, loc.1 - self.tile_size.y(), loc.2, world::WorldLocation::World)
                 }
             };
             

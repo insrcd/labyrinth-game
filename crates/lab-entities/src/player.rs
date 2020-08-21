@@ -27,14 +27,14 @@ impl Default for Player {
 }
 
 #[derive(Debug, Bundle)]
-struct PlayerComponents {
+pub struct PlayerComponents {
     player : Player,
     job : Job,
     inventory : Inventory
 }
 
-#[derive(Debug)]
-struct Inventory {
+#[derive(Debug, Default, Clone)]
+pub struct Inventory {
     items: Vec<Handle<Item>>
 }
 

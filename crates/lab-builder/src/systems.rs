@@ -36,7 +36,7 @@ pub fn add_tiles_to_world_system (
 
             // setup a simple interaction
             // TODO refactor
-            
+
             let mut interaction : fn (Attributes) -> InteractionResult = |_| { InteractionResult::None };
 
             let hardness = match selected_tile.tile_type {
@@ -58,7 +58,7 @@ pub fn add_tiles_to_world_system (
             commands.spawn(TileComponents {
                 hardness: hardness,
                 tile_type: selected_tile.tile_type,
-                location: Location(x, y, selected_tile.level),
+                location: Location(x, y, selected_tile.level,  world::WorldLocation::World),
                 interaction: lab_entities::world::Interaction { call: interaction },
                 ..Default::default()
             });
@@ -91,7 +91,7 @@ pub fn add_tiles_to_world_system (
                 player::Direction::Stationary =>  x += tile_size
             }
 
-            let loc =  Location(x, y, 1.);
+            let loc =  Location(x, y, 1.,  world::WorldLocation::World);
             
             println!("Adding tile to {:?}", loc);
             

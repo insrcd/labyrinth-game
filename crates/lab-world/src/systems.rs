@@ -186,7 +186,7 @@ pub fn tile_interaction_system (
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
-    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>)>>
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
@@ -211,17 +211,22 @@ pub fn tile_interaction_system (
             //    player_collision = Some(move_transition.clone());
             }
         } 
-        for (e, mut move_translation, movement) in &mut player_moved.iter() {
+        for (e, mut move_translation, movement, inventory) in &mut player_moved.iter() {
             
             let collision = collide(move_translation.0, 
                 Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
-
+            
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
                         // run the lambda that tells us what to do if a collision happens with a tile
                         // if the transition says to change, then change.
-                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes) {      
+                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes {
+                            interaction_location: Some(Location::from(*tile_translation)),
+                            inventory: Some(inventory.clone()),
+                            player: Some(e),
+                            player_location: Some(movement.0.into())
+                        }) {      
                             println!("Got change tile");                          
                             let sprite = TileLoader::sprite_for_tiletype(&tile_type, &sprites);
                             
