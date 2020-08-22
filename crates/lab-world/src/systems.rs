@@ -8,7 +8,7 @@ use lab_entities::{
     Named
 };
 
-use lab_sprites::*;
+use lab_sprites::{ Sprite as LabSprite, SpriteLibrary, TileAnimation, StationaryLetter };
 
 use crate::settings::*;
 use lab_core::Moveable;
@@ -90,22 +90,26 @@ pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &lab_sprites::Sprite)>,
-    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
-    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &lab_sprites::Sprite)>>
+    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &LabSprite)>,
+    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &LabSprite)>>,
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &LabSprite)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
     // tile based collision
     for (tile_entity, _tt, hardness, 
             tile_attributes, tile_translation, i,  
-                sprite) in &mut wall_query.iter() {
+                tile_sprite) in &mut wall_query.iter() {
         if hardness.0 == 0. || tile_attributes.hit_points == 0 {
             continue;
         }
 
-        for ( _m, mut move_transition, movement) in &mut moveables.iter() {
-            let collision = collide(move_transition.0, Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE), tile_translation.0, Vec2::new(48.,48.0), false);
+        for ( _m, mut move_transition, movement, move_sprite) in &mut moveables.iter() {
+            let collision = collide(move_transition.0, 
+                move_sprite.size(), 
+                tile_translation.0, 
+                tile_sprite.size(), 
+                false);
             
             if let Some(collision) = collision {
                 match collision {
@@ -120,7 +124,7 @@ pub fn tile_interaction_system (
                             println!("Got change tile for NPC : {:?}", attr);                    
                             
                             commands.insert(tile_entity, (Location::from(*tile_translation), 
-                                attr, TextureAtlasSprite::new(sprite.atlas_sprite)));
+                                attr, TextureAtlasSprite::new(tile_sprite.atlas_sprite)));
                         }
                     
                         *move_transition.0.x_mut() = (movement.0).0;
@@ -134,7 +138,7 @@ pub fn tile_interaction_system (
         for (e, mut move_translation, movement, inventory, sprite) in &mut player_moved.iter() {
             
             let collision = collide(move_translation.0, 
-                Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
+                sprite.size(),  tile_translation.0, tile_sprite.size(), false);
             
             if let Some(collision) = collision {
                 match collision {

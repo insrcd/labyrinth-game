@@ -74,7 +74,7 @@ impl<'a>  MapBuilder {
             let offset = bp.top_right();
 
             // right now just put to the right of the last tile
-
+           
             for tile in bp.tiles.as_slice() {
                 let mut c =  tile.clone();
 
@@ -87,7 +87,7 @@ impl<'a>  MapBuilder {
             
             println!("bp: {:?}, Offset: {:?}", name, offset);
 
-            self.current_location.0 += offset.0 + WORLD_TILE_SIZE;
+            self.current_location.0 += offset.0;
             self.current_location.1 += offset.1;
 
             println!("Current Location: {:?},{:?}",  self.current_location.0,  self.current_location.1);
@@ -102,9 +102,8 @@ impl<'a>  MapBuilder {
                 for y in 0..area.1 as u32 {  
                     let mut comp = comps.clone();
                     
-                    
-                    comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - y as f32 *  (x * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
-           
+                    comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - y as f32 *  (y * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
+                    println!("Location: {:?}", comp.location);
                     self.tiles.push(comp);            
                 }
             }
@@ -123,6 +122,8 @@ impl<'a>  MapBuilder {
                 
                 let tile_size_x = comps.sprite.width as f32;
                 let tile_size_y = comps.sprite.height as f32;
+
+                println!("Tile Size: {},{}", tile_size_x, tile_size_y);
 
                 let location = match pos {
                     RelativePosition::LeftOf => {                                    

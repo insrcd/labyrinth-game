@@ -28,6 +28,12 @@ pub struct Sprite {
     pub width: u32
 }
 
+impl Sprite {
+    pub fn size(&self) -> Vec2 {
+        return Vec2::new(self.width as f32, self.height as f32);
+    }
+}
+
 pub struct Letter;
 pub struct StationaryLetter;
 
@@ -104,10 +110,11 @@ impl SpriteLibrary {
         let texture = assets.get(&texture_handle).unwrap();
     
         let texture_atlas = TextureAtlas::from_grid(texture_handle, texture.size, dim.0, dim.1);
-        let size = texture_atlas.size;
+    
+        let size = texture_atlas.size / Vec2::new(dim.0 as f32, dim.1 as f32);
         
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
-    
+
         labels
         .iter()
         .enumerate()

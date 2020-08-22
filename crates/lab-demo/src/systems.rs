@@ -5,8 +5,6 @@ use crate::*;
 use bevy::prelude::*;
 use std::rc::Rc;
 
-const TILE_SIZE : f32 = 96.;
-
 mod tiles {
     pub const wall : &'static str = "wall";
     pub const floor : &'static str = "floor";
@@ -30,7 +28,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
             .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
             .add_tiles(RelativePosition::Above, 5, tiles::wall.to_string())
-            .add_tiles_to_area(&Location(TILE_SIZE, -TILE_SIZE,5., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
+            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
             .to_blueprint("basic_house");
 
     mb
@@ -41,7 +39,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
     .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
     .add_tiles(RelativePosition::Above, 5, tiles::wall.to_string())
-    .add_tiles_to_area(&Location(TILE_SIZE, -TILE_SIZE,5., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
+    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
     .to_blueprint("basic_house_2");
 
     mb
@@ -65,7 +63,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
 
     for comp in mb.iter() {
-        commands.spawn(comp.clone()).with_bundle(comp.sprite.to_components(comp.location.into(), Scale(6.)));
+        commands.spawn(comp.clone()).with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
     }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));

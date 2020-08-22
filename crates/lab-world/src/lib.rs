@@ -3,8 +3,8 @@ use lab_core::stage;
 mod systems;
 
 pub mod settings {
-    pub const TILE_SIZE : f32 = 96.;
-    pub const WORLD_TILE_SIZE : f32 = 96.;
+    pub const TILE_SIZE : f32 = 16.;
+    pub const WORLD_TILE_SIZE : f32 = 16.;
     pub const PLAYER_SPEED : f32 = 48.;
 }
 
