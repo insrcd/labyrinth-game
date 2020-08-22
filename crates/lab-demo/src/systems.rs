@@ -17,14 +17,14 @@ pub fn create_simple_map_system(mut commands: Commands) {
     );
 
     mb
-        .add_tiles(RelativePosition::RightOf, 5, TileType::Brick(Hardness(1.)))
-        .add_tiles(RelativePosition::Below, 5, TileType::Brick(Hardness(1.)))
-        .add_tiles(RelativePosition::LeftOf, 2, TileType::Brick(Hardness(1.)))
-        .add_tiles(RelativePosition::LeftOf, 1, TileType::BrickWindow(Hardness(1.)))
+        .add_tiles(RelativePosition::RightOf, 5, TileType::BrickDoorClosed(Hardness(1.)))
+        .add_tiles(RelativePosition::Below, 5, TileType::BrickDoorClosed(Hardness(1.)))
+        .add_tiles(RelativePosition::LeftOf, 2, TileType::BrickDoorClosed(Hardness(1.)))
         .add_tiles(RelativePosition::LeftOf, 1, TileType::BrickDoorClosed(Hardness(1.)))
-        .add_tiles(RelativePosition::LeftOf, 1, TileType::Brick(Hardness(1.)))
-        .add_tiles(RelativePosition::Above, 5, TileType::Brick(Hardness(1.)))
-        .add_tiles_to_area(&Location::default(), Area(5., 5.), TileType::Floor);
+        .add_tiles(RelativePosition::LeftOf, 1, TileType::BrickDoorClosed(Hardness(1.)))
+        .add_tiles(RelativePosition::LeftOf, 1, TileType::BrickDoorClosed(Hardness(1.)))
+        .add_tiles(RelativePosition::Above, 5, TileType::BrickDoorClosed(Hardness(1.)))
+        .add_tiles_to_area(&Location(TILE_SIZE, -TILE_SIZE,5., WorldLocation::World), Area(4., 4.), TileType::Floor);
 
     mb.to_blueprint("basic_house");
 
@@ -36,22 +36,27 @@ pub fn create_simple_map_system(mut commands: Commands) {
     .add_tiles(RelativePosition::Below, 5, TileType::Brick(Hardness(1.)))
     .add_tiles(RelativePosition::LeftOf, 5, TileType::Brick(Hardness(1.)))
     .add_tiles(RelativePosition::Above, 5, TileType::Brick(Hardness(1.)))
-    .add_tiles_to_area(&Location::default(), Area(5., 5.), TileType::Floor)
+    .add_tiles_to_area(&Location::default(), Area(7., 7.), TileType::Floor)
     .to_blueprint("basic_house_2");
 
     mb
-    .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-    .add_tiles(RelativePosition::Below, 5, TileType::Grass)
-    .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-    .add_tiles(RelativePosition::Above, 5, TileType::Grass)
+      .add_tiles(RelativePosition::Current, 1, TileType::Grass)
+      .add_tiles(RelativePosition::Below, 5, TileType::Grass)
+      .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
+      .add_tiles(RelativePosition::Above, 5, TileType::Grass)
+    //.add_tiles_to_area(&Location::default(), Area(2., 8.), TileType::Floor)
     .to_blueprint("walkway");
 
+    mb.add_tiles_to_area(&Location::default(), Area(100., 100.), TileType::Floor);
+/*
     mb
         .add_tiles_from_blueprint("basic_house")
-        .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("walkway")
-        .add_tiles_from_blueprint("basic_house_2");
+        .add_tiles_from_blueprint("basic_house")
+        .add_tiles_from_blueprint("walkway");
+        //.add_tiles_from_blueprint("walkway");*/
+         //.add_tiles_from_blueprint("basic_house_2");
     
 
 

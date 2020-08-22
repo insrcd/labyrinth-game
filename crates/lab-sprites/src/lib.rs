@@ -167,3 +167,23 @@ impl Sprite {
         }
     }
 }
+
+pub struct MoveAnimation {
+    pub up: Vec<Sprite>,
+    pub down: Vec<Sprite>,
+    pub left: Vec<Sprite>,
+    pub right: Vec<Sprite>,
+    pub count: usize
+}
+
+impl Default for MoveAnimation {
+    fn default() -> Self {
+        MoveAnimation {
+            up: Vec::new(),
+            down: Vec::new(),
+            left: Vec::new(),
+            right: Vec::new(),
+            count: 0
+        }
+    }
+}

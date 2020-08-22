@@ -27,3 +27,5 @@ impl Plugin for CorePlugin {
         
     }
 }
+#[derive(Debug)]
+pub struct InputTimer(pub Timer);

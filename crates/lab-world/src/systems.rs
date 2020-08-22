@@ -56,16 +56,16 @@ pub fn add_interaction_sprites_system(mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    mut query: Query<(Entity, Added<Player>, &Named, &Location)>,
+    mut query: Query<(Entity, Added<Player>, &Named, &Location, &lab_sprites::MoveAnimation)>,
     mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location, &lab_sprites::Sprite)>
 ) {
-    for (e, _player, name , loc) in &mut query.iter() {
+    for (e, _player, name , loc, animate) in &mut query.iter() {
         // new player was added, lets render them!
         if let Some(sprite) = sprites.get("player"){
             println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
 
             commands
-                .insert(e, add_sprite(&asset_server, &mut materials, "resources/sprites/sensei.png", loc))
+                .insert(e, animate.down[0].to_components((*loc).into(), Scale(6.)))
                 .insert_one(e, Movement(*loc, *loc, Dir::Stationary));
         }
     }
@@ -202,6 +202,24 @@ pub fn tile_interaction_system (
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
+                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes {
+                            interaction_location: Some(Location::from(*tile_translation)),
+                            inventory: None,
+                            player: None,
+                            player_location: Some(movement.0.into())
+                        }) {      
+                            println!("Got change tile for NPC");                          
+                            let sprite = TileLoader::sprite_for_tiletype(&tile_type, &sprites);
+                            
+                            commands.insert(tile_entity, TileComponents {
+                                tile_type:tile_type, 
+                                location: Location::from(*tile_translation),
+                                hardness: Hardness(0.),
+                                ..Default::default()
+                            });
+
+                            commands.insert_one(tile_entity, TextureAtlasSprite::new(sprite.atlas_sprite));
+                        }
                     
                         *move_transition.0.x_mut() = (movement.0).0;
                         *move_transition.0.y_mut() = (movement.0).1;
@@ -247,21 +265,22 @@ pub fn tile_interaction_system (
                     }
                 }
             } else {     
-                // move the camera if the player moves.
+                
                 for (_c, mut cam_trans) in &mut camera_query.iter(){  
                     *cam_trans.0.x_mut() = move_translation.0.x();             
                     *cam_trans.0.y_mut() = move_translation.0.y();
                 }
+                
             }
         }
     }
-    
+    /*
     if let Some(movement) = player_collision {
         for (_c, mut cam_trans) in &mut camera_query.iter(){  
             *cam_trans.0.x_mut() = movement.0.x();             
             *cam_trans.0.y_mut() = movement.0.y();
         }
-    }
+    }*/
     /*
     for (_p, mut move_transition, m) in &mut player_moved_query.iter() {
         for (_push, mut push_translation) in &mut moveables.iter() {             

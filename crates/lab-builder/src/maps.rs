@@ -24,9 +24,6 @@ impl Blueprint {
             }
         }
 
-        //location.0 += WORLD_TILE_SIZE;
-
-
         location
     }
 }
@@ -59,8 +56,7 @@ impl<'a>  MapBuilder {
 
         self.current_location = self.starting_location;
 
-        println!("Adding blueprint");
-        
+        println!("Adding blueprint loc reset to: {:?}", self.starting_location);
 
         self
     }
@@ -73,9 +69,10 @@ impl<'a>  MapBuilder {
             if bp.name != name {
                 continue;
             }
+            
+            let offset = bp.top_right();
 
             // right now just put to the right of the last tile
-            self.current_location.0 += WORLD_TILE_SIZE;
 
             for tile in bp.tiles.as_slice() {
                 let mut c =  tile.clone();
@@ -85,11 +82,14 @@ impl<'a>  MapBuilder {
 
                 self.tiles.push(c);
             }
-            
-            let offset = bp.top_right();
 
-            self.current_location.0 += offset.0;
+            
+            println!("bp: {:?}, Offset: {:?}", name, offset);
+
+            self.current_location.0 += offset.0 + WORLD_TILE_SIZE;
             self.current_location.1 += offset.1;
+
+            println!("Current Location: {:?},{:?}",  self.current_location.0,  self.current_location.1);
         }
         self
     }
@@ -98,10 +98,12 @@ impl<'a>  MapBuilder {
                  
 
         for x in 0..area.0 as u32 {
-            for y in 0..area.1 as u32 {                
+            for y in 0..area.1 as u32 {        
+                let new_loc = Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2,  world::WorldLocation::World);
+                println!("last location: {:?}", new_loc);        
                 self.tiles.push(TileComponents {
                    tile_type: tile_type, 
-                   location: Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2,  world::WorldLocation::World),
+                   location: new_loc,
                    hardness:TileComponents::hardness_from_tile(tile_type),
                    visible: Visible,
                    ..Default::default()
@@ -126,7 +128,8 @@ impl<'a>  MapBuilder {
                 }
                 RelativePosition::Below => {
                     Location(loc.0, loc.1 - self.tile_size.y(), loc.2, world::WorldLocation::World)
-                }
+                },
+                _ => self.current_location
             };
 
             println!("Adding tile at {:?} last location: {:?}", self.current_location, location);

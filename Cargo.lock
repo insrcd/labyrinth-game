@@ -1552,6 +1552,7 @@ name = "lab-entities"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
  "log",
  "rand",
  "serde",
@@ -1564,7 +1565,9 @@ name = "lab-input"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
  "lab-entities",
+ "lab-sprites",
  "lab-world",
  "log",
  "serde",

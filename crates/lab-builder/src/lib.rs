@@ -17,7 +17,8 @@ pub enum RelativePosition {
     LeftOf,
     RightOf,
     Above,
-    Below
+    Below,
+    Current
 }
 
 pub struct InputPlugin;

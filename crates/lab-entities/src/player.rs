@@ -7,7 +7,8 @@ use crate::{Named, world::Location, prelude::Visible};
 
 use rand::distributions::{Standard, Distribution};
 use rand::Rng;
-use std::marker::PhantomData;
+use std::{time::Duration, marker::PhantomData};
+use lab_core::InputTimer;
 
 #[derive(PartialEq, Debug)]
 pub struct Movement(pub Location, pub Location, pub Direction);
@@ -41,7 +42,8 @@ pub struct PlayerComponents {
     skills : Skills,
     named : Named,
     visible: Visible,
-    location: Location
+    location: Location,
+    input_timer: InputTimer
 }
 
 impl PlayerComponents {
@@ -65,7 +67,8 @@ impl Default for PlayerComponents {
             skills : Skills::new(),
             named: Named("Unnamed".to_string()),
             visible: Visible,
-            location: Location::default()
+            location: Location::default(),
+            input_timer: InputTimer (Timer::new(Duration::from_millis(125)))
         }
     }
     

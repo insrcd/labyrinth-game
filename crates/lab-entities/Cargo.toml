@@ -16,3 +16,5 @@ strum_macros = "0.19.2"
 rand = "0.7.3"
 
 bevy = {git = "https://github.com/Bobox214/bevy.git", branch = "fix_134_135" }
+
+lab-core = { path = "../lab-core" }

@@ -9,7 +9,7 @@ mod state;
 use lab_entities::prelude::*;
 use lab_input::*;
 use dialog::*;
-use lab_sprites::SpriteLibrary;
+use lab_sprites::*;
 use lab_core::stage;
 
 
@@ -51,7 +51,19 @@ fn setup (
    
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
     .spawn(( Mouse { position: Vec2::new(0.,0.)},))
-    .spawn( PlayerComponents::new("Adam", Location(-TILE_SIZE, -TILE_SIZE, 51.,  world::WorldLocation::World)))
+    .spawn( 
+        PlayerComponents::new("Adam", 
+        Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World)))
+        .with( MoveAnimation {
+            up: vec![sprites.get("move_up_1").unwrap().clone(), sprites.get("move_up_2").unwrap().clone()], 
+            down: vec![sprites.get("move_down_1").unwrap().clone(), sprites.get("move_down_2").unwrap().clone()],
+            left: vec![sprites.get("move_left_1").unwrap().clone(), sprites.get("move_left_2").unwrap().clone()],
+            right: vec![sprites.get("move_right_1").unwrap().clone(), sprites.get("move_right_2").unwrap().clone()],
+            ..Default::default()
+        });
     
-    .spawn((NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite),);
+    /*
+    for _n in 0..50 {
+        commands.spawn((NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite.clone()),);
+    }*/
 }
