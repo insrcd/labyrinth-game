@@ -78,7 +78,6 @@ pub fn player_movement_system (
 
     for (_player, mut loc, mut Movement, mut animation, mut texture_sprite, mut timer) in &mut query.iter() {   
         timer.0.tick(time.delta_seconds);
-        
         if  timer.0.finished {
             let old_loc = Location::from(*loc);
 

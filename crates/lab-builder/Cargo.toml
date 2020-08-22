@@ -20,3 +20,5 @@ lab-entities = { path = "../lab-entities" }
 lab-sprites = { path = "../lab-sprites" }
 lab-input = { path = "../lab-input" }
 lab-world = { path = "../lab-world" }
+
+lab-core = {path="../lab-core"}

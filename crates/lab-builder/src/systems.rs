@@ -9,19 +9,40 @@ use crate::TilePalette;
 use lab_input::{Mouse, SelectedTile};
 
 
+pub fn make_tile_palette_system(
+    mut sprite_library: ResMut<SpriteLibrary>,
+    mut palette: ResMut<TilePalette>
+)  {
+    println!("Making palette from {} sprites", sprite_library.len());
+    for sprite in sprite_library.iter() {
+        println!("Adding sprite {:?}", sprite);
+
+        if let Some(comp) = palette.components.get(&sprite.name){
+           // already added
+            println!("Duplicate sprite detected sprite {:?}", sprite);
+        } else {
+            palette.components.insert(sprite.name.clone(), TileComponents {
+                sprite: sprite.clone(),
+                ..Default::default()
+            });
+        }
+
+    }
+}
+
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
     selected_tile: Res<SelectedTile>, 
     palette: Res<TilePalette>,
-    input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
-    mut mouse_query: Query<&Mouse>,
-    mut query: Query<(&player::Player, &Translation, &player::Movement)>
+    mut mouse_query: Query<&Mouse>
 ) {    
     let tile_size = lab_world::settings::TILE_SIZE;
 
     for mouse in &mut mouse_query.iter(){
         if mouse_input.just_pressed(MouseButton::Left) {
+            let st = selected_tile.clone();
+
             let mut x = mouse.position.x() ;
             let mut y = mouse.position.y() ;
             
@@ -35,53 +56,17 @@ pub fn add_tiles_to_world_system (
             x = grid_x.round() * tile_size;
             y = grid_y.round() * tile_size;
 
-            
-            println!("Placing tile at {:?},{:?}", x, y);
+             if let Some(components) = palette.components.get(&st.name.clone()){
+                 
+                println!("Placing tile at {:?},{:?}", x, y);
 
-             if let Some(mut components) = palette.components.get(&selected_tile.name){
                 let mut clone = components.clone();
-                clone.location = Location(x, y, selected_tile.level,  world::WorldLocation::World);
-                commands.spawn(clone);
+
+                clone.location = Location(x, y, st.level,  world::WorldLocation::World);
+                
+                commands.spawn(clone)
+                    .spawn(components.sprite.to_components( Vec3::new(x,y,st.level.clone()), Scale(6.)));
              }
-        }
-    }
-    
-    for (_p, t, m) in &mut query.iter(){
-        
-        if input.just_pressed(KeyCode::F2) {
-            let mut x = f32::abs ( t.0.x() );
-            let mut y = f32::abs ( t.0.y() );
-
-            if t.0.x() < 0. {
-                x = 0. - (x + (x as u32 % 96)  as f32)
-            } else {
-                x -= (x as u32 % 96) as f32
-            }
-            if t.0.y() < 0. {
-                y = 0. - (y + (y as u32 % 96)  as f32)
-            } else {
-                y -= (y as u32 % 96) as f32
-            }
-            println!("({},{}) ({},{})",x,y,t.0.x(),t.0.y());
-
-            match m.2 {
-                player::Direction::Left => x -= tile_size,
-                player::Direction::Up => x += tile_size,
-                player::Direction::Down =>  y -= tile_size,
-                player::Direction::Right =>  y += tile_size,
-                player::Direction::Stationary =>  x += tile_size
-            }
-
-            let loc =  Location(x, y, 1.,  world::WorldLocation::World);
-            
-            println!("Adding tile to {:?}", loc);
-            
-            commands.spawn(TileComponents {
-                hardness: Hardness(1.),
-                tile_type: selected_tile.tile_type,
-                location: loc,
-                ..Default::default()
-            });
         }
     }
 }
@@ -110,7 +95,7 @@ pub fn builder_keyboard_system (
     let text_duration: u64 = 750 ;
 
     let mut write_message = |message| {
-        lib.write_despawning_text(commands, message, 
+        lib.write_despawning_text(&mut commands, message, 
         Duration::from_millis(text_duration), 
                         Vec3::new(16. + camera_offset_x - (window.width/2) as f32, 16. +camera_offset_y - (window.height/2) as f32, 100.)
                     );
@@ -126,12 +111,15 @@ pub fn builder_keyboard_system (
        }
 
        if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
+            selected_tile.name = name.clone();
+            
             write_message(format!("Tile changed to {}", name)); 
        }
     } else if keyboard_input.just_pressed(KeyCode::LBracket) {
         selected_tile.tile = selected_tile.tile + 1 % count; 
          
         if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
+            selected_tile.name = name.clone();
              write_message(format!("Tile changed to {}", name)); 
         }
 

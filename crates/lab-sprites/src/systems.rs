@@ -48,5 +48,6 @@ pub fn load_world_sprites_system(
 
     commands
         .insert_resource(sprite_lib);
-
+    
+    println!("Done loading world sprites");
 }

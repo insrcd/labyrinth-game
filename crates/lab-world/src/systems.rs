@@ -13,50 +13,6 @@ use lab_sprites::*;
 use crate::settings::*;
 use lab_core::Moveable;
 
-
-pub fn add_interaction_sprites_system(mut commands: Commands,
-    sprites : ResMut<SpriteLibrary>,
-    mut query: Query<(Entity, Added<Player>, &Named, &Location, &lab_sprites::MoveAnimation)>,
-    mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location, &lab_sprites::Sprite)>
-) {
-    for (e, _player, name , loc, animate) in &mut query.iter() {
-        // new player was added, lets render them!
-        if let Some(sprite) = sprites.get("player"){
-            println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-
-            commands
-                .insert(e, animate.down[0].to_components((*loc).into(), Scale(6.)))
-                .insert_one(e, Movement(*loc, *loc, Dir::Stationary));
-        }
-    }
-    
-    for (e, _npc, name , loc, s) in &mut npc_query.iter() {
-        // new player was added, lets render them!
-        if let Some(sprite) = sprites.get("npc"){
-            println!("got sprite {} for {} at {:?}", sprite.name, name.0, loc);
-            //add_sprite(&asset_server, &mut materials, "resources/sprites/hat-guy.png", loc)
-            commands
-                .insert(e, s.to_components((*loc).into(), Scale(3.)))
-                .insert(e, (Moveable, MoveTimer(Timer::from_seconds(1.5)), Movement(*loc, *loc, Dir::Stationary)));
-            }
-    }
-}
-
-// adds the sprites for the tiles
-pub fn add_world_sprites_system (
-    mut commands: Commands,
-    sprites : ResMut<SpriteLibrary>,   
-    mut query: Query<(Entity, &TileType, &Visible, &Location, Changed<Visible>)>,
-) {
-    for (e, tile, &_vis, &loc, sprite) in &mut query.iter() {
-       // println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
-
-        //commands.insert_one(e,TextureAtlasSprite::new(sprite.atlas_sprite));
-    }
-}
-
-
-
 #[derive(Debug)]
 pub enum Collision {
     Left,
@@ -218,19 +174,19 @@ pub fn tile_interaction_system (
 }
 
 pub fn save_world_system(world: &mut World, resources: &mut Resources) {
-    let type_registry = resources.get::<TypeRegistry>().unwrap();
-    let input = resources.get::<Input<KeyCode>>().unwrap();
-    let scene = Scene::from_world(&world, &type_registry.component.read().unwrap());
+    /*let type_registry = resources.get::<TypeRegistry>();
+    let input = resources.get::<Input<KeyCode>>();
+    let scene = Scene::from_world(&world, &type_registry.component.read());
     
     use std::fs;
 
     // Scenes can be serialized like this:
     if input.just_pressed(KeyCode::F1) {
         let scene_ron = scene
-        .serialize_ron(&type_registry.property.read().unwrap())
+        .serialize_ron(&type_registry.property.read())
         .unwrap();
         fs::write("scenes/saved.scn", scene_ron).expect("Unable to write file");
-    }
+    }*/
 }
 
 pub struct MoveTimer (pub Timer);

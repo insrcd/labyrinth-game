@@ -1492,6 +1492,7 @@ name = "lab-builder"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
  "lab-entities",
  "lab-input",
  "lab-sprites",
@@ -1517,6 +1518,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "lab-builder",
+ "lab-core",
  "lab-entities",
  "lab-input",
  "lab-sprites",

@@ -18,3 +18,4 @@ lab-sprites = { path = "../lab-sprites" }
 lab-input = { path = "../lab-input" }
 lab-world = { path = "../lab-world" }
 lab-builder = { path = "../lab-builder" }
+lab-core = { path = "../lab-core" }

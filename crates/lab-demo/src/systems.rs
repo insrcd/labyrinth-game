@@ -65,7 +65,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
 
     for comp in mb.iter() {
-        commands.spawn(comp.clone());
+        commands.spawn(comp.clone()).with_bundle(comp.sprite.to_components(comp.location.into(), Scale(6.)));
     }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));

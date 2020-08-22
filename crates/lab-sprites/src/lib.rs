@@ -1,7 +1,7 @@
 use bevy::{prelude::*, ecs::DynamicBundle};
 
 
-use std::{time::Duration, collections::{hash_map::Values, HashMap}};
+use std::{time::Duration, collections::{hash_map::Values, HashMap}, rc::Rc, sync::Arc};
 
 use lab_core::stage;
 
@@ -42,6 +42,10 @@ impl SpriteLibrary {
         }
     }
 
+    pub fn len(&self) -> usize {
+        self.library.len()
+    }
+
    
     pub fn iter(&mut self) -> Values<'_, String, Sprite> {
         self.library.values()
@@ -62,24 +66,24 @@ impl SpriteLibrary {
         }
     }
 
-    pub fn make_string(&self, st : String, mut location : Vec3) -> Vec<SpriteSheetComponents> {
-        let mut sprites = Vec::<SpriteSheetComponents>::new();
+    pub fn make_string(&self, st : String, mut location : Vec3) -> Vec<(Vec3,Sprite)> {
+        let mut sprites_for_string = Vec::<(Vec3, Sprite)>::new();
         
         for c in st.to_lowercase().chars().into_iter() {
-            if c == ' ' {
+            if c == ' ' || c == '_' {
                 *location.x_mut() += 8.;
                 continue;
             }
             if let Some(sprite) = self.get(&format!("{}", c)){
-                sprites.push(sprite.to_components(location, Scale(1.)));
+                sprites_for_string.push((location.clone(), sprite.clone()));
                 *location.x_mut() += self.width_for_char(c);
             } else {
                 println!("Couldn't find sprite for letter {}", c);
             }
         }
-        *location.z_mut() = 200.;
+        //*location.z_mut() = 10.;
 
-        sprites
+        sprites_for_string
     }
 
     pub fn catalog_sprites(
@@ -112,13 +116,15 @@ impl SpriteLibrary {
     }
 
     pub fn write_despawning_text(&self,  
-        mut commands : Commands,
+        mut commands : &mut Commands,
         st : String, 
         duration : Duration, 
         location : Vec3){
-        self.make_string(st, location).into_iter().for_each(move |c| {            
-            commands.spawn(c).with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration, true)));
-        });
+
+        for c in self.make_string(st, location).into_iter() {     
+            commands.spawn(c.1.to_components(c.0, Scale(1.)))
+                .with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration, false)));
+        };
     }
     pub fn write_text(&self,  
         mut commands : &mut Commands,
@@ -127,7 +133,7 @@ impl SpriteLibrary {
     {
        
         self.make_string(st, location).into_iter().map(move |c| {            
-            commands.spawn(c).current_entity().unwrap()
+            commands.spawn(c.1.to_components(c.0, Scale(1.))).current_entity().unwrap()
         }).collect()
         
     }

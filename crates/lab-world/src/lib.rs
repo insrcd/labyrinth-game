@@ -15,8 +15,8 @@ impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .add_system(systems::npc_move_system.system())
-            .add_system(systems::add_world_sprites_system.system())
-            .add_system(systems::add_interaction_sprites_system.system())
+            //.add_system(systems::add_world_sprites_system.system())
+            //.add_system(systems::add_interaction_sprites_system.system())
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())

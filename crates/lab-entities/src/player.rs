@@ -43,7 +43,8 @@ pub struct PlayerComponents {
     named : Named,
     visible: Visible,
     location: Location,
-    input_timer: InputTimer
+    input_timer: InputTimer,
+    movement: Movement
 }
 
 impl PlayerComponents {
@@ -68,7 +69,8 @@ impl Default for PlayerComponents {
             named: Named("Unnamed".to_string()),
             visible: Visible,
             location: Location::default(),
-            input_timer: InputTimer (Timer::new(Duration::from_millis(125), true))
+            input_timer: InputTimer (Timer::new(Duration::from_millis(125), false)),
+            movement: Movement::default()
         }
     }
     
