@@ -36,21 +36,21 @@ pub fn create_simple_map_system(mut commands: Commands) {
     .add_tiles(RelativePosition::Below, 5, TileType::Brick(Hardness(1.)))
     .add_tiles(RelativePosition::LeftOf, 5, TileType::Brick(Hardness(1.)))
     .add_tiles(RelativePosition::Above, 5, TileType::Brick(Hardness(1.)))
-    .add_tiles_to_area(&Location::default(), Area(5., 5.), TileType::Floor);
+    .add_tiles_to_area(&Location::default(), Area(5., 5.), TileType::Floor)
+    .to_blueprint("basic_house_2");
 
-    mb.to_blueprint("basic_house_2");
+    mb
+    .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
+    .add_tiles(RelativePosition::Below, 5, TileType::Grass)
+    .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
+    .add_tiles(RelativePosition::Above, 5, TileType::Grass)
+    .to_blueprint("walkway");
 
     mb
         .add_tiles_from_blueprint("basic_house")
-        .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-        .add_tiles(RelativePosition::Below, 5, TileType::Grass)
-        .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-        .add_tiles(RelativePosition::Above, 5, TileType::Grass)
+        .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
-        .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-        .add_tiles(RelativePosition::Below, 5, TileType::Grass)
-        .add_tiles(RelativePosition::RightOf, 1, TileType::Grass)
-        .add_tiles(RelativePosition::Above, 5, TileType::Grass)
+        .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house_2");
     
 
