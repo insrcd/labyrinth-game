@@ -4,6 +4,7 @@ use lab_entities::prelude::*;
 
 use crate::*;
 use lab_world::settings::WORLD_TILE_SIZE;
+use std::{rc::Rc, borrow::Cow};
 
 #[derive(Clone, Debug)]
 pub struct Blueprint {
@@ -29,7 +30,7 @@ impl Blueprint {
 }
 
 pub struct MapBuilder {
-    pub tile_size : Vec2,
+    pub tile_palette : Rc<TilePalette>,
     pub starting_location : Location,
     pub current_location : Location,
     pub tiles : Vec<TileComponents>,
@@ -37,9 +38,9 @@ pub struct MapBuilder {
 }
 
 impl<'a>  MapBuilder {
-    pub fn new(tile_size : Vec2, starting_location: &Location) -> MapBuilder {
+    pub fn new(palette: Rc<TilePalette>, starting_location: &Location) -> MapBuilder {
         MapBuilder {
-            tile_size : tile_size.clone(),
+            tile_palette : palette.clone(),
             starting_location : starting_location.clone(),
             current_location : starting_location.clone(),
             tiles: Vec::new(),
@@ -94,62 +95,59 @@ impl<'a>  MapBuilder {
         self
     }
 
-    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Area, tile_type: TileType) -> &mut  MapBuilder{
-                 
-
-        for x in 0..area.0 as u32 {
-            for y in 0..area.1 as u32 {        
-                let new_loc = Location(loc.0 + (x as f32 * self.tile_size.x()), loc.1 - (y as f32 * self.tile_size.y()), loc.2,  world::WorldLocation::World);
-                println!("last location: {:?}", new_loc);        
-                self.tiles.push(TileComponents {
-                   tile_type: tile_type, 
-                   location: new_loc,
-                   hardness:TileComponents::hardness_from_tile(tile_type),
-                   visible: Visible,
-                   ..Default::default()
-                });            
+    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Area, tile_name: String) -> &mut  MapBuilder{
+                         
+        if let Some(comps) = self.tile_palette.components.get(&tile_name){
+            for x in 0..area.0 as u32 {
+                for y in 0..area.1 as u32 {  
+                    let mut comp = comps.clone();
+                    
+                    
+                    comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - y as f32 *  (x * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
+           
+                    self.tiles.push(comp);            
+                }
             }
+        } else {
+            println!("Cannot find tile definition for {}", tile_name);
         }
-
+    
         self
     }
-    pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_type: TileType) -> &mut MapBuilder {
-        for _ in 0..count {
-            let loc = self.current_location;
-            let location = match pos {
-                RelativePosition::LeftOf => {                                    
-                    Location(loc.0 - self.tile_size.x(), loc.1, loc.2, world::WorldLocation::World)
-                }
-                RelativePosition::RightOf => {
-                    Location(loc.0 + self.tile_size.x(), loc.1, loc.2, world::WorldLocation::World)
-                }
-                RelativePosition::Above => {
-                    Location(loc.0, loc.1 + self.tile_size.y(), loc.2, world::WorldLocation::World)
-                }
-                RelativePosition::Below => {
-                    Location(loc.0, loc.1 - self.tile_size.y(), loc.2, world::WorldLocation::World)
-                },
-                _ => self.current_location
-            };
+    pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut MapBuilder {
+        if let Some(comps) = self.tile_palette.components.get(&tile_name){
+            for _ in 0..count {
+                let mut my_comp = comps.clone();
 
-            println!("Adding tile at {:?} last location: {:?}", self.current_location, location);
+                let loc = self.current_location;
+                
+                let tile_size_x = comps.sprite.width as f32;
+                let tile_size_y = comps.sprite.height as f32;
 
-            let interaction: fn (Attributes) -> InteractionResult = match tile_type {
-            //    TileType::BrickWindow(_) => |_| {InteractionResult::ChangeTile(TileType::BrickWindowBroken)},
-            //    TileType::BrickDoorClosed(_) => |_| {InteractionResult::ChangeTile(TileType::BrickDoorOpen)},
-                _ => |_| {InteractionResult::None}
-            };
+                let location = match pos {
+                    RelativePosition::LeftOf => {                                    
+                        Location(loc.0 - tile_size_x, loc.1, loc.2, world::WorldLocation::World)
+                    }
+                    RelativePosition::RightOf => {
+                        Location(loc.0 + tile_size_x, loc.1, loc.2, world::WorldLocation::World)
+                    }
+                    RelativePosition::Above => {
+                        Location(loc.0, loc.1 + tile_size_y, loc.2, world::WorldLocation::World)
+                    }
+                    RelativePosition::Below => {
+                        Location(loc.0, loc.1 - tile_size_y, loc.2, world::WorldLocation::World)
+                    },
+                    _ => self.current_location
+                };
 
-            
-            self.tiles.push(TileComponents {
-                tile_type: tile_type, 
-                location: location.clone(),
-                hardness: TileComponents::hardness_from_tile(tile_type),
-                interaction: lab_entities::world::Interaction { call: interaction },
-                visible: Visible
-             });
+                println!("Adding tile at {:?} last location: {:?}", self.current_location, location);
+                
+                my_comp.location = location;
 
-            self.current_location = location.to_owned();
+                self.tiles.push(my_comp);
+
+                self.current_location = location;
+            }
         }
 
         self

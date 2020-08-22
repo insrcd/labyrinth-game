@@ -1505,10 +1505,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "lab-core"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "log",
+ "serde",
+]
+
+[[package]]
 name = "lab-entities"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
+ "lab-sprites",
  "log",
  "rand",
  "serde",
@@ -1521,7 +1532,7 @@ name = "lab-sprites"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "lab-entities",
+ "lab-core",
  "log",
  "serde",
 ]
@@ -1531,6 +1542,7 @@ name = "lab-world"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-core",
  "lab-entities",
  "lab-sprites",
  "log",

@@ -112,16 +112,16 @@ impl SpriteLibrary {
     }
 
     pub fn write_despawning_text(&self,  
-        mut commands :&mut Commands,
+        mut commands : Commands,
         st : String, 
         duration : Duration, 
-        mut location : Vec3){
+        location : Vec3){
         self.make_string(st, location).into_iter().for_each(move |c| {            
             commands.spawn(c).with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration)));
         });
     }
     pub fn write_text(&self,  
-        mut commands :&mut Commands,
+        mut commands : &mut Commands,
         st : String,  
         location : Vec3) -> Vec<Entity>
     {

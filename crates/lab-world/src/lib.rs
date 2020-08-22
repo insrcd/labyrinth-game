@@ -1,14 +1,6 @@
-use bevy::{prelude::*, math::Vec2, ecs::{DynamicBundle, Bundle}, prelude::Properties,
-     render::camera::Camera, type_registry::TypeRegistry};
-
-use strum_macros::EnumIter;
-use lab_core::stages;
+use bevy::{prelude::*};
+use lab_core::stage;
 mod systems;
-
-#[allow(dead_code)]
-pub mod stage {
-    pub const WORLD: &'static str = "world";
-}
 
 pub mod settings {
     pub const TILE_SIZE : f32 = 96.;
@@ -28,7 +20,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system_to_stage(stage::PROCESSING, systems::static_text_system.system());
+            .add_system_to_stage(stage::PROCESSING, systems::static_text_system.system())
             .add_system(systems::object_interaction_system.system());
     }
 }

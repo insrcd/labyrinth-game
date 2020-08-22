@@ -1,4 +1,4 @@
-use bevy::{prelude::Properties};
+use bevy::{prelude::{Translation, Properties, Bundle, Entity}, math::Vec3};
 use lab_sprites::{TileAnimation, Sprite as LabSprite};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -82,14 +82,14 @@ pub struct TileAttributes {
     pub sprite_idx: i32
 }
 
-#[derive(Bundle, Copy, Clone, Debug)]
+#[derive(Bundle, Clone, Debug)]
 pub struct TileComponents {
     pub hardness: Hardness,
     pub tile_type: TileType,
     pub location: Location,
     pub visible: Visible,
     pub interaction: Interaction,
-    pub sprite: Option<LabSprite>,
+    pub sprite: LabSprite,
     pub animation: TileAnimation,
     pub tile_attributes: TileAttributes
 }
@@ -113,14 +113,15 @@ impl Default for TileComponents {
             visible: Visible,
             interaction: Interaction { call: |_attributes| { InteractionResult::None } },
             tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: 0 },
-            sprite: None
+            sprite: LabSprite::default(),
+            animation: TileAnimation::default()
         }
     }
 }
 
 #[derive(Default, Clone)]
 pub struct Attributes {
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<crate::player::Inventory>,
     pub player: Option<Entity>,
     pub player_location: Option<Location>,
     pub interaction_location: Option<Location>,

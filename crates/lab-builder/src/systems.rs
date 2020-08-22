@@ -3,10 +3,10 @@ use bevy::{prelude::*,
 
 use lab_entities::prelude::*;
 use lab_sprites::*;
-use lab_input::*;
 use lab_entities::player;
 use std::time::Duration;
 use crate::TilePalette;
+use lab_input::{Mouse, SelectedTile};
 
 
 pub fn add_tiles_to_world_system (
@@ -38,22 +38,11 @@ pub fn add_tiles_to_world_system (
             
             println!("Placing tile at {:?},{:?}", x, y);
 
-            // setup a simple interaction
-            // TODO refactor
-
-            let mut interaction : fn (Attributes) -> InteractionResult = palette.interaction_for(&selected_tile.name).call;
-  
-            commands.spawn(TileComponents {
-                hardness: Hardness(selected_tile.hardness),
-                tile_type: selected_tile.tile_type,
-                location: Location(x, y, selected_tile.level,  world::WorldLocation::World),
-                interaction: lab_entities::world::Interaction { call: interaction },
-                ..Default::default()
-            }).with(TileAttributes{
-                hit_points: selected_tile.hit_points, 
-                hardness: selected_tile.hardness,
-                sprite_idx: 0
-            });
+             if let Some(mut components) = palette.components.get(&selected_tile.name){
+                let mut clone = components.clone();
+                clone.location = Location(x, y, selected_tile.level,  world::WorldLocation::World);
+                commands.spawn(clone);
+             }
         }
     }
     
@@ -102,6 +91,7 @@ pub fn builder_keyboard_system (
     windows : Res<Windows>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
+    mut palette: ResMut<TilePalette>, 
     lib : Res<SpriteLibrary>,
     mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>,
     mut camera_query: Query<(&Camera, &Translation)>) {
@@ -115,36 +105,41 @@ pub fn builder_keyboard_system (
         }
     }
 
-    let player_speed = 48.;
-
-    let mut movement = player::Direction::Stationary;
-    
-    use strum::IntoEnumIterator; 
-
     let window = windows.iter().last().unwrap();
 
     let text_duration: u64 = 750 ;
+
     let mut write_message = |message| {
-        lib.write_despawning_text(&mut commands, message, 
+        lib.write_despawning_text(commands, message, 
         Duration::from_millis(text_duration), 
                         Vec3::new(16. + camera_offset_x - (window.width/2) as f32, 16. +camera_offset_y - (window.height/2) as f32, 100.)
                     );
     };
+
+    let count = palette.components.len() as u32;
         
     if keyboard_input.just_pressed(KeyCode::RBracket) {
-       
-        //write_message(format!("Tile changed to {:?}",final_type).to_string());    
-    }
-    if keyboard_input.just_pressed(KeyCode::LBracket) {
-        
-    }
-    if keyboard_input.just_pressed(KeyCode::Add) {
+       if  selected_tile.tile == 0 {
+           selected_tile.tile = count -1;
+       }  else {
+           selected_tile.tile = selected_tile.tile - 1;
+       }
+
+       if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
+            write_message(format!("Tile changed to {}", name)); 
+       }
+    } else if keyboard_input.just_pressed(KeyCode::LBracket) {
+        selected_tile.tile = selected_tile.tile + 1 % count; 
+         
+        if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
+             write_message(format!("Tile changed to {}", name)); 
+        }
+
+    } else if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
-        write_message(format!("Level changed to {}",selected_tile.level));         
+        write_message(format!("Level changed to {}",selected_tile.level.clone()));         
+    } else if keyboard_input.just_pressed(KeyCode::Subtract) {
+        selected_tile.level -= 1.;
+        write_message(format!("Level changed to {}",selected_tile.level.clone()));         
     }
-    if keyboard_input.just_pressed(KeyCode::Subtract) {
-        selected_tile.level += 1.;
-        write_message(format!("Level changed to {}",selected_tile.level));         
-    }
-   
 }

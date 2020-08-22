@@ -11,6 +11,7 @@ use lab_entities::{
 use lab_sprites::*;
 
 use crate::settings::*;
+use lab_core::Moveable;
 
 
 pub fn add_interaction_sprites_system(mut commands: Commands,
@@ -261,7 +262,7 @@ pub fn npc_move_system(time: Res<Time>, mut query: Query<(&NonPlayer, &mut MoveT
 
 pub fn sprite_despawn_system(
     mut commands: Commands,
-    mut query : Query<(Entity, &TextureAtlasSprite, &core::Despawn, &Timer)>
+    mut query : Query<(Entity, &TextureAtlasSprite, &lab_core::Despawn, &Timer)>
 ){
     for (e, sprite, _dspawn, timer) in &mut query.iter(){
         if timer.finished {
