@@ -1,4 +1,4 @@
-use bevy::prelude::Bundle;
+use bevy::prelude::*;
 use crate::world::{Visible, Location, Interaction, InteractionResult};
 
 #[allow(dead_code)]
@@ -10,7 +10,8 @@ pub enum ItemType {
     Ingredient
 }
 
-#[allow(dead_code)]
+
+#[derive(Copy, Clone, Debug, Properties, PartialEq, Default)]
 pub struct Item;
 
 #[derive(Copy, Clone, Debug)]

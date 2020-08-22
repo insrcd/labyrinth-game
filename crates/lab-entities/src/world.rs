@@ -44,23 +44,10 @@ pub struct Area(pub f32, pub f32);
 
 #[derive(Debug, Clone, Copy, PartialEq, EnumIter)]
 pub enum TileType {
-    Wall(Hardness),
-    Floor,
-    Brick(Hardness),
-    BrickDoorOpen,
-    BrickDoorClosed(Hardness),
-    BrickWindow(Hardness),
-    BrickWindowBroken,
-    Lava,
-    Bar,
-    Grass,
-    Chair,
-    Shelf,
-    Bed,
-    Table,
-    Fridge,
-    Key,
-    Mug
+    Placeable(crate::objs::Item),
+    Breakable(Hardness),
+    Immutable,
+    Floor
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -77,7 +64,7 @@ impl Default for Hardness {
 
 
 pub enum InteractionResult {
-    ChangeTile(TileType),
+    ChangeTile(TileAttributes),
     Damage(u32),
     ChangeSprite(Sprite),
     Move(Location),
@@ -87,6 +74,15 @@ pub enum InteractionResult {
 #[derive(Copy, Clone, Debug)]
 pub struct Interaction {
     pub call : fn (Attributes) -> InteractionResult
+}
+
+
+
+#[derive(Default, Clone, Copy, Properties, Debug)]
+pub struct TileAttributes {
+    pub hit_points: u32,
+    pub hardness: f32, 
+    pub sprite_idx: i32
 }
 
 #[derive(Bundle, Copy, Clone, Debug)]
@@ -101,10 +97,8 @@ pub struct TileComponents {
 impl TileComponents {
     pub fn hardness_from_tile(tile_type: TileType) -> Hardness {
         match tile_type {
-            TileType::Wall(h ) => h, 
-            TileType::Brick(h ) =>  h,
-            TileType::BrickWindow(h ) =>  h,
-            TileType::BrickDoorClosed(h ) => h, 
+            TileType::Immutable => Hardness(999.), 
+            TileType::Breakable(h ) =>  h,
             _ => Hardness(0.),
         }
     }
@@ -114,7 +108,7 @@ impl Default for TileComponents {
     fn default() -> Self {
         TileComponents {
             hardness: Hardness(0.),
-            tile_type: TileType::Key,
+            tile_type: TileType::Floor,
             location: Location::default(),
             visible: Visible,
             interaction: Interaction { call: |_attributes| { InteractionResult::None } }
@@ -129,7 +123,8 @@ pub struct Attributes {
     pub inventory: Option<Inventory>,
     pub player: Option<Entity>,
     pub player_location: Option<Location>,
-    pub interaction_location: Option<Location>
+    pub interaction_location: Option<Location>,
+    pub tile_attributes: Option<TileAttributes>
 }
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;

@@ -13,49 +13,8 @@ use lab_sprites::*;
 use crate::settings::*;
 
 
-struct TileLoader;
-
-impl TileLoader  {
-    pub fn sprite_for_tiletype<'a>(tile_type: &TileType, sprites: &'a SpriteLibrary) -> &'a lab_sprites::Sprite {
-        match tile_type {
-            TileType::Wall(_) => sprites.get("wall").clone().unwrap(),
-            TileType::Brick(_) => sprites.get("brick").unwrap(),
-            TileType::BrickDoorOpen => sprites.get("brick_door_open").unwrap(),
-            TileType::BrickDoorClosed(_) => sprites.get("brick_door_closed").unwrap(),
-            TileType::BrickWindow(_) => sprites.get("brick_window").unwrap(),
-            TileType::BrickWindowBroken => sprites.get("brick_window_broken").unwrap(),
-            TileType::Floor => sprites.get("floor").unwrap(),
-            TileType::Lava => sprites.get("floor").unwrap(),
-            TileType::Bar => sprites.get("floor").unwrap(),
-            TileType::Grass => sprites.get("floor").unwrap(),
-            TileType::Chair => sprites.get("chair").unwrap(),
-            TileType::Shelf => sprites.get("shelf").unwrap(),
-            TileType::Bed => sprites.get("bed").unwrap(),
-            TileType::Table => sprites.get("table").unwrap(),
-            TileType::Fridge => sprites.get("fridge").unwrap(),
-            TileType::Key => sprites.get("floor").unwrap(),
-            TileType::Mug => sprites.get("mug").unwrap(),
-        }
-    }
-}
-
-fn add_sprite(asset_server: &AssetServer, assets: &mut Assets<ColorMaterial>, filename: &str, loc: &Location) -> SpriteComponents {
-       
-    let npc_sprite = asset_server.load(&filename).unwrap();
-
-    SpriteComponents {
-        translation: Translation(Vec3::new(loc.0, loc.1, 30.)),
-        scale: Scale(3.0),
-        draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
-        material: assets.add(npc_sprite.into()),
-        ..Default::default()
-    }
-}
-
 pub fn add_interaction_sprites_system(mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     mut query: Query<(Entity, Added<Player>, &Named, &Location, &lab_sprites::MoveAnimation)>,
     mut npc_query: Query<(Entity, Added<NonPlayer>, &Named, &Location, &lab_sprites::Sprite)>
 ) {
@@ -86,22 +45,12 @@ pub fn add_interaction_sprites_system(mut commands: Commands,
 pub fn add_world_sprites_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
-    mut query: Query<(Entity, &TileType, &Visible, &Location, Without<Draw,(&Visible,)>)>,
+    mut query: Query<(Entity, &TileType, &Visible, &Location, Changed<Visible>)>,
 ) {
-    for (e, tile, &_vis, &loc, _w) in &mut query.iter() {
-        println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
+    for (e, tile, &_vis, &loc, sprite) in &mut query.iter() {
+       // println!("Adding a tile entity {:?} {:?} {:?}", *tile, loc,e);    
 
-        let sprite = TileLoader::sprite_for_tiletype(&tile, &sprites);
-
-        commands.insert(e, SpriteSheetComponents {
-            translation: Translation(Vec3::new(loc.0, loc.1, loc.2)),
-            scale: Scale(6.0),
-            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
-            sprite: TextureAtlasSprite::new(sprite.atlas_sprite),
-            texture_atlas: sprite.atlas_handle.clone(),
-            ..Default::default()
-        });
-    
+        //commands.insert_one(e,TextureAtlasSprite::new(sprite.atlas_sprite));
     }
 }
 
@@ -173,7 +122,7 @@ pub fn object_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut placeable: Query<(Entity, &Interactable, &mut Translation, &Interaction)>,
+    mut placeable: Query<(Entity, &Interactable, &mut Translation, &Interaction, &mut TileAnimation)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
     mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>)>>
 ) {
@@ -184,15 +133,17 @@ pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut Translation, &Interaction)>,
+    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &lab_sprites::Sprite)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>)>>,
-    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory)>>
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &lab_sprites::Sprite)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
     // tile based collision
-    for (tile_entity, _tt, hardness, tile_translation, i) in &mut wall_query.iter() {
-        if hardness.0 == 0. {
+    for (tile_entity, _tt, hardness, 
+            tile_attributes, tile_translation, i,  
+                sprite) in &mut wall_query.iter() {
+        if hardness.0 == 0. || tile_attributes.hit_points == 0 {
             continue;
         }
 
@@ -202,23 +153,17 @@ pub fn tile_interaction_system (
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
-                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes {
+                        if let InteractionResult::ChangeTile(attr) = (i.call)(Attributes {
                             interaction_location: Some(Location::from(*tile_translation)),
                             inventory: None,
                             player: None,
-                            player_location: Some(movement.0.into())
+                            player_location: Some(movement.0.into()),
+                            tile_attributes: Some(*tile_attributes)
                         }) {      
-                            println!("Got change tile for NPC");                          
-                            let sprite = TileLoader::sprite_for_tiletype(&tile_type, &sprites);
+                            println!("Got change tile for NPC : {:?}", attr);                    
                             
-                            commands.insert(tile_entity, TileComponents {
-                                tile_type:tile_type, 
-                                location: Location::from(*tile_translation),
-                                hardness: Hardness(0.),
-                                ..Default::default()
-                            });
-
-                            commands.insert_one(tile_entity, TextureAtlasSprite::new(sprite.atlas_sprite));
+                            commands.insert(tile_entity, (Location::from(*tile_translation), 
+                                attr, TextureAtlasSprite::new(sprite.atlas_sprite)));
                         }
                     
                         *move_transition.0.x_mut() = (movement.0).0;
@@ -229,7 +174,7 @@ pub fn tile_interaction_system (
             //    player_collision = Some(move_transition.clone());
             }
         } 
-        for (e, mut move_translation, movement, inventory) in &mut player_moved.iter() {
+        for (e, mut move_translation, movement, inventory, sprite) in &mut player_moved.iter() {
             
             let collision = collide(move_translation.0, 
                 Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
@@ -239,23 +184,17 @@ pub fn tile_interaction_system (
                     _ => { 
                         // run the lambda that tells us what to do if a collision happens with a tile
                         // if the transition says to change, then change.
-                        if let InteractionResult::ChangeTile(tile_type) = (i.call)(Attributes {
+                        if let InteractionResult::ChangeTile(attr) = (i.call)(Attributes {
                             interaction_location: Some(Location::from(*tile_translation)),
                             inventory: Some(inventory.clone()),
                             player: Some(e),
-                            player_location: Some(movement.0.into())
+                            player_location: Some(movement.0.into()),
+                            tile_attributes: Some(*tile_attributes)
                         }) {      
-                            println!("Got change tile");                          
-                            let sprite = TileLoader::sprite_for_tiletype(&tile_type, &sprites);
-                            
-                            commands.insert(tile_entity, TileComponents {
-                                tile_type:tile_type, 
-                                location: Location::from(*tile_translation),
-                                hardness: Hardness(0.),
-                                ..Default::default()
-                            });
+                            println!("Got change tile: {:?}", attr); 
 
-                            commands.insert_one(tile_entity, TextureAtlasSprite::new(sprite.atlas_sprite));
+                            commands.insert(tile_entity, (Location::from(*tile_translation), 
+                                attr, TextureAtlasSprite::new(sprite.atlas_sprite)));
                         }
                         
                         // reset the sprite back to where it moved from
@@ -274,82 +213,7 @@ pub fn tile_interaction_system (
             }
         }
     }
-    /*
-    if let Some(movement) = player_collision {
-        for (_c, mut cam_trans) in &mut camera_query.iter(){  
-            *cam_trans.0.x_mut() = movement.0.x();             
-            *cam_trans.0.y_mut() = movement.0.y();
-        }
-    }*/
-    /*
-    for (_p, mut move_transition, m) in &mut player_moved_query.iter() {
-        for (_push, mut push_translation) in &mut moveables.iter() {             
-            let collision = collide(move_transition.0, Vec2::new(48.,48.), push_translation.0, Vec2::new(32.,32.0), false);
-            if let Some(collision) = collision {
-                println!("Collision pushed {:?} {:?}", collision, *m);
-                match collision {
-                    Collision::Left => *push_translation.0.x_mut() = (m.1).0 + 48., 
-                    Collision::Right =>*push_translation.0.x_mut() = (m.1).0 - 48.,
-                    Collision::Top =>*push_translation.0.y_mut() = (m.1).1 - 48.,
-                    Collision::Bottom => *push_translation.0.y_mut() = (m.1).1 + 48.,
-                    // the collision in bevy didn't accounts for squares that interact exactly
-                    Collision::Unknown => {
-                        match m.2 {
-                            Dir::Right => *push_translation.0.x_mut() = (m.1).0 + 48.,
-                            Dir::Left => *push_translation.0.x_mut() = (m.1).0 - 48.,
-                            Dir::Down => *push_translation.0.y_mut() = (m.1).1 - 48.,
-                            Dir::Up => *push_translation.0.y_mut() = (m.1).1 + 48.,
-                            Dir::Stationary => {}
-                        }
-                    }
-                }
-            } 
-        }
-        for (e,_tile_type, hardness, tile_translation, i) in &mut wall_query.iter() {
-            //println!("{:?} {:?}", hardness, tile_translation.0);
-            if hardness.0 == 0. {
-                continue;
-            }
-
-            //println!("{} {}",player_translation.0, tile_translation.0);
-
-            let collision = collide(move_transition.0, 
-                Vec2::new(WORLD_TILE_SIZE,WORLD_TILE_SIZE),  tile_translation.0, Vec2::new(48.,48.0), false);
-            
-            if let Some(collision) = collision {
-                match collision {
-                    _ => { 
-                        // run the lambda that tells us what to do if a collision happens with a tile
-                        let ret = (i.call)(Attributes);
-                        
-                        // if the transition says to change, then change.
-                        if ret.0 == true {
-                            let sprite = TileLoader::sprite_for_tiletype(&ret.1, &sprites);
-
-                            commands.insert(e, TileComponents {
-                                tile_type: ret.1, 
-                                location: Location::from(*tile_translation),
-                                hardness: Hardness(0.),
-                                ..Default::default()
-                             });
-
-                             commands.insert_one(e, TextureAtlasSprite::new(sprite.atlas_sprite));
-                            
-                        }
-                        
-                        *move_transition.0.x_mut() = (m.0).0;
-                        *move_transition.0.y_mut() = (m.0).1;
-                    }
-                }
-            } else {     
-                // move the camera if the player moves.
-                for (_c, mut cam_trans) in &mut camera_query.iter(){  
-                    *cam_trans.0.x_mut() = move_transition.0.x();             
-                    *cam_trans.0.y_mut() = move_transition.0.y();
-                }
-            }
-        }
-    }*/
+   
 }
 
 pub fn save_world_system(world: &mut World, resources: &mut Resources) {

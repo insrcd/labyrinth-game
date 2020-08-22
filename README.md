@@ -28,3 +28,10 @@ Currently, this codebase is merely being used to design the basic systems and da
 ## TODO
 
 - So much stuff...
+
+## Spriteset Thanks
+
+- http://blog-buch.rhcloud.com
+- Stephen Challener (Redshrike) and Jetrel, hosted by OpenGameArt.org
+- https://opengameart.org/content/lots-of-free-2d-tiles-and-sprites-by-hyptosis - Hyptosis and Zabin
+- Zabin, Daneeklu, Jetrel, Hyptosis, Redshrike, Bertram. http://opengameart.org/content/rpg-tiles-cobble-stone-paths-town-objects 

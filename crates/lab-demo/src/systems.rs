@@ -47,8 +47,7 @@ pub fn create_simple_map_system(mut commands: Commands) {
     //.add_tiles_to_area(&Location::default(), Area(2., 8.), TileType::Floor)
     .to_blueprint("walkway");
 
-    mb.add_tiles_to_area(&Location::default(), Area(100., 100.), TileType::Floor);
-/*
+
     mb
         .add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("basic_house")

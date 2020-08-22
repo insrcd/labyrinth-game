@@ -71,10 +71,10 @@ pub fn load_world_sprites_system(
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
         &mut texture_atlases, "resources/fonts/alphabet.png", letters, (15,8));
 
-    // placeholders for animated sprites
+    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
+            &mut texture_atlases, "resources/sprites/dungeon_tiles.png", &["dw_right_top","dw_center_top","dw_left_top","dw_left","dw_center","dw_right","dw_right_bottom","dw_right_center","dw_left_bottom"], (3,3));
 
-    sprite_lib.catalog_sprites( &asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/sensei.png", &["player"], (1,1));
+    // placeholders for animated sprites
     sprite_lib.catalog_sprites( &asset_server, &mut textures, 
         &mut texture_atlases, "resources/sprites/mug.png", &["mug"], (1,1));
     sprite_lib.catalog_sprites( &asset_server, &mut textures, 

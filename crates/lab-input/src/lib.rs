@@ -6,8 +6,6 @@ use bevy::{
 
 mod systems;
 use systems::*;
-
-use lab_world::settings::PLAYER_SPEED;
 use lab_entities::world::*;
 use lab_entities::player;
 
@@ -20,14 +18,20 @@ pub mod prelude {
     pub use menu::*;
 }
 
+#[derive(Clone, Properties, Debug)]
 pub struct SelectedTile {
+    pub name: String,
+    #[property(ignore)]
     pub tile_type: TileType,
-    pub level : f32
+    pub level : f32,
+    pub hardness: f32,
+    pub hit_points: u32,
+    pub tile: u32
 }
 
 impl Default for SelectedTile {
     fn default() -> SelectedTile {
-        SelectedTile { tile_type: TileType::Floor , level: 0.}
+        SelectedTile { tile_type: TileType::Floor , level: 0., name: "Undefined".to_string(), hardness: 0., hit_points: 0, tile: 0}
     }
 }
 

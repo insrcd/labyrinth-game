@@ -6,11 +6,13 @@ use lab_sprites::*;
 use lab_input::*;
 use lab_entities::player;
 use std::time::Duration;
+use crate::TilePalette;
 
 
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
-     selected_tile: Res<SelectedTile>, 
+    selected_tile: Res<SelectedTile>, 
+    palette: Res<TilePalette>,
     input: Res<Input<KeyCode>>, 
     mouse_input: Res<Input<MouseButton>>,
     mut mouse_query: Query<&Mouse>,
@@ -39,30 +41,18 @@ pub fn add_tiles_to_world_system (
             // setup a simple interaction
             // TODO refactor
 
-            let mut interaction : fn (Attributes) -> InteractionResult = |_| { InteractionResult::None };
-
-            let hardness = match selected_tile.tile_type {
-                TileType::Wall(h ) =>  {
-                    h
-                }, 
-                TileType::Brick(h ) =>  {
-                    h
-                }, TileType::BrickWindow(h ) =>  {
-                    interaction = |_| { InteractionResult::ChangeTile( TileType::BrickWindowBroken) };
-                    h
-                }, TileType::BrickDoorClosed(h ) =>  {
-                    interaction = |_| { InteractionResult::ChangeTile( TileType::BrickDoorOpen ) };
-                    h
-                }, 
-                _ => Hardness(0.)
-            };    
-
+            let mut interaction : fn (Attributes) -> InteractionResult = palette.interaction_for(&selected_tile.name.clone()).call;
+  
             commands.spawn(TileComponents {
-                hardness: hardness,
+                hardness: Hardness(selected_tile.hardness),
                 tile_type: selected_tile.tile_type,
                 location: Location(x, y, selected_tile.level,  world::WorldLocation::World),
                 interaction: lab_entities::world::Interaction { call: interaction },
                 ..Default::default()
+            }).with(TileAttributes{
+                hit_points: selected_tile.hit_points, 
+                hardness: selected_tile.hardness,
+                sprite_idx: 0
             });
         }
     }
@@ -142,32 +132,12 @@ pub fn builder_keyboard_system (
     };
         
     if keyboard_input.just_pressed(KeyCode::RBracket) {
-        let mut tile_types :  Vec<TileType> = Vec::new();
-
-        for ty in TileType::iter() {
-            tile_types.push(ty);
-        }
-    
-        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
-
-        match idx {
-            Some(i) => {
-                let final_type = match tile_types[(i+1) % tile_types.len()] {
-                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
-                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
-                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
-                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
-                    _ => tile_types[(i+1) % (tile_types.len())]
-                };
-                
-                selected_tile.tile_type = final_type;
-
-                write_message(format!("Tile changed to {:?}",final_type).to_string());         
-            },
-            None => {}
-        }
+       
+        //write_message(format!("Tile changed to {:?}",final_type).to_string());    
     }
-    
+    if keyboard_input.just_pressed(KeyCode::LBracket) {
+        
+    }
     if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
         write_message(format!("Level changed to {}",selected_tile.level));         
@@ -176,32 +146,5 @@ pub fn builder_keyboard_system (
         selected_tile.level += 1.;
         write_message(format!("Level changed to {}",selected_tile.level));         
     }
-    if keyboard_input.just_pressed(KeyCode::LBracket) {
-        let mut tile_types :  Vec<TileType> = Vec::new();
-
-        for ty in TileType::iter() {
-            tile_types.push(ty);
-        }
-    
-        let idx = tile_types.iter().position(|x| *x == selected_tile.tile_type );
-        match idx {
-            Some(mut i) => {
-                if i == 0 {
-                    i = tile_types.len() -1;
-                }
-
-                let final_type = match tile_types[i-1] {
-                    TileType::Brick(_) => TileType::Brick(Hardness(1.)),
-                    TileType::BrickWindow(_) => TileType::BrickWindow(Hardness(1.)),
-                    TileType::BrickDoorClosed(_) => TileType::BrickDoorClosed(Hardness(1.)),
-                    TileType::Wall(_) => TileType::Wall(Hardness(1.)),
-                    _ => tile_types[i-1]
-                };
-
-                selected_tile.tile_type = final_type;
-                write_message(format!("Tile changed to {:?}",final_type).to_string());         
-            },
-            None => {}
-        }
-    }
+   
 }

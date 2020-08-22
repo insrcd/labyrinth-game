@@ -1,7 +1,7 @@
 use bevy::{prelude::*, ecs::DynamicBundle};
 
 
-use std::{time::Duration, collections::HashMap};
+use std::{time::Duration, collections::{hash_map::Values, HashMap}};
 use lab_entities::world;
 use lab_core::stage;
 
@@ -44,6 +44,10 @@ impl SpriteLibrary {
         }
     }
 
+   
+    pub fn iter(&mut self) -> Values<'_, &'static str, Sprite> {
+        self.library.values()
+    }
     pub fn add(&mut self,sprite: Sprite){
         self.library.as_mut().insert(sprite.name, sprite);
     }
@@ -183,6 +187,21 @@ impl Default for MoveAnimation {
             down: Vec::new(),
             left: Vec::new(),
             right: Vec::new(),
+            count: 0
+        }
+    }
+}
+
+
+pub struct TileAnimation {
+    pub states: Vec<Sprite>,
+    pub count: usize
+}
+
+impl Default for TileAnimation {
+    fn default() -> Self {
+        TileAnimation {
+            states: Vec::new(),
             count: 0
         }
     }

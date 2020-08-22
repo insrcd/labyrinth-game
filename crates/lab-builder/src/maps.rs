@@ -135,8 +135,8 @@ impl<'a>  MapBuilder {
             println!("Adding tile at {:?} last location: {:?}", self.current_location, location);
 
             let interaction: fn (Attributes) -> InteractionResult = match tile_type {
-                TileType::BrickWindow(_) => |_| {InteractionResult::ChangeTile(TileType::BrickWindowBroken)},
-                TileType::BrickDoorClosed(_) => |_| {InteractionResult::ChangeTile(TileType::BrickDoorOpen)},
+            //    TileType::BrickWindow(_) => |_| {InteractionResult::ChangeTile(TileType::BrickWindowBroken)},
+            //    TileType::BrickDoorClosed(_) => |_| {InteractionResult::ChangeTile(TileType::BrickDoorOpen)},
                 _ => |_| {InteractionResult::None}
             };
 
