@@ -1553,6 +1553,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "lab-core",
+ "lab-sprites",
  "log",
  "rand",
  "serde",
@@ -1579,7 +1580,6 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "lab-core",
- "lab-entities",
  "log",
  "serde",
 ]

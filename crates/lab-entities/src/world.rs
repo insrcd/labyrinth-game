@@ -1,8 +1,5 @@
-
-use bevy::prelude::*;
-use strum_macros::EnumIter;
-use crate::objs::*;
-use crate::player::*;
+use bevy::{prelude::Properties};
+use lab_sprites::Sprite as LabSprite;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
@@ -42,9 +39,9 @@ impl From<Translation> for Location {
 #[derive(Clone, PartialEq)]
 pub struct Area(pub f32, pub f32);
 
-#[derive(Debug, Clone, Copy, PartialEq, EnumIter)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TileType {
-    Placeable(crate::objs::Item),
+    Placeable,
     Breakable(Hardness),
     Immutable,
     Floor
@@ -62,13 +59,12 @@ impl Default for Hardness {
     }
 }
 
-
 pub enum InteractionResult {
     ChangeTile(TileAttributes),
     Damage(u32),
-    ChangeSprite(Sprite),
+    ChangeSprite(LabSprite),
     Move(Location),
-    PickUp(Item),
+    PickUp(crate::objs::Item),
     None
 }
 #[derive(Copy, Clone, Debug)]
@@ -77,6 +73,7 @@ pub struct Interaction {
 }
 
 
+/// Attributes for a tile. These are meant to be changed by the player or interactions.
 
 #[derive(Default, Clone, Copy, Properties, Debug)]
 pub struct TileAttributes {
@@ -91,7 +88,10 @@ pub struct TileComponents {
     pub tile_type: TileType,
     pub location: Location,
     pub visible: Visible,
-    pub interaction: Interaction
+    pub interaction: Interaction,
+    pub sprite: Option<LabSprite>,
+    pub animation: TileAnimation,
+    pub tile_attributes: TileAttributes
 }
 
 impl TileComponents {
@@ -111,12 +111,12 @@ impl Default for TileComponents {
             tile_type: TileType::Floor,
             location: Location::default(),
             visible: Visible,
-            interaction: Interaction { call: |_attributes| { InteractionResult::None } }
+            interaction: Interaction { call: |_attributes| { InteractionResult::None } },
+            tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: 0 },
+            sprite: None
         }
     }
 }
-
-pub struct Despawn;
 
 #[derive(Default, Clone)]
 pub struct Attributes {
@@ -126,16 +126,3 @@ pub struct Attributes {
     pub interaction_location: Option<Location>,
     pub tile_attributes: Option<TileAttributes>
 }
-#[derive(Debug, Clone, Copy)]
-pub struct Moveable;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Solid;
-
-/*
-#[derive(Debug)]
-pub struct InteractionResult {
-    message: String,
-    colliding_entity : Option<Entity>
-}
-*/

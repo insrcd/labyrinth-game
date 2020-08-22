@@ -7,6 +7,7 @@ pub mod text;
 use systems::*;
 use lab_sprites::SpriteLibrary;
 use std::collections::HashMap;
+use lab_entities::prelude::TileComponents;
 
 pub mod prelude {
     pub use systems::*;
@@ -43,19 +44,11 @@ impl Plugin for BuilderPlugin {
 }
 
 pub struct TilePalette {
-    pub sprites: Vec<lab_sprites::Sprite>,
-    pub interactions: HashMap<&'static str, lab_entities::world::Interaction>
+    pub TileComponents: HashMap<String, TileComponents>
 }
 
 impl TilePalette {
-    pub fn  interaction_for (&self, name: &'static str) -> &lab_entities::world::Interaction {
-        self.interactions.get(name).unwrap()
-    }
-    pub fn add_interaction (&mut self, name: &'static str, interaction: lab_entities::world::Interaction) -> &TilePalette {
-        self.interactions.insert(name, interaction);
-
-        self
-    }
+    
 }
 
 fn make_tile_palette_system(

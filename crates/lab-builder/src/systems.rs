@@ -41,7 +41,7 @@ pub fn add_tiles_to_world_system (
             // setup a simple interaction
             // TODO refactor
 
-            let mut interaction : fn (Attributes) -> InteractionResult = palette.interaction_for(&selected_tile.name.clone()).call;
+            let mut interaction : fn (Attributes) -> InteractionResult = palette.interaction_for(&selected_tile.name).call;
   
             commands.spawn(TileComponents {
                 hardness: Hardness(selected_tile.hardness),

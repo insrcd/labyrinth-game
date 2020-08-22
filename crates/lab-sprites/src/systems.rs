@@ -7,7 +7,7 @@ use crate::Sprite as LabSprite;
 
 pub fn sprite_despawn_system(
     mut commands: Commands,
-    mut query : Query<(Entity, &TextureAtlasSprite, &world::Despawn, &Timer)>
+    mut query : Query<(Entity, &TextureAtlasSprite, &core::Despawn, &Timer)>
 ){
     for (e, sprite, _dspawn, timer) in &mut query.iter(){
         if timer.finished {
@@ -15,6 +15,7 @@ pub fn sprite_despawn_system(
         }
     }
 }
+
 pub fn static_text_system(
     mut commands: Commands,
     mut query : Query<(Entity, &StationaryLetter, &mut Translation)>,    

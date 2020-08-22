@@ -2,10 +2,6 @@ use bevy::{prelude::*};
 
 mod systems;
 
-use systems::*;
-
-use bevy::prelude::*;
-
 #[allow(dead_code)]
 pub mod stage {
     /// Stage for initializing resources (used for startup systems)
@@ -29,3 +25,6 @@ impl Plugin for CorePlugin {
 }
 #[derive(Debug)]
 pub struct InputTimer(pub Timer);
+pub struct Despawn;
+#[derive(Debug, Clone, Copy)]
+pub struct Moveable;
