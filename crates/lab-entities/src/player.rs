@@ -68,7 +68,7 @@ impl Default for PlayerComponents {
             named: Named("Unnamed".to_string()),
             visible: Visible,
             location: Location::default(),
-            input_timer: InputTimer (Timer::new(Duration::from_millis(125)))
+            input_timer: InputTimer (Timer::new(Duration::from_millis(125), true))
         }
     }
     

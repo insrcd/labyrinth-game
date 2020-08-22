@@ -117,7 +117,7 @@ impl SpriteLibrary {
         duration : Duration, 
         location : Vec3){
         self.make_string(st, location).into_iter().for_each(move |c| {            
-            commands.spawn(c).with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration)));
+            commands.spawn(c).with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration, true)));
         });
     }
     pub fn write_text(&self,  
@@ -141,7 +141,7 @@ impl SpriteLibrary {
                 
         commands.spawn(self.get(&name).unwrap().to_components(location, scale))
             .with(lab_core::Despawn)
-            .with(Timer::new(duration))
+            .with(Timer::new(duration, true))
             .with_bundle(bundle)
             .current_entity().unwrap()
     }
