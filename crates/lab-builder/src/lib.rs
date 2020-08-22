@@ -44,7 +44,7 @@ impl Plugin for BuilderPlugin {
 }
 
 pub struct TilePalette {
-    pub TileComponents: HashMap<String, TileComponents>
+    pub components: HashMap<String, TileComponents>
 }
 
 impl TilePalette {
@@ -57,6 +57,15 @@ fn make_tile_palette_system(
 )  {
     for sprite in sprite_library.iter() {
         println!("Adding sprite {:?}", sprite);
-        palette.sprites.push(sprite.clone())
+
+        if let Some(comp) = palette.components.get(sprite.name){
+
+           
+        } else {
+            palette.components.insert(TileComponents {
+                tile_attributes: 
+            })
+        }
+
     }
 }

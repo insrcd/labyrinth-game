@@ -1,41 +1,6 @@
-
-use lab_entities::prelude::*;
 use bevy::prelude::*;
 use crate::*;
 
-use crate::Sprite as LabSprite;
-
-pub fn sprite_despawn_system(
-    mut commands: Commands,
-    mut query : Query<(Entity, &TextureAtlasSprite, &core::Despawn, &Timer)>
-){
-    for (e, sprite, _dspawn, timer) in &mut query.iter(){
-        if timer.finished {
-            commands.despawn(e);
-        }
-    }
-}
-
-pub fn static_text_system(
-    mut commands: Commands,
-    mut query : Query<(Entity, &StationaryLetter, &mut Translation)>,    
-    mut player_query : Query<(Entity, &Player, Changed<Movement>)>
-){
-    for (e, _player, movement) in &mut player_query.iter(){
-
-        for (e, _letter, mut translation) in &mut query.iter(){
-
-            let old_loc = movement.0;
-            let new_loc = movement.1;
-
-            let x_change = old_loc.0 - new_loc.0;
-            let y_change = old_loc.1 - new_loc.1;
-
-            *translation.x_mut() -= x_change;
-            *translation.y_mut() -= y_change;
-        }
-    }
-}
 
 // refactor this out or change to default
 

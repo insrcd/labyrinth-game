@@ -1,5 +1,5 @@
 use bevy::{prelude::Properties};
-use lab_sprites::Sprite as LabSprite;
+use lab_sprites::{TileAnimation, Sprite as LabSprite};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
