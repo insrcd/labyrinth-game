@@ -14,7 +14,7 @@ So, join us in solving the mystery of the Labynrith Below Labyrinth!
 
 ## Contribution
 
-If you want to contribute, please create issues or pull requests. Since I am doing this to learn, I'm doing a lot of things wrong. I've read a lot of documentation on rust and a lot of source code to try and make what I create as idiomatic as possible, but I'm going to do things differently or wrong - a lot! My background is mostly Java / C# and Kotlin so my mindset is heavily inspired by functional and OOP. All I ask for is kindness and understanding. Any suggestions are welcome!
+If you want to contribute, please create issues or pull requests. Since I am doing this to learn, I'm doing a lot of things wrong. I've read a lot of documentation on rust and a lot of source code to try and make what I create as idiomatic as possible, but I'm going to do things differently or wrong - a lot! My background is mostly Java / C# and Kotlin so my mindset is heavily inspired by functional and OOP. All I ask for is kindness and understanding and patience from anyone who interacts with this project. Any suggestions are welcome!
 
 ## Quickstart for Development
 
@@ -59,12 +59,12 @@ Depending on your development environment there may be some "gotchyas" based on 
 
 ## Thanks
 - My wonderful, supportive wife, Hadria Beth (https://hadriabeth.com) who will be responsible for quite a bit of the sprite art in the game.
-- @cart for his hard work on Bevy, thank you for making a engine that even a novice Rust dev can adopt.
-- All helpful folks in the Bevy discord channel, they have started a great community.
+- Carter Anderson (@cart_cart) for his hard work on Bevy, thank you for making a engine that even a novice Rust dev can adopt.
+- All helpful folks in the Bevy discord channel, my experience in the community so far has been amazing, and I'm learning a great deal about the game dev world.
 
 ## Sprite Sheet Thanks
 
-I am using openly available spritesheets for now (and one that is not so open but I'm working on replacing that), and here is the list of thanks to these amazing artists who make their work available (If I missed anyone please contact me and I will update it ASAP).
+Until I can get some sprites made specificially for the game, I am using openly available spritesheets (well, one that is not so open but I'm working on replacing it asap), and here is the list of thanks to these amazing artists who make their work available to game devs (If I missed anyone please contact me and I will update it ASAP - I'll make sure to do an audit before things are released for realz).
 
 - http://blog-buch.rhcloud.com
 - Stephen Challener (Redshrike) and Jetrel, hosted by OpenGameArt.org
