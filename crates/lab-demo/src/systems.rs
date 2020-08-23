@@ -50,16 +50,16 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .to_blueprint("basic_house_2");
 
     mb
-    .add_tiles_to_area(&Location::default(), Area(2., 8.), tiles::floor.to_string())
+    .add_tiles_to_area(&Location::default(), Area(2., 6.), tiles::floor.to_string())
     .to_blueprint("walkway");
 
 
-    mb.add_tiles_to_area(&Location::default(), Area(2., 2.), tiles::wall.to_string());
-        /*.add_tiles_from_blueprint("basic_house")
+    mb
+        .add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
-        .add_tiles_from_blueprint("walkway");*/
+        .add_tiles_from_blueprint("walkway");
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
     

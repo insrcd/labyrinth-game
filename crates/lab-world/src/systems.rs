@@ -141,7 +141,7 @@ pub fn tile_interaction_system (
             // I reduce the player bounding box by a few pixels to allow for closer interaction.
             // this can probably be a non-constant based on tile size.
             let collision = collide(move_translation.0, 
-                (sprite.size() * scale.0) - Vec2::new(16.* scale.0,16.* scale.0),  tile_translation.0, tile_sprite.size() * scale.0, true);
+                (sprite.size() * scale.0) - Vec2::new(16.* scale.0,16.* scale.0),  tile_translation.0, tile_sprite.size() * scale.0, false);
             
             if let Some(collision) = collision {
                 match collision {

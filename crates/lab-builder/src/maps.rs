@@ -13,19 +13,21 @@ pub struct Blueprint {
 }
 
 impl Blueprint {
-    fn top_right(&self) -> Location {
+    fn top_right(&self) -> (Vec2, Location) {
         let mut location = Location::default();
+        let mut size : Vec2 = Vec2::new(0.,0.);
         
         for tiles in self.tiles.as_slice() {
             if tiles.location.0 > location.0 {
                 location.0 = tiles.location.0;
+                size = tiles.sprite.size();
             }
             if tiles.location.1 > location.1 {
                 location.1 = tiles.location.1;
             }
         }
 
-        location
+        (size, location)
     }
 }
 
@@ -86,9 +88,9 @@ impl<'a>  MapBuilder {
 
             
             println!("bp: {:?}, Offset: {:?}", name, offset);
-
-            self.current_location.0 += offset.0;
-            self.current_location.1 += offset.1;
+            // add size and offset from top right corner of last blueprint
+            self.current_location.0 += (offset.0).x() + (offset.1).0;
+            //self.current_location.1 += (offset.1).1 + (offset.0).y();
 
             println!("Current Location: {:?},{:?}",  self.current_location.0,  self.current_location.1);
         }
