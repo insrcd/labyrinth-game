@@ -1,8 +1,8 @@
 # Labyrinth Brewery - THE GAME
 
-A few of my buds at my local brewery are making a beer of my own specification, so I decided to make them a video game. I am not a video game developer. I'm a guy who once wrote a MUD in C to learn how it in the 90s. So, One of the main reasons I'm doing this is to learn https://www.rust-lang.org/.
+A few of my buds at my local brewery (https://lbc.beer) are making a beer of my own specification, so I decided to make them a video game. I am not a video game developer; I work for a pretty fantastic company called Slalom doing enterprise / custom app development. I'm just a dude who once wrote a MUD in C to learn how it in the 90s. I thought, the best way to learn https://www.rust-lang.org/ was to make a game.
 
-This project is possible because of https://bevyengine.org/, a ECS and rendering engine that's brand new, and super sweet. I'm hoping tht me struggling through how to implement basic stuff (like Zooming, tile placement, mouse movement, sprite interaciton, ECS queries, etc) will help others as Bevy becomes more mature.
+My timing was impeccable, because at the exact moment, https://bevyengine.org/ was released to the world. It is an ECS and rendering engine that's brand new, and super sweet. It focuses on ergonomics, which is  (in my opinion) one of the most important aspect of developing stuff. I'm hoping that me struggling through how to implement basic stuff (like Zooming, tile placement, mouse movement, sprite interaciton, ECS queries, etc) will help others as Bevy becomes more mature.
 
 The game will be a market similuation / roguelike hybrid. You, the Hero, will decend into the recently discovered caverns below the Labyrinth Brewery in Manchester, Connecticut. In the labyinth, you can gather materials for your next craft beer or cider recipe, new items to destroy epic monsters, and other generic roguelike stuff. If you parish during the depths you will find yourself on the Bar Room floor, with all of your recipes and improvements but all of your items will be gone! You may have to deal with a rowdy bar guest from time to time as well.
 
@@ -49,7 +49,7 @@ Depending on your development environment there may be some "gotchyas" based on 
 
 - Dialog System
 - NPC Interaction System
-- Object Interactoin System
+- Object Interaction System
 - Combat
 - Market Simulation
 - Procedural Generation of Labyrinth
@@ -70,3 +70,5 @@ I am using openly available spritesheets for now (and one that is not so open bu
 - Stephen Challener (Redshrike) and Jetrel, hosted by OpenGameArt.org
 - https://opengameart.org/content/lots-of-free-2d-tiles-and-sprites-by-hyptosis - Hyptosis and Zabin
 - Zabin, Daneeklu, Jetrel, Hyptosis, Redshrike, Bertram. http://opengameart.org/content/rpg-tiles-cobble-stone-paths-town-objects 
+
+
