@@ -60,7 +60,7 @@ fn setup (
             left: vec![sprites.get("move_left_1").unwrap().clone(), sprites.get("move_left_2").unwrap().clone()],
             right: vec![sprites.get("move_right_1").unwrap().clone(), sprites.get("move_right_2").unwrap().clone()],
             ..Default::default()
-        })
+        }).with(player_sprite)
     .spawn( (NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), npc_sprite.clone()),);
     
     /*

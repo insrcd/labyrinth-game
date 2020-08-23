@@ -13,12 +13,19 @@ mod tiles {
 /// Adds a simple map using the map builder for the purposes of a demo.
 
 pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
-    let p = &*palette;
 
+    if let Some(mut tiles) = palette.components.get_mut(tiles::wall) {
+        tiles.hardness = Hardness(1.);
+        tiles.tile_attributes.hit_points = 1;
+    }
+    
     let mut mb = MapBuilder::new(
-        Rc::new(p.clone()), // may have to share the pallete later, so adding resource counting now
+        Rc::new(palette.clone()), // may have to share the pallete later, so adding resource counting now
         &Location::default()
     );
+
+    // wall tiles are hard in my world
+    
 
     &mut mb
             .add_tiles(RelativePosition::RightOf, 5, tiles::wall.to_string())
@@ -47,12 +54,12 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .to_blueprint("walkway");
 
 
-    mb
-        .add_tiles_from_blueprint("basic_house")
+    mb.add_tiles_to_area(&Location::default(), Area(2., 2.), tiles::wall.to_string());
+        /*.add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("basic_house")
         .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
-        .add_tiles_from_blueprint("walkway");
+        .add_tiles_from_blueprint("walkway");*/
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
     

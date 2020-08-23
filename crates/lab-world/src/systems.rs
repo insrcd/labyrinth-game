@@ -92,7 +92,7 @@ pub fn tile_interaction_system (
     mut camera_query: Query<(&Camera, &mut Translation)>,
     mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &SpriteInfo)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &SpriteInfo)>>,
-    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &SpriteInfo)>>
+    mut player_moved: Query<With<Player,(Entity, &Scale, &mut Translation, Mutated<Movement>, &Inventory, &SpriteInfo)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
@@ -105,6 +105,8 @@ pub fn tile_interaction_system (
         }
 
         for ( _m, mut move_transition, movement, move_sprite) in &mut moveables.iter() {
+            println!("Checking for collision");
+
             let collision = collide(move_transition.0, 
                 move_sprite.size(), 
                 tile_translation.0, 
@@ -135,10 +137,11 @@ pub fn tile_interaction_system (
             //    player_collision = Some(move_transition.clone());
             }
         } 
-        for (e, mut move_translation, movement, inventory, sprite) in &mut player_moved.iter() {
-            
+        for (e, scale, mut move_translation, movement, inventory, sprite) in &mut player_moved.iter() {
+            // I reduce the player bounding box by a few pixels to allow for closer interaction.
+            // this can probably be a non-constant based on tile size.
             let collision = collide(move_translation.0, 
-                sprite.size(),  tile_translation.0, tile_sprite.size(), false);
+                (sprite.size() * scale.0) - Vec2::new(16.* scale.0,16.* scale.0),  tile_translation.0, tile_sprite.size() * scale.0, true);
             
             if let Some(collision) = collision {
                 match collision {

@@ -144,6 +144,7 @@ impl<'a>  MapBuilder {
                 println!("Adding tile at {:?} last location: {:?}", self.current_location, location);
                 
                 my_comp.location = location;
+                println!("Hardness: {:?}", my_comp.hardness);
 
                 self.tiles.push(my_comp);
 
