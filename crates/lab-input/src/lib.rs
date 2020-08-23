@@ -1,7 +1,7 @@
 use bevy::{
     prelude::*,
     render::{camera::Camera},
-    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion} },
+    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion, MouseWheel} },
 };
 
 mod systems;
@@ -42,22 +42,45 @@ pub mod stage {
     pub const INPUT: &'static str = "input";
 }
 
+pub struct ScrollTimer(Timer);
+pub struct ScrollState {
+    pub y : f32,
+    pub x : f32
+}
+
+impl Default for ScrollState {
+
+    fn default() -> Self {
+        ScrollState {
+            y: 0.,
+            x: 0.
+        }
+    }
+}
+
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .init_resource::<SelectedTile>()
             .init_resource::<State>()
+            .init_resource::<ScrollState>()
+            .add_startup_system(input_timers.system())
             .add_system(systems::player_movement_system.system())
-            .add_system(systems::track_mouse_movement_system.system());
+            .add_system(systems::track_mouse_movement_system.system())
+            .add_system(systems::mouse_wheel_system.system());
     }
 }
 
+fn input_timers (mut commands : Commands) {
+    commands.spawn((ScrollTimer(Timer::from_seconds(0.1, false)),));
+}
 #[allow(dead_code)]
 #[derive(Default)]
 pub struct State {
-    mouse_button_event_reader: EventReader<MouseButtonInput>,
-    mouse_motion_event_reader: EventReader<MouseMotion>,
-    cursor_moved_event_reader: EventReader<CursorMoved>,
+    pub mouse_button_event_reader: EventReader<MouseButtonInput>,
+    pub mouse_motion_event_reader: EventReader<MouseMotion>,
+    pub cursor_moved_event_reader: EventReader<CursorMoved>,
+    pub mouse_wheel_event_reader: EventReader<MouseWheel>
 }
 pub struct Mouse {
     pub position: Vec2

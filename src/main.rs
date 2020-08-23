@@ -53,7 +53,7 @@ fn setup (
     .spawn( 
         PlayerComponents::new("Adam", 
         Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World)))
-        .with_bundle(player_sprite.to_components(Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World).into(), Scale(6.)))
+        .with_bundle(player_sprite.to_components(Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World).into(), Scale(1.)))
         .with( MoveAnimation {
             up: vec![sprites.get("move_up_1").unwrap().clone(), sprites.get("move_up_2").unwrap().clone()], 
             down: vec![sprites.get("move_down_1").unwrap().clone(), sprites.get("move_down_2").unwrap().clone()],

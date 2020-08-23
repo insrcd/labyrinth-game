@@ -1,6 +1,7 @@
 
 
-use lab_world::settings::PLAYER_SPEED;
+const PLAYER_SPEED : f32  = 16.;
+
 use bevy::{
     prelude::*,
     render::{camera::Camera},
@@ -11,6 +12,34 @@ use lab_sprites::*;
 use lab_core::*;
 
 use crate::*;
+
+pub fn mouse_wheel_system (
+    time : Res<Time>,
+    mut state: ResMut<State>,
+    mut scroll_state : ResMut<ScrollState>,
+    mouse_wheel: Res<Events<MouseWheel>>,
+    mut query : Query<&mut ScrollTimer> // timer samples every .1 seconds
+) {    
+    
+    for mut timer in &mut query.iter() {
+        timer.0.tick(time.delta_seconds);
+        if timer.0.finished {
+            for event in state.mouse_wheel_event_reader.iter(&mouse_wheel) {
+            
+                let mw : &MouseWheel = event.into();
+                println!("{:?}", mw);
+
+                scroll_state.y += mw.y;
+                scroll_state.x += mw.x;
+                
+                timer.0.reset()
+            }
+        } else {
+            scroll_state.y = 0.;
+            scroll_state.x = 0.;
+        }
+    }
+}
 
 pub fn track_mouse_movement_system(
     cursor_moved_events: Res<Events<CursorMoved>>,
@@ -24,7 +53,7 @@ pub fn track_mouse_movement_system(
         for (c, t) in &mut camera_query.iter(){
             if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
                 camera_offset_x = t.x();
-                camera_offset_y = t.y();
+                camera_offset_y = t.y() ;
             }
         }
 

@@ -8,10 +8,10 @@ use lab_entities::{
     Named
 };
 
-use lab_sprites::{ Sprite as LabSprite, SpriteLibrary, TileAnimation, StationaryLetter };
+use lab_sprites::{ SpriteInfo, SpriteLibrary, TileAnimation, StationaryLetter };
 
-use crate::settings::*;
-use lab_core::Moveable;
+use crate::{settings::*};
+use lab_core::{Zoomable, Moveable};
 
 #[derive(Debug)]
 pub enum Collision {
@@ -90,9 +90,9 @@ pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &LabSprite)>,
-    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &LabSprite)>>,
-    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &LabSprite)>>
+    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &SpriteInfo)>,
+    mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &SpriteInfo)>>,
+    mut player_moved: Query<With<Player,(Entity, &mut Translation, Mutated<Movement>, &Inventory, &SpriteInfo)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
@@ -196,6 +196,30 @@ pub fn save_world_system(world: &mut World, resources: &mut Resources) {
 pub struct MoveTimer (pub Timer);
 pub struct DialogTimer (pub Timer);
 
+/**
+ * I tried using camera scale, but it doesn't seem to be able to zoom in when scale < 1
+ */
+pub fn zoom_system(
+    mut scroll : ResMut<lab_input::ScrollState>,
+    mut query : Query<(&mut Scale, &mut Translation, &Zoomable)>
+) {
+    for (mut scale, mut trans, _tt) in &mut query.iter(){
+        if scroll.y != 0.{
+
+            // ease in the zoom by about .25 of the scroll intensity
+            let ease : f32 = 0.25;
+
+            let factor = (scroll.y.clone() * ease)+ 1. ;
+
+            println!("{}", factor);
+
+            *scale = Scale( scale.0 * factor );
+
+            *trans.x_mut() *= factor;
+            *trans.y_mut() *= factor;
+        } 
+    }
+}
 /// Move all NPCs in the scene every 1.5 seconds
 pub fn npc_move_system(time: Res<Time>, mut query: Query<(&NonPlayer, &mut MoveTimer, &mut Translation, &mut Movement, &mut Moveable)>) {
     for (_npc, mut timer, mut trans, mut m, _mm) in &mut query.iter() {

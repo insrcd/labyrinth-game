@@ -2,7 +2,6 @@ use bevy::{prelude::*};
 
 mod systems;
 
-#[allow(dead_code)]
 pub mod stage {
     /// Stage for initializing resources (used for startup systems)
     pub const INIT: &'static str = "init";
@@ -28,3 +27,6 @@ pub struct InputTimer(pub Timer);
 pub struct Despawn;
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;
+/// This defines an entity as zoomable. It will be modified by the zoom system.
+#[derive(Debug, Clone, Copy, Properties)]
+pub struct Zoomable;

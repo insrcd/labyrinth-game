@@ -44,7 +44,7 @@ pub fn load_world_sprites_system(
     sprite_lib.catalog_sprites( &asset_server, &mut textures, 
         &mut texture_atlases, "resources/sprites/mug.png", &["mug"], (1,1));
     sprite_lib.catalog_sprites( &asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/hat-guy.png", &["npc"], (1,1));
+        &mut texture_atlases, "resources/sprites/player_sprites.png", &["npc"], (1,1));
 
     commands
         .insert_resource(sprite_lib);

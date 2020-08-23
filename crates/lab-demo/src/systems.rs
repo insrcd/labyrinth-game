@@ -28,7 +28,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
             .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
             .add_tiles(RelativePosition::Above, 5, tiles::wall.to_string())
-            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
+            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(6., 6.), tiles::floor.to_string())
             .to_blueprint("basic_house");
 
     mb
@@ -39,7 +39,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
     .add_tiles(RelativePosition::LeftOf, 1, tiles::wall.to_string())
     .add_tiles(RelativePosition::Above, 5, tiles::wall.to_string())
-    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(4., 4.), tiles::floor.to_string())
+    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(6., 6.), tiles::floor.to_string())
     .to_blueprint("basic_house_2");
 
     mb

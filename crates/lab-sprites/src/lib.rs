@@ -1,7 +1,7 @@
 use bevy::{prelude::*, ecs::DynamicBundle};
 
 
-use std::{time::Duration, collections::{hash_map::Values, HashMap}, rc::Rc, sync::Arc};
+use std::{time::Duration, collections::{hash_map::Values, HashMap}};
 
 use lab_core::stage;
 
@@ -20,7 +20,7 @@ impl Plugin for SpritesPlugin {
 
 
 #[derive(Clone, Properties, Debug, Default)]
-pub struct Sprite {
+pub struct SpriteInfo {
     pub name:  String,
     pub atlas_sprite : u32,
     pub atlas_handle : Handle<TextureAtlas>,
@@ -28,7 +28,7 @@ pub struct Sprite {
     pub width: u32
 }
 
-impl Sprite {
+impl SpriteInfo {
     pub fn size(&self) -> Vec2 {
         return Vec2::new(self.width as f32, self.height as f32);
     }
@@ -38,7 +38,7 @@ pub struct Letter;
 pub struct StationaryLetter;
 
 pub struct SpriteLibrary {
-    library: HashMap<String, Sprite>
+    library: HashMap<String, SpriteInfo>
 }
 
 impl SpriteLibrary {
@@ -53,14 +53,14 @@ impl SpriteLibrary {
     }
 
    
-    pub fn iter(&mut self) -> Values<'_, String, Sprite> {
+    pub fn iter(&mut self) -> Values<'_, String, SpriteInfo> {
         self.library.values()
     }
-    pub fn add(&mut self,sprite: Sprite){
+    pub fn add(&mut self,sprite: SpriteInfo){
         self.library.insert(sprite.name.to_string(), sprite);
     }
 
-    pub fn get(&self, name : &str) -> Option<&Sprite> {
+    pub fn get(&self, name : &str) -> Option<&SpriteInfo> {
         self.library.get(name)
     }
 
@@ -72,8 +72,8 @@ impl SpriteLibrary {
         }
     }
 
-    pub fn make_string(&self, st : String, mut location : Vec3) -> Vec<(Vec3,Sprite)> {
-        let mut sprites_for_string = Vec::<(Vec3, Sprite)>::new();
+    pub fn make_string(&self, st : String, mut location : Vec3) -> Vec<(Vec3,SpriteInfo)> {
+        let mut sprites_for_string = Vec::<(Vec3, SpriteInfo)>::new();
         
         for c in st.to_lowercase().chars().into_iter() {
             if c == ' ' || c == '_' {
@@ -118,7 +118,7 @@ impl SpriteLibrary {
         labels
         .iter()
         .enumerate()
-        .for_each(|(i,s)| self.add(Sprite::new(s.to_string(),  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32)));
+        .for_each(|(i,s)| self.add(SpriteInfo::new(s.to_string(),  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32)));
         
     }
 
@@ -160,9 +160,9 @@ impl SpriteLibrary {
     }
 }
 
-impl Sprite {
-    pub fn new (name : String, sprite_idx: u32, handle: Handle<TextureAtlas>, width: u32, height: u32) -> Sprite {
-         return Sprite {
+impl SpriteInfo {
+    pub fn new (name : String, sprite_idx: u32, handle: Handle<TextureAtlas>, width: u32, height: u32) -> SpriteInfo {
+         return SpriteInfo {
              name: name.to_string(),
              atlas_sprite: sprite_idx,
              atlas_handle: handle,
@@ -184,10 +184,10 @@ impl Sprite {
 }
 
 pub struct MoveAnimation {
-    pub up: Vec<Sprite>,
-    pub down: Vec<Sprite>,
-    pub left: Vec<Sprite>,
-    pub right: Vec<Sprite>,
+    pub up: Vec<SpriteInfo>,
+    pub down: Vec<SpriteInfo>,
+    pub left: Vec<SpriteInfo>,
+    pub right: Vec<SpriteInfo>,
     pub count: usize
 }
 
@@ -206,6 +206,6 @@ impl Default for MoveAnimation {
 
 #[derive(Debug, Properties, Default, Clone)]
 pub struct TileAnimation {
-    pub states: Vec<Sprite>,
+    pub states: Vec<SpriteInfo>,
     pub count: usize
 }

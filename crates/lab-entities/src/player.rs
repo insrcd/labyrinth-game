@@ -8,7 +8,7 @@ use crate::{Named, world::Location, prelude::Visible};
 use rand::distributions::{Standard, Distribution};
 use rand::Rng;
 use std::{time::Duration, marker::PhantomData};
-use lab_core::InputTimer;
+use lab_core::{Zoomable, InputTimer};
 
 #[derive(PartialEq, Debug)]
 pub struct Movement(pub Location, pub Location, pub Direction);
@@ -44,7 +44,8 @@ pub struct PlayerComponents {
     visible: Visible,
     location: Location,
     input_timer: InputTimer,
-    movement: Movement
+    movement: Movement,
+    zoomable: Zoomable
 }
 
 impl PlayerComponents {
@@ -70,7 +71,8 @@ impl Default for PlayerComponents {
             visible: Visible,
             location: Location::default(),
             input_timer: InputTimer (Timer::new(Duration::from_millis(125), false)),
-            movement: Movement::default()
+            movement: Movement::default(),
+            zoomable: Zoomable
         }
     }
     

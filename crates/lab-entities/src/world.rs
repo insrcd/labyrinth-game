@@ -1,5 +1,6 @@
 use bevy::{prelude::{Translation, Properties, Bundle, Entity}, math::Vec3};
-use lab_sprites::{TileAnimation, Sprite as LabSprite};
+use lab_sprites::{TileAnimation, SpriteInfo};
+use lab_core::Zoomable;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
@@ -62,7 +63,7 @@ impl Default for Hardness {
 pub enum InteractionResult {
     ChangeTile(TileAttributes),
     Damage(u32),
-    ChangeSprite(LabSprite),
+    ChangeSprite(SpriteInfo),
     Move(Location),
     PickUp(crate::objs::Item),
     None
@@ -89,9 +90,10 @@ pub struct TileComponents {
     pub location: Location,
     pub visible: Visible,
     pub interaction: Interaction,
-    pub sprite: LabSprite,
+    pub sprite: SpriteInfo,
     pub animation: TileAnimation,
-    pub tile_attributes: TileAttributes
+    pub tile_attributes: TileAttributes,
+    pub zoomable: Zoomable
 }
 
 impl TileComponents {
@@ -113,8 +115,9 @@ impl Default for TileComponents {
             visible: Visible,
             interaction: Interaction { call: |_attributes| { InteractionResult::None } },
             tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: 0 },
-            sprite: LabSprite::default(),
-            animation: TileAnimation::default()
+            sprite: SpriteInfo::default(),
+            animation: TileAnimation::default(),
+            zoomable: Zoomable
         }
     }
 }

@@ -102,7 +102,7 @@ impl<'a>  MapBuilder {
                 for y in 0..area.1 as u32 {  
                     let mut comp = comps.clone();
                     
-                    comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - y as f32 *  (y * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
+                    comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - (y * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
                     println!("Location: {:?}", comp.location);
                     self.tiles.push(comp);            
                 }
