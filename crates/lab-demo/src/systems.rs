@@ -43,11 +43,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .to_blueprint("basic_house_2");
 
     mb
-      .add_tiles(RelativePosition::Current, 1, "grass".to_string())
-      .add_tiles(RelativePosition::Below, 5, "grass".to_string())
-      .add_tiles(RelativePosition::RightOf, 1, "grass".to_string())
-      .add_tiles(RelativePosition::Above, 5, "grass".to_string())
-    //.add_tiles_to_area(&Location::default(), Area(2., 8.), TileType::Floor)
+    .add_tiles_to_area(&Location::default(), Area(2., 8.), tiles::floor.to_string())
     .to_blueprint("walkway");
 
 
