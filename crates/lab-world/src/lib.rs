@@ -22,7 +22,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::sprite_despawn_system.system())
             .add_system_to_stage(stage::PROCESSING, systems::static_text_system.system())
             .add_system(systems::object_interaction_system.system())
-            .add_system(systems::zoom_system.system());
+            .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system());
     }
 }
 

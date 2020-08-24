@@ -41,7 +41,7 @@ fn setup (
     sprites: ResMut<SpriteLibrary>
 ) {
     
-    let mut npc_sprite = sprites.get("npc").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();
+    let mut npc_sprite = sprites.get("mob_0").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();
     let mut player_sprite = sprites.get("move_down_1").unwrap_or_else(|| panic!("Cannot find Player sprite")).clone();
 
     commands
@@ -49,7 +49,7 @@ fn setup (
     .spawn(Camera2dComponents::default())
    
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
-    .spawn(( Mouse { position: Vec2::new(0.,0.)},))
+    .spawn(( Mouse { position: Vec2::new(0.,0.)}, Translation::new(0.,0.,0.)))
     .spawn( 
         PlayerComponents::new("Adam", 
         Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World)))

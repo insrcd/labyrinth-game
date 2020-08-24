@@ -12,6 +12,14 @@ Currently, this codebase is merely being used to design the basic systems and da
 
 So, join us in solving the mystery of the Labynrith Below Labyrinth!
 
+## Keybindings
+
+W,A,S,D - Move the player around
+; and ' - cycle through tile categories (Lab-Builder)
+[ and ] - cycle through tiles in the current category
++ / -   - Set the Z axis of new tiles
+Scroll Wheel Up / Scroll Wheel Down - Zoom in and out
+
 ## Contribution
 
 If you want to contribute, please create issues or pull requests. Since I am doing this to learn, I'm doing a lot of things wrong. I've read a lot of documentation on rust and a lot of source code to try and make what I create as idiomatic as possible, but I'm going to do things differently or wrong - a lot! My background is mostly Java / C# and Kotlin so my mindset is heavily inspired by functional and OOP. All I ask for is kindness and understanding and patience from anyone who interacts with this project. Any suggestions are welcome!

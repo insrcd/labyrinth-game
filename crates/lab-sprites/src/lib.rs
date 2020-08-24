@@ -25,7 +25,8 @@ pub struct SpriteInfo {
     pub atlas_sprite : u32,
     pub atlas_handle : Handle<TextureAtlas>,
     pub height: u32,
-    pub width: u32
+    pub width: u32,
+    pub category : String
 }
 
 impl SpriteInfo {
@@ -99,7 +100,8 @@ impl SpriteLibrary {
         texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
         filename : &str, 
         labels: &[&'static str], 
-        dim : (usize,usize)) {
+        dim : (usize,usize),
+        category: String) {
         let texture_handle = asset_server
         .load_sync(
             assets,
@@ -115,10 +117,26 @@ impl SpriteLibrary {
         
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-        labels
+        for i in 0..(dim.0 * dim.1) {
+            
+            // allow for single label naming. if ["name"] is passed, the sprites will be labeled name_{idx}
+            let name = if labels.len() == 1 {
+                 format!("{}_{}", labels[0].to_string(), i).to_string()
+            } else {
+                if i >= labels.len() {
+                    break;
+                }
+                labels[i].to_string()
+            };
+            println!("Adding sprite named {}",name);
+
+            self.add(SpriteInfo::new(name,  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32, category.clone()))
+        }
+
+        /*labels
         .iter()
         .enumerate()
-        .for_each(|(i,s)| self.add(SpriteInfo::new(s.to_string(),  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32)));
+        .for_each(|(i,s)| self.add(SpriteInfo::new(s.to_string(),  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32)));*/
         
     }
 
@@ -130,6 +148,7 @@ impl SpriteLibrary {
 
         for c in self.make_string(st, location).into_iter() {     
             commands.spawn(c.1.to_components(c.0, Scale(1.)))
+                .with(c.1)
                 .with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration, false)));
         };
     }
@@ -161,13 +180,14 @@ impl SpriteLibrary {
 }
 
 impl SpriteInfo {
-    pub fn new (name : String, sprite_idx: u32, handle: Handle<TextureAtlas>, width: u32, height: u32) -> SpriteInfo {
+    pub fn new (name : String, sprite_idx: u32, handle: Handle<TextureAtlas>, width: u32, height: u32, category: String) -> SpriteInfo {
          return SpriteInfo {
              name: name.to_string(),
              atlas_sprite: sprite_idx,
              atlas_handle: handle,
              width,
-             height
+             height,
+             category: category
          }
     }
 

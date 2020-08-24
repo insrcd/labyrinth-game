@@ -6,7 +6,7 @@ use lab_sprites::*;
 use lab_entities::player;
 use std::time::Duration;
 use crate::TilePalette;
-use lab_input::{Mouse, SelectedTile, State};
+use lab_input::{Mouse, SelectedTile, State, ScrollState};
 
 
 pub fn make_tile_palette_system(
@@ -33,40 +33,43 @@ pub fn make_tile_palette_system(
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
     selected_tile: Res<SelectedTile>, 
+    scroll_state: Res<ScrollState>, 
     palette: Res<TilePalette>,
     mouse_input: Res<Input<MouseButton>>,
-    mut mouse_query: Query<&Mouse>
+    mut mouse_query: Query<(Entity, &Mouse, &mut Translation)>,    
 ) {    
-    let tile_size = lab_world::settings::TILE_SIZE;
+    for (e,mouse, mut t) in &mut mouse_query.iter(){
+        // update the preview tile position
 
-    for mouse in &mut mouse_query.iter(){
+        *t.0.x_mut() = mouse.position.x();
+        *t.0.y_mut() = mouse.position.y();
+
         if mouse_input.just_pressed(MouseButton::Left) {
-            let st = selected_tile.clone();
+            let components = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
+            
+            /* snap to grid */
+
+            let st = selected_tile.clone();                    
 
             let mut x = mouse.position.x() ;
             let mut y = mouse.position.y() ;
             
-            println!("Mouse at {:?},{:?}", x, y);
 
-            let grid_x = x  / tile_size;
-            let grid_y = y  / tile_size;
+            let grid_x = x  / (components.sprite.size().x() * scroll_state.current_scale);
+            let grid_y = y  / (components.sprite.size().y() * scroll_state.current_scale);
             
-            println!("{},{}", grid_x as i32 % 96, grid_y as i32 % 96);
-            
-            x = grid_x.round() * tile_size;
-            y = grid_y.round() * tile_size;
-
-             if let Some(components) = palette.components.get(&st.name.clone()){
-                 
-                println!("Placing tile at {:?},{:?}", x, y);
-
-                let mut clone = components.clone();
-
-                clone.location = Location(x, y, st.level,  world::WorldLocation::World);
+            x = grid_x.round() * components.sprite.size().x() * scroll_state.current_scale;
+            y = grid_y.round() * components.sprite.size().y() * scroll_state.current_scale;
                 
-                commands.spawn(clone)
-                    .spawn(components.sprite.to_components( Vec3::new(x,y,st.level.clone()), Scale(6.)));
-             }
+            println!("Placing tile at {:?},{:?}", x, y);
+
+            let mut clone = components.clone();
+            let sprite: SpriteInfo = clone.sprite.clone();
+
+            clone.location = Location(x, y, st.level,  world::WorldLocation::World);
+            
+            commands.spawn(clone)
+                .with_bundle(sprite.to_components( Vec3::new(x,y,st.level), Scale(scroll_state.current_scale)));            
         }
     }
 }
@@ -76,12 +79,14 @@ pub fn add_tiles_to_world_system (
 pub fn builder_keyboard_system (
     mut commands: Commands,
     windows : Res<Windows>,
+    scroll : Res<ScrollState>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
     mut palette: ResMut<TilePalette>, 
     lib : Res<SpriteLibrary>,
-    mut query: Query<(&player::Player, &mut Translation, &mut player::Movement)>,
+    mut mouse_query: Query<(Entity, &Mouse)>,
     mut camera_query: Query<(&Camera, &Translation)>) {
+
     let mut camera_offset_x : f32 = 0.;
     let mut camera_offset_y : f32 = 0.;
     
@@ -94,42 +99,57 @@ pub fn builder_keyboard_system (
 
     let window = windows.iter().last().unwrap();
 
-    let text_duration: u64 = 750 ;
-
-    let mut write_message = |message| {
-        lib.write_despawning_text(&mut commands, message, 
-        Duration::from_millis(text_duration), 
-                        Vec3::new(16. + camera_offset_x - (window.width/2) as f32, 16. +camera_offset_y - (window.height/2) as f32, 100.)
-                    );
-    };
-
-    let count = palette.components.len() as u32;
+    let count = palette.tiles_in_category(&selected_tile.category).len() as u32;
         
-    if keyboard_input.just_pressed(KeyCode::RBracket) {
-       if  selected_tile.tile == 0 {
-           selected_tile.tile = count -1;
-       }  else {
-           selected_tile.tile = selected_tile.tile - 1;
-       }
+    if keyboard_input.just_pressed(KeyCode::Apostrophe) {
+        let categories = palette.tile_categories();
+        let pos = categories.iter().position(|&s| s == selected_tile.category).unwrap();
 
-       if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
-            selected_tile.name = name.clone();
-            
-            write_message(format!("Tile changed to {}", name)); 
-       }
-    } else if keyboard_input.just_pressed(KeyCode::LBracket) {
-        selected_tile.tile = selected_tile.tile + 1 % count; 
-         
-        if let Some((idx, name)) = palette.tile_names().enumerate().nth(selected_tile.tile as usize) {
-            selected_tile.name = name.clone();
-             write_message(format!("Tile changed to {}", name)); 
+        selected_tile.tile = 0;
+        selected_tile.category = palette.tile_categories()[(pos + 1) % categories.len()].to_string();
+        println!("Selected category: {}", selected_tile.category);
+    }
+    
+    if keyboard_input.just_pressed(KeyCode::Semicolon) {
+        let categories = palette.tile_categories();
+        
+        let pos = categories.iter().position(|&s| s == selected_tile.category).unwrap();
+        println!("{:?} {:?}",categories, pos);
+        
+        selected_tile.tile = 0;
+
+        if pos != 0 {
+            selected_tile.category = palette.tile_categories()[(pos - 1)].to_string();
+        } else {            
+            selected_tile.category = palette.tile_categories()[palette.tile_categories().len() -1].to_string();
         }
+        println!("Selected category: {}", selected_tile.category);
+    }
+
+    if keyboard_input.just_pressed(KeyCode::RBracket) {
+        let len = palette.tiles_in_category(&selected_tile.category).len();
+        selected_tile.tile = (selected_tile.tile + 1) as usize % len;
+
+        for (e,m) in &mut mouse_query.iter(){
+                let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
+                commands                
+                    .insert(e, mouse_tile.sprite.to_components(Vec3::new(m.position.x(), m.position.y(), 100.), Scale(scroll.current_scale)));
+        }    
+    } else if keyboard_input.just_pressed(KeyCode::LBracket) {
+        if selected_tile.tile != 0 {
+            selected_tile.tile = selected_tile.tile - 1;
+        }
+        for (e,m) in &mut mouse_query.iter(){
+            let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
+            commands                
+                .insert(e, mouse_tile.sprite.to_components(Vec3::new(m.position.x(), m.position.y(), 100.), Scale(scroll.current_scale)));
+       }   
 
     } else if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
-        write_message(format!("Level changed to {}",selected_tile.level.clone()));         
+        //write_message(format!("Level changed to {}",selected_tile.level.clone()));         
     } else if keyboard_input.just_pressed(KeyCode::Subtract) {
         selected_tile.level -= 1.;
-        write_message(format!("Level changed to {}",selected_tile.level.clone()));         
+       // write_message(format!("Level changed to {}",selected_tile.level.clone()));         
     }
 }

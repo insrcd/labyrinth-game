@@ -26,12 +26,13 @@ pub struct SelectedTile {
     pub level : f32,
     pub hardness: f32,
     pub hit_points: u32,
-    pub tile: u32
+    pub tile: usize,
+    pub category : String
 }
 
 impl Default for SelectedTile {
     fn default() -> SelectedTile {
-        SelectedTile { tile_type: TileType::Floor , level: 0., name: "Undefined".to_string(), hardness: 0., hit_points: 0, tile: 0}
+        SelectedTile { tile_type: TileType::Floor , level: 0., name: "Undefined".to_string(), hardness: 0., hit_points: 0, tile: 0, category: "world".to_string()}
     }
 }
 
@@ -45,7 +46,8 @@ pub mod stage {
 pub struct ScrollTimer(Timer);
 pub struct ScrollState {
     pub y : f32,
-    pub x : f32
+    pub x : f32,
+    pub current_scale: f32
 }
 
 impl Default for ScrollState {
@@ -53,7 +55,8 @@ impl Default for ScrollState {
     fn default() -> Self {
         ScrollState {
             y: 0.,
-            x: 0.
+            x: 0.,
+            current_scale: 1.
         }
     }
 }

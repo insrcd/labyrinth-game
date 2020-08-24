@@ -1,9 +1,6 @@
 use bevy::prelude::*;
 use crate::*;
 
-
-// refactor this out or change to default
-
 pub fn load_world_sprites_system(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -17,7 +14,13 @@ pub fn load_world_sprites_system(
             "gravel_v","brick_window","brick_door_open","shelf","brick_window_broken","bed","table","fridge"];
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/world.png", world_sprite_labels, (4,4));
+        &mut texture_atlases, "resources/sprites/world.png", world_sprite_labels, (4,4), "world".to_string());
+
+    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
+        &mut texture_atlases, "resources/sprites/roguelikecreatures.png", &["mob"], (8,9),"mobs".to_string());
+    
+    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
+            &mut texture_atlases, "resources/sprites/roguelikeitems.png", &["item"], (13,14), "items".to_string());
 
     let player_sprite_labels = &[
         "move_down_1","move_down_2","move_up_1","move_up_2","move_left_1","move_left_2","dead",
@@ -26,7 +29,7 @@ pub fn load_world_sprites_system(
         "climb_1","climb_2","surprise","yay","yay_2","yay_3","tied_up"];
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/player_sprites.png", player_sprite_labels, (7,4));
+        &mut texture_atlases, "resources/sprites/player_sprites.png", player_sprite_labels, (7,4) ,"player".to_string());
     
         
     let letters = &[" ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".", "/","0","1","2","3","4",
@@ -35,16 +38,13 @@ pub fn load_world_sprites_system(
         ,"o","p","q","r","s","t","u","v","w","x","y","z"];
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
-        &mut texture_atlases, "resources/fonts/alphabet.png", letters, (15,8));
+        &mut texture_atlases, "resources/fonts/alphabet.png", letters, (15,8), 
+        "letters".to_string());
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
-            &mut texture_atlases, "resources/sprites/dungeon_tiles.png", &["dw_right_top","dw_center_top","dw_left_top","dw_left","dw_center","dw_right","dw_right_bottom","dw_right_center","dw_left_bottom"], (3,3));
+            &mut texture_atlases, "resources/sprites/dungeon_tiles.png", &["dw_right_top","dw_center_top","dw_left_top","dw_left","dw_center","dw_right","dw_right_bottom","dw_right_center","dw_left_bottom"], (3,3),"dungeon".to_string());
 
     // placeholders for animated sprites
-    sprite_lib.catalog_sprites( &asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/mug.png", &["mug"], (1,1));
-    sprite_lib.catalog_sprites( &asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/player_sprites.png", &["npc"], (1,1));
 
     commands
         .insert_resource(sprite_lib);

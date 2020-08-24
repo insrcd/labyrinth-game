@@ -58,6 +58,19 @@ impl TilePalette {
         self.components.values()
     }
 
+    pub fn tile_categories(&self) -> Vec<&str> {
+        let mut categories : Vec<&str> = self.components.values().map(|m| &m.sprite.category[..]).collect();
+        
+        categories.sort();
+        categories.dedup();
+        
+        categories
+    }
+
+    pub fn tiles_in_category(&self, category : &str) -> Vec<&TileComponents> {
+        self.components.values().filter(|p| p.sprite.category == category).collect()        
+    }
+
     pub fn update( &mut self, comp : &TileComponents) {
 
         if let Some(tc) = self.components.get_mut(&comp.sprite.name) {

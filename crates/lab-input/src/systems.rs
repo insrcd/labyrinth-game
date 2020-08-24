@@ -27,7 +27,6 @@ pub fn mouse_wheel_system (
             for event in state.mouse_wheel_event_reader.iter(&mouse_wheel) {
             
                 let mw : &MouseWheel = event.into();
-                println!("{:?}", mw);
 
                 scroll_state.y += mw.y;
                 scroll_state.x += mw.x;

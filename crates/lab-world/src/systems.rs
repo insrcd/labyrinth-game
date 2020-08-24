@@ -220,6 +220,8 @@ pub fn zoom_system(
 
             *trans.x_mut() *= factor;
             *trans.y_mut() *= factor;
+
+            scroll.current_scale = scale.0;
         } 
     }
 }
@@ -249,11 +251,12 @@ pub fn npc_move_system(time: Res<Time>, mut query: Query<(&NonPlayer, &mut MoveT
 
 pub fn sprite_despawn_system(
     mut commands: Commands,
-    mut query : Query<(Entity, &TextureAtlasSprite, &lab_core::Despawn, &Timer)>
+    mut query : Query<(Entity, &Draw,&SpriteInfo, &lab_core::Despawn, &Timer, &mut Translation)>
 ){
-    for (e, sprite, _dspawn, timer) in &mut query.iter(){
+    for (e, sprite,s, _dspawn, timer, mut translation) in &mut query.iter(){
         if timer.finished {
-            commands.despawn(e);
+            //commands.remove_one::<Draw>(e);
+            *translation.x_mut() -= 5000.;commands.remove_one::<Draw>(e);
         }
     }
 }
