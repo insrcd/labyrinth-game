@@ -15,7 +15,7 @@ pub fn make_tile_palette_system(
 )  {
     println!("Making palette from {} sprites", sprite_library.len());
     for sprite in sprite_library.iter() {
-        println!("Adding sprite {:?}", sprite);
+        //println!("Adding sprite {:?}", sprite);
 
         if let Some(comp) = palette.components.get(&sprite.name){
            // already added
@@ -31,16 +31,8 @@ pub fn make_tile_palette_system(
 }
 pub fn update_tile_system (mut commands : Commands, 
     mouse : ResMut<Mouse>,
-    mut tile_query: Query<(&FreeTile, &mut Translation, &Draw)>,
     mut m_tile_query: Query<(&MovingTile, &mut Translation, &Draw)>){
     
-    for (_ft, mut t, _d) in &mut tile_query.iter(){
-        // update the preview tile position
-        //println!("Moving tile position {:?}", _d.is_visible);
-
-        *t.0.x_mut() = mouse.position.x();
-        *t.0.y_mut() = mouse.position.y();
-    }
     for (_ft, mut t, _d) in &mut m_tile_query.iter(){
         // update the preview tile position
         //println!("Moving tile position {:?}", _d.is_visible);
@@ -113,7 +105,7 @@ pub fn add_tiles_to_world_system (
         for (entity, tt, si, t, scale, d) in &mut interaction_query.iter() {
             let true_location = get_true_location(&mouse, scale, &windows, &mut camera_query);
             
-            let (x1, y1) = ( t.x() - (si.width / 2) as f32,  t.y() - (si.height / 2 )as f32) ;
+            let (x1, y1) = ( t.x() - (si.width/2) as f32* scale.0,  t.y() - (si.height / 2 )as f32* scale.0) ;
             let (x2, y2) = (t.x() + ((si.width/2) as f32 * scale.0), t.y() + ((si.height/2) as f32 * scale.0));
             
             println!("mouse click: {:?} tile location: ({:?},{:?}) ({:?},{:?})",mouse.position, x1,y1,x2,y2);
@@ -218,20 +210,43 @@ pub fn builder_keyboard_system (
         selected_tile.tile = (selected_tile.tile + 1) as usize % len;
 
         let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];       
+        let sprite_width = mouse_tile.sprite.size().x() * scroll.current_scale;
+        let sprite_height = mouse_tile.sprite.size().y() * scroll.current_scale;
 
-        commands                          
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(window.width as f32 / 2., window.height as f32 / 2., 100.), Scale(scroll.current_scale)));
-
+        if let Some((entity, t)) = free_tile.iter().into_iter().last() {
+            println!("Updating Existing Sprite");
+            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)-sprite_height, 100.), Scale(scroll.current_scale));
+            commands                
+                .insert(entity, (comps.sprite, comps.texture_atlas.clone()));
+        } else {
+            println!("Adding Existing Sprite");
+            commands                
+            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)+sprite_height, 100.), Scale(scroll.current_scale)))
+            .with(FreeTile);
+        }
     } else if keyboard_input.just_pressed(KeyCode::LBracket) {
+        let len = palette.tiles_in_category(&selected_tile.category).len();
 
         if selected_tile.tile != 0 {
             selected_tile.tile = selected_tile.tile - 1;
+        } else {
+            selected_tile.tile = len - 1;
         }
         let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
-        
-        commands                
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(window.width as f32 / 2., window.height as f32 / 2., 100.), Scale(scroll.current_scale)));
+        let sprite_width = mouse_tile.sprite.size().x() * scroll.current_scale;
+        let sprite_height = mouse_tile.sprite.size().y() * scroll.current_scale;
 
+        if let Some((entity, t)) = free_tile.iter().into_iter().last() {
+            println!("Updating Existing Sprite");
+            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)-sprite_height, 100.), Scale(scroll.current_scale));
+            commands                
+                .insert(entity, (comps.sprite, comps.texture_atlas.clone()));
+        } else {
+            println!("Adding Existing Sprite");
+            commands                
+            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)+sprite_height, 100.), Scale(scroll.current_scale)))
+            .with(FreeTile);
+        }
     } else if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
         //write_message(format!("Level changed to {}",selected_tile.level.clone()));         

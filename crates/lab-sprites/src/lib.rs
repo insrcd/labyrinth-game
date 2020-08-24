@@ -128,7 +128,7 @@ impl SpriteLibrary {
                 }
                 labels[i].to_string()
             };
-            println!("Adding sprite named {}",name);
+            //println!("Adding sprite named {}",name);
 
             self.add(SpriteInfo::new(name,  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32, category.clone()))
         }
