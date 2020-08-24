@@ -31,9 +31,17 @@ pub fn make_tile_palette_system(
 }
 pub fn update_tile_system (mut commands : Commands, 
     mouse : ResMut<Mouse>,
-    mut tile_query: Query<(&FreeTile, &mut Translation, &Draw)>){
+    mut tile_query: Query<(&FreeTile, &mut Translation, &Draw)>,
+    mut m_tile_query: Query<(&MovingTile, &mut Translation, &Draw)>){
     
     for (_ft, mut t, _d) in &mut tile_query.iter(){
+        // update the preview tile position
+        //println!("Moving tile position {:?}", _d.is_visible);
+
+        *t.0.x_mut() = mouse.position.x();
+        *t.0.y_mut() = mouse.position.y();
+    }
+    for (_ft, mut t, _d) in &mut m_tile_query.iter(){
         // update the preview tile position
         //println!("Moving tile position {:?}", _d.is_visible);
 
@@ -48,24 +56,32 @@ pub fn select_tile_system (mut commands : Commands,
     mut camera_query: Query<(&Camera, &Translation)>,
     mut tile_query: Query<(&TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>){
     
-    if mouse_input.just_pressed(MouseButton::Left) {
+    /*if mouse_input.just_pressed(MouseButton::Left) {
         for (tt, si, t, scale, d) in &mut tile_query.iter() {
             let true_location = get_true_location(&mouse, scale, &windows, &mut camera_query);
-            if  true_location.x() > t.0.x() * scale.0 && true_location.x() < t.0.x() + si.size().y() * scale.0 
-                 && true_location.y() > t.0.y() * scale.0 && true_location.x() < (t.0.y() + si.size().y()) * scale.0  {
+            //println!("{:?},{:?} {:?},{:?}",true_location.x(),true_location.y(), t.0.x(), si.size().y() * scale.0);
+            if  true_location.x() > t.0.x() && true_location.x() < t.0.x() + si.size().x() * scale.0 
+                 && true_location.y() > t.0.y() && true_location.y() < t.0.y() + si.size().y()* scale.0  {
                     println!("Click on sprite {}", si.name);
             }
         }
-    }
+    }*/
 }
+
+pub struct MovingTile;
+
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
+    windows: Res<Windows>, 
     selected_tile: Res<SelectedTile>, 
     scroll_state: Res<ScrollState>, 
     palette: Res<TilePalette>,
     mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
-    mut tile_query: Query<(Entity, &FreeTile, &mut Translation)>
+    mut camera_query: Query<(&Camera, &Translation)>,
+    mut interaction_query: Query<(Entity, &TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>,
+    mut tile_query: Query<(Entity, &FreeTile, &mut Translation)>,
+    mut moving_tile_query: Query<(Entity, &MovingTile, &mut Translation)>
 ) {    
     if mouse_input.just_pressed(MouseButton::Left) {
         let components = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
@@ -81,9 +97,39 @@ pub fn add_tiles_to_world_system (
         let grid_x = x  / (components.sprite.size().x() * scroll_state.current_scale);
         let grid_y = y  / (components.sprite.size().y() * scroll_state.current_scale);
         
-        x = grid_x.round() * components.sprite.size().x() * scroll_state.current_scale;
-        y = grid_y.round() * components.sprite.size().y() * scroll_state.current_scale;
+        let width= components.sprite.size().x() * scroll_state.current_scale;
+        let height = components.sprite.size().y() * scroll_state.current_scale;
+
+
+        x = grid_x.round() * width;
+        y = grid_y.round() * height;
+
+        for (entity, tt, mut t) in &mut moving_tile_query.iter() {
+            *t = Translation::new(x, y, st.level);
+            commands.remove_one::<MovingTile>(entity);
+            return
+        }
+
+        for (entity, tt, si, t, scale, d) in &mut interaction_query.iter() {
+            let true_location = get_true_location(&mouse, scale, &windows, &mut camera_query);
             
+            let (x1, y1) = ( t.x() - (si.width / 2) as f32,  t.y() - (si.height / 2 )as f32) ;
+            let (x2, y2) = (t.x() + ((si.width/2) as f32 * scale.0), t.y() + ((si.height/2) as f32 * scale.0));
+            
+            println!("mouse click: {:?} tile location: ({:?},{:?}) ({:?},{:?})",mouse.position, x1,y1,x2,y2);
+
+            if  true_location.x() >= x1 && true_location.x() <= x2 
+                && true_location.y() >= y1 && true_location.y() <= y2 {
+                    println!("Click on sprite {}", si.name);
+                    for (e, n,t) in &mut tile_query.iter(){
+                        commands.despawn(e);
+                    }
+                    commands.insert_one(entity, MovingTile);
+
+                    return;
+            }
+        }
+
         println!("Placing tile at {:?},{:?}", x, y);
 
         let mut clone = components.clone();
@@ -120,7 +166,9 @@ pub fn get_true_location(mouse : &ResMut<Mouse>, scale: &Scale, windows: &Res<Wi
         }
     }
 
-    Vec3::new((mouse.position.x() + camera_offset_x) * scale.0, (mouse.position.y() + camera_offset_y) * scale.0, 0.)
+    //println!("Camera OFfset: {:?},{:?} Scale: {:?}, Mouse Position: {:?}", camera_offset_x, camera_offset_y,scale.0, mouse.position);
+
+    Vec3::new(mouse.position.x() + (camera_offset_x * scale.0), mouse.position.y() + (camera_offset_y * scale.0), 0.)
 }
 pub struct FreeTile;
 
@@ -185,8 +233,7 @@ pub fn builder_keyboard_system (
             commands.despawn(n);
         }
         commands                          
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(mouse.position.x(), mouse.position.y(), 100.), Scale(scroll.current_scale)))
-                .with(FreeTile);
+            .spawn(mouse_tile.sprite.to_components(Vec3::new(window.width as f32 / 2., window.height as f32 / 2., 100.), Scale(scroll.current_scale)));
 
     } else if keyboard_input.just_pressed(KeyCode::LBracket) {
         for (n, _ft) in &mut free_tile.iter() {
@@ -198,8 +245,7 @@ pub fn builder_keyboard_system (
         let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
         
         commands                
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(mouse.position.x(), mouse.position.y(), 100.), Scale(scroll.current_scale)))
-                .with(FreeTile); 
+            .spawn(mouse_tile.sprite.to_components(Vec3::new(window.width as f32 / 2., window.height as f32 / 2., 100.), Scale(scroll.current_scale)));
 
     } else if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;

@@ -255,8 +255,7 @@ pub fn sprite_despawn_system(
 ){
     for (e, sprite,s, _dspawn, timer, mut translation) in &mut query.iter(){
         if timer.finished {
-            //commands.remove_one::<Draw>(e);
-            *translation.x_mut() -= 5000.;commands.remove_one::<Draw>(e);
+            commands.despawn(e);
         }
     }
 }
