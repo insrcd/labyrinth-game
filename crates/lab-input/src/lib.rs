@@ -67,6 +67,7 @@ impl Plugin for InputPlugin {
             .init_resource::<SelectedTile>()
             .init_resource::<State>()
             .init_resource::<ScrollState>()
+            .init_resource::<Mouse>()
             .add_startup_system(input_timers.system())
             .add_system(systems::player_movement_system.system())
             .add_system(systems::track_mouse_movement_system.system())
@@ -85,6 +86,7 @@ pub struct State {
     pub cursor_moved_event_reader: EventReader<CursorMoved>,
     pub mouse_wheel_event_reader: EventReader<MouseWheel>
 }
+#[derive(Default)]
 pub struct Mouse {
     pub position: Vec2
 }

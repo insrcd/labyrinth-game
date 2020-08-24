@@ -32,8 +32,9 @@ impl Plugin for BuilderPlugin {
         app
         .add_resource(TilePalette::default())
         .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_tile_palette_system.system())
-        .add_system(add_tiles_to_world_system.system())
-        .add_system(builder_keyboard_system.system());
+        .add_system_to_stage(lab_core::stage::PRE_UPDATE, add_tiles_to_world_system.system())
+        .add_system(builder_keyboard_system.system())
+        .add_system(update_tile_system.system());
     }
 }
 

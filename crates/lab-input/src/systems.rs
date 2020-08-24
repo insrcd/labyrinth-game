@@ -43,8 +43,8 @@ pub fn mouse_wheel_system (
 pub fn track_mouse_movement_system(
     cursor_moved_events: Res<Events<CursorMoved>>,
     mut state: ResMut<State>,
+    mut mouse: ResMut<Mouse>,
     windows: Res<Windows>,
-    mut mouse_query: Query<&mut Mouse>,
     mut camera_query: Query<(&Camera, &Translation)>) {
         let mut camera_offset_x : f32 = 0.;
         let mut camera_offset_y : f32 = 0.;
@@ -67,9 +67,7 @@ pub fn track_mouse_movement_system(
         for event in state.cursor_moved_event_reader.iter(&cursor_moved_events) {
             //println!("{},{} - {},{}", camera_offset_x, camera_offset_y, event.position.x(), event.position.y() );
 
-            for mut mouse in &mut mouse_query.iter(){
-                mouse.position = Vec2::new(event.position.x() + camera_offset_x - (x_window_offset/2) as f32, event.position.y() + camera_offset_y - (y_window_offset/2) as f32);
-            }
+            mouse.position = Vec2::new(event.position.x() + camera_offset_x - (x_window_offset/2) as f32, event.position.y() + camera_offset_y - (y_window_offset/2) as f32);
         }
 }
 
