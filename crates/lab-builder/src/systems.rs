@@ -121,9 +121,7 @@ pub fn add_tiles_to_world_system (
             if  true_location.x() >= x1 && true_location.x() <= x2 
                 && true_location.y() >= y1 && true_location.y() <= y2 {
                     println!("Click on sprite {}", si.name);
-                    for (e, n,t) in &mut tile_query.iter(){
-                        commands.despawn(e);
-                    }
+
                     commands.insert_one(entity, MovingTile);
 
                     return;
@@ -141,15 +139,7 @@ pub fn add_tiles_to_world_system (
             .spawn(sprite.to_components( Vec3::new(x,y,st.level), Scale(scroll_state.current_scale)))
             .with_bundle(clone);      
          
-            // no idea why I have to desapwn and then spawn again, for some reason this removes the freetile sprite
-            // but the entity remains, might be a bevy bug, might be a screw up on my part.
-            // TODO Investigate this further.Abilities
-        for (e, n,t) in &mut tile_query.iter(){
-            commands.despawn(e);
-        }
-        commands                          
-            .spawn(sprite.to_components(Vec3::new(mouse.position.x(), mouse.position.y(), 100.), Scale(scroll_state.current_scale)))
-                .with(FreeTile);      
+             
     }
 }
 /// Helper function to get the true location of a mouse click 
@@ -229,16 +219,11 @@ pub fn builder_keyboard_system (
 
         let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];       
 
-        for (n, _ft) in &mut free_tile.iter() {
-            commands.despawn(n);
-        }
         commands                          
             .spawn(mouse_tile.sprite.to_components(Vec3::new(window.width as f32 / 2., window.height as f32 / 2., 100.), Scale(scroll.current_scale)));
 
     } else if keyboard_input.just_pressed(KeyCode::LBracket) {
-        for (n, _ft) in &mut free_tile.iter() {
-            commands.despawn(n);
-        }
+
         if selected_tile.tile != 0 {
             selected_tile.tile = selected_tile.tile - 1;
         }
