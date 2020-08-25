@@ -206,47 +206,19 @@ pub fn builder_keyboard_system (
     }
 
     if keyboard_input.just_pressed(KeyCode::RBracket) {
-        let len = palette.tiles_in_category(&selected_tile.category).len();
-        selected_tile.tile = (selected_tile.tile + 1) as usize % len;
-
-        let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];       
-        let sprite_width = mouse_tile.sprite.size().x() * scroll.current_scale;
-        let sprite_height = mouse_tile.sprite.size().y() * scroll.current_scale;
-
-        if let Some((entity, t)) = free_tile.iter().into_iter().last() {
-            println!("Updating Existing Sprite");
-            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)-sprite_height, 100.), Scale(scroll.current_scale));
-            commands                
-                .insert(entity, (comps.sprite, comps.texture_atlas.clone()));
-        } else {
-            println!("Adding Existing Sprite");
-            commands                
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)+sprite_height, 100.), Scale(scroll.current_scale)))
-            .with(FreeTile);
-        }
+        selected_tile.tile = change_selected_sprite(&mut commands, 1,
+             &palette, 
+             &mut free_tile,
+             (*selected_tile).category.as_ref(), 
+             selected_tile.tile, 
+             (*scroll).current_scale,(window.width as f32, window.height as f32));
     } else if keyboard_input.just_pressed(KeyCode::LBracket) {
-        let len = palette.tiles_in_category(&selected_tile.category).len();
-
-        if selected_tile.tile != 0 {
-            selected_tile.tile = selected_tile.tile - 1;
-        } else {
-            selected_tile.tile = len - 1;
-        }
-        let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
-        let sprite_width = mouse_tile.sprite.size().x() * scroll.current_scale;
-        let sprite_height = mouse_tile.sprite.size().y() * scroll.current_scale;
-
-        if let Some((entity, t)) = free_tile.iter().into_iter().last() {
-            println!("Updating Existing Sprite");
-            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)-sprite_height, 100.), Scale(scroll.current_scale));
-            commands                
-                .insert(entity, (comps.sprite, comps.texture_atlas.clone()));
-        } else {
-            println!("Adding Existing Sprite");
-            commands                
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window.width as f32 / 2.)+sprite_width, -(window.height as f32 / 2.)+sprite_height, 100.), Scale(scroll.current_scale)))
-            .with(FreeTile);
-        }
+        selected_tile.tile = change_selected_sprite(&mut commands, -1,
+            &palette, 
+            &mut free_tile,
+            (*selected_tile).category.as_ref(), 
+            selected_tile.tile, 
+            (*scroll).current_scale,(window.width as f32, window.height as f32));
     } else if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
         //write_message(format!("Level changed to {}",selected_tile.level.clone()));         
@@ -254,4 +226,39 @@ pub fn builder_keyboard_system (
         selected_tile.level -= 1.;
        // write_message(format!("Level changed to {}",selected_tile.level.clone()));         
     }
+}
+
+fn change_selected_sprite(mut commands : &mut Commands, 
+    change : i32, 
+    palette: &ResMut<TilePalette>, 
+    mut free_tile: &mut Query<(Entity, &FreeTile)>,
+    category : &str, 
+    tile : usize,
+    current_scale : f32,
+    window_size: (f32, f32)) -> usize {
+        let len = palette.tiles_in_category(category).len() as i32;
+
+        let mut idx = (tile as i32 + change) % len as i32;
+
+        if idx < 0 {
+            idx = len + idx;
+        }
+        
+        let mouse_tile = palette.tiles_in_category(category)[idx as usize];
+        let sprite_width = mouse_tile.sprite.size().x() * current_scale;
+        let sprite_height = mouse_tile.sprite.size().y() * current_scale;
+
+        if let Some((entity, t)) = &mut free_tile.iter().into_iter().last() {
+            println!("Updating Existing Sprite");
+            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window_size.0 as f32 / 2.)+sprite_width, -(window_size.1 as f32 / 2.)-sprite_height, 100.), Scale(current_scale));
+            commands                
+                .insert(*entity, (comps.sprite, comps.texture_atlas.clone()));
+        } else {
+            println!("Adding Existing Sprite");
+            commands                
+            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window_size.0 as f32 / 2.)+sprite_width, -(window_size.1 as f32 / 2.)+sprite_height, 100.), Scale(current_scale)))
+            .with(FreeTile);
+        }
+
+        idx as usize
 }
