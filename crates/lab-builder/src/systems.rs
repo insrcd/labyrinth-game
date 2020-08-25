@@ -3,9 +3,8 @@ use bevy::{prelude::*,
 
 use lab_entities::prelude::*;
 use lab_sprites::*;
-use lab_entities::player;
-use std::time::Duration;
-use crate::{BuilderSettings, TilePalette};
+use lab_world::*;
+use crate::{BuilderSettings};
 use lab_input::{Mouse, SelectedTile, State, ScrollState};
 
 
@@ -75,16 +74,13 @@ pub struct MovingTile;
 
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
-    windows: Res<Windows>, 
     settings : ResMut<BuilderSettings>,
     selected_tile: Res<SelectedTile>, 
     scroll_state: Res<ScrollState>, 
     palette: Res<TilePalette>,
     mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
-    mut camera_query: Query<(&Camera, &Translation)>,
     mut interaction_query: Query<(Entity, &TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>,
-    mut tile_query: Query<(Entity, &FreeTile, &mut Translation)>,
     mut moving_tile_query: Query<(Entity, &MovingTile, &mut Translation)>
 ) {    
     if mouse_input.just_pressed(MouseButton::Left) {
@@ -108,7 +104,7 @@ pub fn add_tiles_to_world_system (
         x = grid_x.round() * width;
         y = grid_y.round() * height;
 
-        for (entity, tt, mut t) in &mut moving_tile_query.iter() {
+        for (entity, _tt, mut t) in &mut moving_tile_query.iter() {
             *t = Translation::new(x, y, st.level);
             commands.remove_one::<MovingTile>(entity);
             return
@@ -255,21 +251,23 @@ fn change_selected_sprite(mut commands : &mut Commands,
 
         if idx < 0 {
             idx = len + idx;
-        }
-        
+        }        
+
         let mouse_tile = palette.tiles_in_category(category)[idx as usize];
+        
+        println!("Changed to tile {:?}", mouse_tile.sprite);
+        
         let scaled_size = mouse_tile.sprite.scaled_size(current_scale);
         let scaled_location = Vec3::new(-(window_size.0 as f32 / 2.)+scaled_size.x() + camera_offset.0, 
             -(window_size.1 as f32 / 2.)+scaled_size.y() + camera_offset.1, 
             100.);
         if let Some((entity, t)) = &mut free_tile.iter().into_iter().last() {
             let comps = mouse_tile.sprite.to_components(scaled_location, Scale(current_scale));
-            
-            println!("Updating Existing Sprite, {:?} {:?}", current_scale, comps.translation);
+                        
             commands                
                 .insert(*entity, (comps.sprite, comps.texture_atlas.clone(), Scale(current_scale), comps.translation));
+            
         } else {
-            println!("Adding Existing Sprite");
             commands                
                 .spawn(mouse_tile.sprite.to_components(scaled_location,Scale(current_scale)))
                 .with(FreeTile);

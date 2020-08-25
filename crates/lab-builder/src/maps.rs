@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use lab_entities::prelude::*;
 
 use crate::*;
-use lab_world::settings::WORLD_TILE_SIZE;
+use lab_world::{TileComponents, settings::WORLD_TILE_SIZE, TilePalette};
 use std::{rc::Rc, borrow::Cow};
 
 #[derive(Clone, Debug)]
@@ -49,7 +49,19 @@ impl<'a>  MapBuilder {
             blueprints: Vec::new()
         }
     }
-    pub fn to_blueprint(&mut self, name : &str) -> &MapBuilder{
+    pub fn reset_position(&mut self) -> &MapBuilder {
+        self.current_location = self.starting_location;
+
+        self
+    }
+    
+    pub fn set_position(&mut self, location : Location) -> &mut MapBuilder{
+        self.current_location = location;
+
+        self
+    }
+
+    pub fn to_blueprint(&mut self, name : &str) -> &mut MapBuilder{
         self.blueprints.push(Blueprint {
                name: name.to_string(),
                tiles: self.tiles.clone()

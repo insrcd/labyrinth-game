@@ -15,6 +15,7 @@ strum = "0.19.2"
 strum_macros = "0.19.2"
 rand = "0.7.3"
 
+defaults = "0.2.0"
 bevy = { git = "https://github.com/insrcd/bevy.git" }
 
 lab-core = { path = "../lab-core" }

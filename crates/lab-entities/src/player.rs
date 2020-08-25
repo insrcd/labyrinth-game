@@ -78,19 +78,15 @@ impl Default for PlayerComponents {
     
 }
 
-pub struct ItemHandle<T> {
-    pub entity_id : u128,
-    _pd : PhantomData<T>
-}
 #[derive(Debug, Default, Clone)]
 pub struct Inventory {
-    items: Vec<Handle<Item>>
+    pub items: Vec<Item>
 }
 
 impl Inventory {
     pub fn new() -> Inventory {
         Inventory {
-            items: Vec::<Handle<Item>>::new()
+            items: Vec::<Item>::new()
         }
     }
 }

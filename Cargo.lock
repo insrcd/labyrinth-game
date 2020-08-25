@@ -864,6 +864,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "defaults"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "40e9553d64f91aa22cb23a558a19108bce0f6854ef99a123b8c0a9b95a9ba267"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "deflate"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1335,11 +1346,12 @@ dependencies = [
 
 [[package]]
 name = "hexasphere"
-version = "0.1.5"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f198323407a5afb807cf8075572c609a5ec9e423e584478459fc3d16b59b920"
+checksum = "0f527ce7eaea5f0cf47e2126083ad79b52e9be8f191d4f6fa2380370fb55c523"
 dependencies = [
  "glam",
+ "lazy_static",
 ]
 
 [[package]]
@@ -1494,6 +1506,7 @@ name = "lab-entities"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "defaults",
  "lab-core",
  "lab-sprites",
  "log",

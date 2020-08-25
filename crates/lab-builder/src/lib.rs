@@ -5,9 +5,6 @@ pub mod maps;
 pub mod text;
 
 use systems::*;
-use lab_sprites::SpriteLibrary;
-use std::collections::{btree_map::{Keys, Values}, BTreeMap};
-use lab_entities::prelude::TileComponents;
 use lab_core;
 
 pub mod prelude {
@@ -31,7 +28,6 @@ impl Plugin for BuilderPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
         .init_resource::<BuilderSettings>()
-        .add_resource(TilePalette::default())
         // system to init the tile palette
         .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_tile_palette_system.system())
         // system that will add tiles on click
@@ -48,48 +44,3 @@ pub struct BuilderSettings {
     pub move_mode: bool
 }
 
-#[derive(Default, Clone)]
-pub struct TilePalette {
-    pub components: BTreeMap<String, TileComponents>
-}
-
-impl TilePalette {
-    pub fn get_interaction(&self, name: String) -> Option<lab_entities::world::Interaction> {
-        match self.components.get(&name) {
-            Some(comps) => Some(comps.interaction),
-            None => None
-        }
-    }
-
-    pub fn tile_names(&self) -> Keys<'_, String, TileComponents>{
-        self.components.keys()
-    }
-
-    pub fn iter(&self) -> Values<'_, String, TileComponents> {
-        self.components.values()
-    }
-
-    pub fn tile_categories(&self) -> Vec<&str> {
-        let mut categories : Vec<&str> = self.components.values().map(|m| &m.sprite.category[..]).collect();
-        
-        categories.sort();
-        categories.dedup();
-        
-        categories
-    }
-
-    pub fn tiles_in_category(&self, category : &str) -> Vec<&TileComponents> {
-        self.components.values().filter(|p| p.sprite.category == category).collect()        
-    }
-
-    pub fn update( &mut self, comp : &TileComponents) {
-
-        if let Some(tc) = self.components.get_mut(&comp.sprite.name) {
-           *tc = comp.clone();
-        } else {
-            self.components.insert(comp.sprite.name.clone(), comp.clone());
-        }
-
-
-    }
-}

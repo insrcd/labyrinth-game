@@ -1,45 +1,44 @@
 use bevy::prelude::*;
-use crate::world::{Visible, Location, Interaction, InteractionResult};
+use defaults::*;
 
-#[allow(dead_code)]
+#[derive(Clone, Debug, PartialEq, Defaults)]
+#[def = "Misc"]
 pub enum ItemType {
     Weapon,
     Potion,
     Brew,
     Armor,
-    Ingredient
+    Ingredient,
+    Key,
+    Misc,
+    Undefined
+}
+#[derive(Clone, Debug, PartialEq, Defaults)]
+#[def = "None"]
+pub enum ItemSlot {
+    LeftHand,
+    RightHand,
+    Head,
+    Body,
+    Legs,
+    Magic,
+    None
 }
 
+
+#[derive(Clone, Debug, Properties, PartialEq, Default)]
+pub struct Item {
+    pub id: u64,
+    pub name: String,
+    pub weight: Weight,
+    #[property(ignore)]
+    pub item_type: ItemType,
+    #[property(ignore)]
+    pub item_slot: ItemSlot
+}
 
 #[derive(Copy, Clone, Debug, Properties, PartialEq, Default)]
-pub struct Item;
-
-#[derive(Copy, Clone, Debug)]
-pub struct Interactable;
-#[derive(Bundle, Copy, Clone, Debug)]
-pub struct InteractableComponents {
-    pub interactable: Interactable,
-    pub location: Location,
-    pub visible: Visible,
-    pub interaction: Interaction
-}
-
-impl InteractableComponents {
-   
-}
-
-impl Default for InteractableComponents {
-    fn default() -> Self {
-        InteractableComponents {
-            location: Location::default(),
-            visible: Visible,
-            interaction: Interaction { call: |_attributes| { InteractionResult::None } },
-            interactable: Interactable
-        }
-    }
-}
-#[allow(dead_code)]
-pub struct Weight (f32);
+pub struct Weight (pub f32);
 #[allow(dead_code)]
 pub enum WeaponSpecialPowers {
     Keen(u32),

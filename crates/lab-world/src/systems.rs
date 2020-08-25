@@ -3,14 +3,13 @@ use bevy::{ prelude::*, type_registry::TypeRegistry, render::camera::Camera};
 use lab_entities::prelude::*;
 
 use lab_entities::{
-    world::{Interaction, InteractionResult, Location },
     player:: { Direction as Dir },
     Named
 };
 
 use lab_sprites::{ SpriteInfo, SpriteLibrary, TileAnimation, StationaryLetter };
 
-use crate::{settings::*};
+use crate::{settings::*, *};
 use lab_core::{Zoomable, Moveable};
 
 #[derive(Debug)]
@@ -89,20 +88,18 @@ pub fn object_interaction_system (
 pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
+    tile_pallette : ResMut<TilePalette>,   
     mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut wall_query: Query<(Entity, &mut TileType, &Hardness, &mut TileAttributes, &mut Translation, &Interaction, &SpriteInfo)>,
+    mut wall_query: Query<(Entity, &mut TileType, &mut TileAttributes, &mut Translation, &crate::Interaction, &mut SpriteInfo)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &SpriteInfo)>>,
-    mut player_moved: Query<With<Player,(Entity, &Scale, &mut Translation, Mutated<Movement>, &Inventory, &SpriteInfo)>>
+    mut player_moved: Query<With<Player,(Entity, &Scale, &mut Translation, Mutated<Movement>, &mut Inventory, &mut SpriteInfo)>>
 ) {
     let mut player_collision: Option<Translation> = None;
     
     // tile based collision
-    for (tile_entity, _tt, hardness, 
+    for (tile_entity, _tt,  
             tile_attributes, tile_translation, i,  
-                tile_sprite) in &mut wall_query.iter() {
-        if hardness.0 == 0. || tile_attributes.hit_points == 0 {
-            continue;
-        }
+                mut tile_sprite) in &mut wall_query.iter() {
 
         for ( _m, mut move_transition, movement, move_sprite) in &mut moveables.iter() {
             println!("Checking for collision");
@@ -116,12 +113,14 @@ pub fn tile_interaction_system (
             if let Some(collision) = collision {
                 match collision {
                     _ => { 
-                        if let InteractionResult::ChangeTile(attr) = (i.call)(Attributes {
+                        if let InteractionResult::ChangeTile(attr) = (i.call)(InteractionContext {
                             interaction_location: Some(Location::from(*tile_translation)),
                             inventory: None,
                             player: None,
                             player_location: Some(movement.0.into()),
-                            tile_attributes: Some(*tile_attributes)
+                            tile_attributes: Some(*tile_attributes),
+                            tile_palette: Some(&*tile_pallette),
+                            sprite_info: Some(&move_sprite)
                         }) {      
                             println!("Got change tile for NPC : {:?}", attr);                    
                             
@@ -137,7 +136,7 @@ pub fn tile_interaction_system (
             //    player_collision = Some(move_transition.clone());
             }
         } 
-        for (e, scale, mut move_translation, movement, inventory, sprite) in &mut player_moved.iter() {
+        for (e, scale, mut move_translation, movement, mut inventory, mut sprite) in &mut player_moved.iter() {
             // I reduce the player bounding box by a few pixels to allow for closer interaction.
             // this can probably be a non-constant based on tile size.
             let collision = collide(move_translation.0, 
@@ -148,23 +147,40 @@ pub fn tile_interaction_system (
                     _ => { 
                         // run the lambda that tells us what to do if a collision happens with a tile
                         // if the transition says to change, then change.
-                        if let InteractionResult::ChangeTile(attr) = (i.call)(Attributes {
+                        match (i.call)(InteractionContext {
                             interaction_location: Some(Location::from(*tile_translation)),
-                            inventory: Some(inventory.clone()),
+                            inventory: Some(&mut inventory),
                             player: Some(e),
                             player_location: Some(movement.0.into()),
-                            tile_attributes: Some(*tile_attributes)
+                            tile_attributes: Some(*tile_attributes),
+                            tile_palette: Some(&*tile_pallette),
+                            sprite_info: Some(&*tile_sprite)
                         }) {      
+                            InteractionResult::ChangeTile(attr) => {
                             println!("Got change tile: {:?}", attr); 
+                            
+                            //TODO: clean this up so a change to spriteinfo will change the tile
+                            tile_sprite.atlas_sprite = attr.sprite_idx.unwrap();
 
-                            commands.insert(tile_entity, (Location::from(*tile_translation), 
-                                attr, TextureAtlasSprite::new(sprite.atlas_sprite)));
+                            commands.insert(tile_entity, (attr, Location::from(*tile_translation), 
+                                attr, TextureAtlasSprite::new(attr.sprite_idx.unwrap())));
+                            }
+                            InteractionResult::Damage(_) => {}
+                            InteractionResult::ChangeSprite(_) => {}
+                            InteractionResult::Move(_) => {}
+                            InteractionResult::PickUp(_) => {
+                                commands.despawn(tile_entity);
+                            },
+                            InteractionResult::Block => {
+                                *move_translation.0.x_mut() = (movement.0).0;
+                                *move_translation.0.y_mut() = (movement.0).1;
+                                for (_c, mut cam_trans) in &mut camera_query.iter(){  
+                                    *cam_trans.0.x_mut() = move_translation.0.x();             
+                                    *cam_trans.0.y_mut() = move_translation.0.y();
+                                }
+                            }
+                            InteractionResult::None => {}
                         }
-                        
-                        // reset the sprite back to where it moved from
-
-                        *move_translation.0.x_mut() = (movement.0).0;
-                        *move_translation.0.y_mut() = (movement.0).1;
                     }
                 }
             } else {     
