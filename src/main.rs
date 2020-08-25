@@ -28,7 +28,7 @@ fn main() {
     .add_startup_system_to_stage(stage::POST_INIT, setup.system())        
     .add_system(npc_dialog_system.system())
     .add_system_to_stage(stage::PROCESSING, dialog_system.system())
-    //.add_plugin(lab_demo::DemoPlugin)
+    .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
     //.add_system(test.system())
     .run();
