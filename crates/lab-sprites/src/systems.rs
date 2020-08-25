@@ -22,14 +22,6 @@ pub fn load_world_sprites_system(
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
             &mut texture_atlases, "resources/sprites/roguelikeitems.png", &["item"], (13,14), "items".to_string());
 
-    let player_sprite_labels = &[
-        "move_down_1","move_down_2","move_up_1","move_up_2","move_left_1","move_left_2","dead",
-        "head_down","left_stop","move_up_3","look_far_up","look_far_up_2","move_right_1","move_right_2",
-        "laugh_1","laugh_2","pensive","oops","ready_left","jump_left", "pensive_left",
-        "climb_1","climb_2","surprise","yay","yay_2","yay_3","tied_up"];
-
-    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
-        &mut texture_atlases, "resources/sprites/player_sprites.png", player_sprite_labels, (7,4) ,"player".to_string());
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
             &mut texture_atlases, "resources/sprites/walk_left.png", &["walk_left"], (13,1) ,"walk_left".to_string());
