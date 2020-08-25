@@ -30,13 +30,20 @@ pub struct BuilderPlugin;
 impl Plugin for BuilderPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+        .init_resource::<BuilderSettings>()
         .add_resource(TilePalette::default())
         .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_tile_palette_system.system())
         .add_system_to_stage(lab_core::stage::PRE_UPDATE, add_tiles_to_world_system.system())
         .add_system(builder_keyboard_system.system())
         .add_system(update_tile_system.system())
-        .add_system(select_tile_system.system());
+        .add_system(select_tile_system.system())
+        .add_system(builder_settings_system.system());
     }
+}
+
+#[derive(Default)]
+pub struct BuilderSettings {
+    pub move_mode: bool
 }
 
 #[derive(Default, Clone)]
