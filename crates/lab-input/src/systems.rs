@@ -82,7 +82,8 @@ pub fn player_movement_system (
     mut selected_tile: ResMut<SelectedTile>, 
     mut query: Query<(&player::Player, &Scale, &mut Translation, &mut player::Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
-        
+    let v : Vec<&Scale> = query.iter().into_iter().map(|it| it.1 ).collect();
+    println!("{:?}", v.last().unwrap().0);
     let mut direction = player::Direction::Stationary;
 
     let window = windows.iter().last().unwrap();
