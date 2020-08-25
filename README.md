@@ -15,9 +15,13 @@ So, join us in solving the mystery of the Labynrith Below Labyrinth!
 ## Keybindings
 
 W,A,S,D - Move the player around
+
 `; and '` - cycle through tile categories (Lab-Builder)
+
 `[ and ]` - cycle through tiles in the current category
+
 `+ / -`   - Set the Z axis of new tiles
+
 Scroll Wheel Up / Scroll Wheel Down - Zoom in and out
 
 ## Contribution
@@ -41,6 +45,7 @@ Depending on your development environment there may be some "gotchyas" based on 
 - Involve local artists to design quests, concept art and sprites.
 
 ## What's Done
+- Short Demo showing interaction / inventory / Map Builder.
 - Start of a Map / World Editor
 - Tile Blueprints
 - Sprite Library / Tile Palette for easy access of assets
