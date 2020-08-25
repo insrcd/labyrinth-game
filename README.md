@@ -15,9 +15,9 @@ So, join us in solving the mystery of the Labynrith Below Labyrinth!
 ## Keybindings
 
 W,A,S,D - Move the player around
-; and ' - cycle through tile categories (Lab-Builder)
-[ and ] - cycle through tiles in the current category
-+ / -   - Set the Z axis of new tiles
+`; and '` - cycle through tile categories (Lab-Builder)
+`[ and ]` - cycle through tiles in the current category
+`+ / -`   - Set the Z axis of new tiles
 Scroll Wheel Up / Scroll Wheel Down - Zoom in and out
 
 ## Contribution
