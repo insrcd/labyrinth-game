@@ -30,7 +30,12 @@ pub fn load_world_sprites_system(
 
     sprite_lib.catalog_sprites(&asset_server, &mut textures, 
         &mut texture_atlases, "resources/sprites/player_sprites.png", player_sprite_labels, (7,4) ,"player".to_string());
-    
+
+    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
+            &mut texture_atlases, "resources/sprites/walk_left.png", &["walk_left"], (13,1) ,"walk_left".to_string());
+
+    sprite_lib.catalog_sprites(&asset_server, &mut textures, 
+                &mut texture_atlases, "resources/sprites/walk_right.png", &["walk_right"], (13,1) ,"walk_right".to_string());
         
     let letters = &[" ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".", "/","0","1","2","3","4",
         "5","6","7","8","9",":",";","<","=",">","?","@",

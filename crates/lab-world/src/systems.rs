@@ -74,6 +74,20 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
         None
     }
 }
+
+pub fn camera_tracking_system (
+    mut player_moved: Query<With<Player,(Entity, &mut Translation)>>,
+    mut camera_query: Query<(&Camera, &mut Translation)>)
+{
+    for (e, player_translation) in &mut player_moved.iter() {
+        for (c, mut cam_trans) in &mut camera_query.iter(){  
+            if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
+                *cam_trans.0.x_mut() = player_translation.0.x();             
+                *cam_trans.0.y_mut() = player_translation.0.y();
+            }
+        }
+    }
+}
 pub fn object_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
@@ -84,13 +98,13 @@ pub fn object_interaction_system (
 ) {
     // may split out CD and interaction at some point.    
 }
-/// Collision detection system
+/// Tile Interaction System - system which allows for tiles to change when they are interacted with
+/// Also includes collision detection.
 /// 
 pub fn tile_interaction_system (
     mut commands: Commands,
     sprites : ResMut<SpriteLibrary>,   
-    tile_pallette : ResMut<TilePalette>,   
-    mut camera_query: Query<(&Camera, &mut Translation)>,
+    tile_palette : ResMut<TilePalette>,   
     mut wall_query: Query<(Entity, &mut TileType, &mut TileAttributes, &mut Translation, &crate::Interaction, &mut SpriteInfo)>,
     mut moveables: Query<Without<Player,(&Moveable, &mut Translation, Mutated<Movement>, &SpriteInfo, &Scale)>>,
     mut player_moved: Query<With<Player,(Entity, &Scale, &mut Translation, Mutated<Movement>, &mut Inventory, &mut SpriteInfo)>>
@@ -114,12 +128,10 @@ pub fn tile_interaction_system (
                             player: None,
                             player_location: Some(movement.0.into()),
                             tile_attributes: Some(*tile_attributes),
-                            tile_palette: Some(&*tile_pallette),
+                            tile_palette: Some(&*tile_palette),
                             sprite_info: Some(&*tile_sprite)
                         }) {      
                             InteractionResult::ChangeTile(attr) => {
-                           
-                            println!("Got change tile: {:?}", attr); 
                             
                             //TODO: clean this up so a change to spriteinfo will change the tile
                             tile_sprite.atlas_sprite = attr.sprite_idx.unwrap();
@@ -148,7 +160,7 @@ pub fn tile_interaction_system (
         } 
         for (e, scale, mut move_translation, movement, mut inventory, mut sprite) in &mut player_moved.iter() {
             let collision = collide(move_translation.0, 
-                (sprite.size() * scale.0) - Vec2::new(16.* scale.0,16.* scale.0),  tile_translation.0, tile_sprite.size() * scale.0, false);
+                Vec2::new(8.* scale.0,8.* scale.0),  tile_translation.0, tile_sprite.size() * scale.0, false);
             
             if let Some(collision) = collision {
                 match collision {
@@ -161,7 +173,7 @@ pub fn tile_interaction_system (
                             player: Some(e),
                             player_location: Some(movement.0.into()),
                             tile_attributes: Some(*tile_attributes),
-                            tile_palette: Some(&*tile_pallette),
+                            tile_palette: Some(&*tile_palette),
                             sprite_info: Some(&*tile_sprite)
                         }) {      
                             InteractionResult::ChangeTile(attr) => {
@@ -181,24 +193,13 @@ pub fn tile_interaction_system (
                             },
                             InteractionResult::Block => {
                                 *move_translation.0.x_mut() = (movement.0).0;
-                                *move_translation.0.y_mut() = (movement.0).1;
-                                for (_c, mut cam_trans) in &mut camera_query.iter(){  
-                                    *cam_trans.0.x_mut() = move_translation.0.x();             
-                                    *cam_trans.0.y_mut() = move_translation.0.y();
-                                }
+                                *move_translation.0.y_mut() = (movement.0).1;                                
                             }
                             InteractionResult::None => {}
                         }
                     }
                 }
-            } else {     
-                
-                for (_c, mut cam_trans) in &mut camera_query.iter(){  
-                    *cam_trans.0.x_mut() = move_translation.0.x();             
-                    *cam_trans.0.y_mut() = move_translation.0.y();
-                }
-                
-            }
+            } 
         }
     }
    
@@ -237,8 +238,6 @@ pub fn zoom_system(
             let ease : f32 = 0.25;
 
             let factor = (scroll.y.clone() * ease)+ 1. ;
-
-            println!("{}", factor);
 
             *scale = Scale( scale.0 * factor );
 
@@ -286,7 +285,7 @@ pub fn sprite_despawn_system(
 
 pub fn static_text_system(
     mut commands: Commands,
-    mut query : Query<(Entity, &StationaryLetter, &mut Translation)>,    
+    mut query : Query<(Entity, &Text, &mut Translation)>,    
     mut player_query : Query<(Entity, &Player, Changed<Movement>)>
 ){
     for (e, _player, movement) in &mut player_query.iter(){

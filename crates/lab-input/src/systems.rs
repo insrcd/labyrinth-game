@@ -80,7 +80,7 @@ pub fn player_movement_system (
     time : Res<Time>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
-    mut query: Query<(&player::Player, &Scale, &mut Translation, &mut player::Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer)>) {
+    mut query: Query<(&player::Player, &Scale, &mut Translation, &mut player::Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
         
     let mut direction = player::Direction::Stationary;
@@ -102,7 +102,7 @@ pub fn player_movement_system (
         direction = player::Direction::Right;
     }
 
-    for (_player, scale, mut loc, mut Movement, mut animation, mut texture_sprite, mut timer) in &mut query.iter() {   
+    for (_player, scale, mut loc, mut Movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
         timer.0.tick(time.delta_seconds);
         if  timer.0.finished {
             let old_loc = Location::from(*loc);
@@ -137,6 +137,7 @@ pub fn player_movement_system (
                 *Movement = player::Movement(old_loc, Location::from(*loc), direction);
 
                 if let Some(s) = sprite {
+                    *atlas = s.atlas_handle;
                     *texture_sprite = TextureAtlasSprite::new(s.atlas_sprite);
                 }
             }

@@ -19,7 +19,7 @@ impl Plugin for SpritesPlugin {
 }
 
 
-#[derive(Clone, Properties, Debug, Default)]
+#[derive(Clone, Properties, Debug, Default, Eq)]
 pub struct SpriteInfo {
     pub name:  String,
     pub atlas_sprite : u32,
@@ -27,6 +27,22 @@ pub struct SpriteInfo {
     pub height: u32,
     pub width: u32,
     pub category : String
+}
+impl Ord for SpriteInfo {
+    fn cmp(&self, other: &SpriteInfo) -> std::cmp::Ordering {
+        self.atlas_sprite.cmp(&other.atlas_sprite)
+    }
+}
+
+impl PartialOrd for SpriteInfo {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl PartialEq for SpriteInfo {
+    fn eq(&self, other: &Self) -> bool {
+        self.atlas_sprite == other.atlas_sprite && self.atlas_handle == self.atlas_handle
+    }
 }
 
 impl SpriteInfo {
@@ -143,7 +159,13 @@ impl SpriteLibrary {
         .for_each(|(i,s)| self.add(SpriteInfo::new(s.to_string(),  i as u32, texture_atlas_handle.clone(), size.x() as u32, size.y() as u32)));*/
         
     }
+    pub fn sprites_in_category(&self, category : &str) -> Vec<SpriteInfo> {
+        let mut sorted_vec : Vec<SpriteInfo> = self.library.values().filter(|i| i.category == category).map (|i| i.clone()).collect();
+        
+        sorted_vec.sort();
 
+        sorted_vec
+    }
     pub fn write_despawning_text(&self,  
         mut commands : &mut Commands,
         st : String, 

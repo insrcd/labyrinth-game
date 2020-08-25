@@ -12,7 +12,6 @@ pub fn make_tile_palette_system(
     mut sprite_library: ResMut<SpriteLibrary>,
     mut palette: ResMut<TilePalette>
 )  {
-    println!("Making palette from {} sprites", sprite_library.len());
     for sprite in sprite_library.iter() {
         //println!("Adding sprite {:?}", sprite);
 
@@ -131,8 +130,6 @@ pub fn add_tiles_to_world_system (
             }
         }
 
-        println!("Placing tile at {:?},{:?}", x, y);
-
         let mut clone = components.clone();
         let sprite: SpriteInfo = clone.sprite.clone();
 
@@ -193,7 +190,6 @@ pub fn builder_keyboard_system (
         let categories = palette.tile_categories();
         
         let pos = categories.iter().position(|&s| s == selected_tile.category).unwrap();
-        println!("{:?} {:?}",categories, pos);
         
         selected_tile.tile = 0;
 

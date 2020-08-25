@@ -38,12 +38,19 @@ fn main() {
 
 fn setup (
     mut commands: Commands,
-    sprites: ResMut<SpriteLibrary>
+    sprites: ResMut<SpriteLibrary>,
+    asset_server: Res<AssetServer>,
+    mut assets: ResMut<Assets<Font>>
 ) {
     
-    let mut npc_sprite = sprites.get("mob_0").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();
-    let mut player_sprite = sprites.get("move_down_1").unwrap_or_else(|| panic!("Cannot find Player sprite")).clone();
+    let npc_sprite = sprites.get("mob_0").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();   
+    
+    let mut walk_left = sprites.sprites_in_category("walk_left");    
+    
+    let mut walk_right = sprites.sprites_in_category("walk_right");
+    let player_sprite = walk_left[0].clone();
 
+    let font_handle = asset_server.load_sync(&mut assets, "resources/fonts/FiraSans-Bold.ttf").unwrap();
     commands
     .spawn(UiCameraComponents::default())
     .spawn(Camera2dComponents::default())
@@ -55,13 +62,29 @@ fn setup (
         Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World)))
         .with_bundle(player_sprite.to_components(Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World).into(), Scale(1.)))
         .with( MoveAnimation {
-            up: vec![sprites.get("move_up_1").unwrap().clone(), sprites.get("move_up_2").unwrap().clone()], 
-            down: vec![sprites.get("move_down_1").unwrap().clone(), sprites.get("move_down_2").unwrap().clone()],
-            left: vec![sprites.get("move_left_1").unwrap().clone(), sprites.get("move_left_2").unwrap().clone()],
-            right: vec![sprites.get("move_right_1").unwrap().clone(), sprites.get("move_right_2").unwrap().clone()],
+            up: walk_right[3..6].to_vec(), 
+            down: walk_left[0..4].to_vec(),
+            left: walk_left[0..4].to_vec(),
+            right: walk_right[3..6].to_vec(),
             ..Default::default()
         }).with(player_sprite)
-    .spawn( (NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), npc_sprite.clone()),);
+    .spawn( (NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), npc_sprite.clone()),)
+    .spawn(TextComponents {
+        style: Style {
+            align_self: AlignSelf::FlexEnd,
+            ..Default::default()
+        },
+        text: Text {
+            value: "Demo".to_string(),
+            font: font_handle,
+            style: TextStyle {
+                font_size: 60.0,
+                color: Color::WHITE,
+            },
+        },
+        draw: Draw {is_visible: true, ..Default::default()},
+        ..Default::default()
+    });
     
     /*
     for _n in 0..50 {

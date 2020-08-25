@@ -99,12 +99,10 @@ impl<'a>  MapBuilder {
             }
 
             
-            println!("bp: {:?}, Offset: {:?}", name, offset);
             // add size and offset from top right corner of last blueprint
             self.current_location.0 += (offset.0).x() + (offset.1).0;
             //self.current_location.1 += (offset.1).1 + (offset.0).y();
 
-            println!("Current Location: {:?},{:?}",  self.current_location.0,  self.current_location.1);
         }
         self
     }
