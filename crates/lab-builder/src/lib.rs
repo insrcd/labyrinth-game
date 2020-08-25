@@ -32,11 +32,13 @@ impl Plugin for BuilderPlugin {
         app
         .init_resource::<BuilderSettings>()
         .add_resource(TilePalette::default())
+        // system to init the tile palette
         .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_tile_palette_system.system())
+        // system that will add tiles on click
         .add_system_to_stage(lab_core::stage::PRE_UPDATE, add_tiles_to_world_system.system())
         .add_system(builder_keyboard_system.system())
         .add_system(update_tile_system.system())
-        .add_system(select_tile_system.system())
+        // System for changing builder settings
         .add_system(builder_settings_system.system());
     }
 }

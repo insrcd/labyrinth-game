@@ -70,24 +70,6 @@ pub fn update_tile_system (mut commands : Commands,
     }
     
 }
-pub fn select_tile_system (mut commands : Commands, 
-    mouse : ResMut<Mouse>,
-    windows: Res<Windows>,
-    mouse_input: Res<Input<MouseButton>>,
-    mut camera_query: Query<(&Camera, &Translation)>,
-    mut tile_query: Query<(&TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>){
-    
-    /*if mouse_input.just_pressed(MouseButton::Left) {
-        for (tt, si, t, scale, d) in &mut tile_query.iter() {
-            let true_location = get_true_location(&mouse, scale, &windows, &mut camera_query);
-            //println!("{:?},{:?} {:?},{:?}",true_location.x(),true_location.y(), t.0.x(), si.size().y() * scale.0);
-            if  true_location.x() > t.0.x() && true_location.x() < t.0.x() + si.size().x() * scale.0 
-                 && true_location.y() > t.0.y() && true_location.y() < t.0.y() + si.size().y()* scale.0  {
-                    println!("Click on sprite {}", si.name);
-            }
-        }
-    }*/
-}
 
 pub struct MovingTile;
 
@@ -186,7 +168,6 @@ pub fn builder_keyboard_system (
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
     mut palette: ResMut<TilePalette>, 
-    mouse: Res<Mouse>,
     mut camera_query: Query<(&Camera, &Translation)>,
     mut free_tile: Query<(Entity, &FreeTile)>) {
 
@@ -195,7 +176,6 @@ pub fn builder_keyboard_system (
     
 
     let window = windows.iter().last().unwrap();
-    let count = palette.tiles_in_category(&selected_tile.category).len() as u32;
 
     for (c, t) in &mut camera_query.iter(){
         if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
@@ -221,11 +201,12 @@ pub fn builder_keyboard_system (
         
         selected_tile.tile = 0;
 
-        if pos != 0 {
-            selected_tile.category = palette.tile_categories()[(pos - 1)].to_string();
+        selected_tile.category  = if pos != 0 {
+            categories[(pos - 1)].to_string()
         } else {            
-            selected_tile.category = palette.tile_categories()[palette.tile_categories().len() -1].to_string();
-        }
+            categories[palette.tile_categories().len() -1].to_string()
+        };
+
         println!("Selected category: {}", selected_tile.category);
     }
 
@@ -238,7 +219,8 @@ pub fn builder_keyboard_system (
              (*scroll).current_scale,
              (window.width as f32, window.height as f32),
              (camera_offset_x, camera_offset_y));
-    } else if keyboard_input.just_pressed(KeyCode::LBracket) {
+    } 
+    if keyboard_input.just_pressed(KeyCode::LBracket) {
         selected_tile.tile = change_selected_sprite(&mut commands, -1,
             &mut palette, 
             &mut free_tile,
@@ -247,12 +229,14 @@ pub fn builder_keyboard_system (
             (*scroll).current_scale,
             (window.width as f32, window.height as f32),
         (camera_offset_x, camera_offset_y));
-    } else if keyboard_input.just_pressed(KeyCode::Add) {
+    }  
+    if keyboard_input.just_pressed(KeyCode::Add) {
         selected_tile.level += 1.;
-        //write_message(format!("Level changed to {}",selected_tile.level.clone()));         
-    } else if keyboard_input.just_pressed(KeyCode::Subtract) {
+        println!("Level changed to {}",selected_tile.level.clone());         
+    } 
+    if keyboard_input.just_pressed(KeyCode::Subtract) {
         selected_tile.level -= 1.;
-       // write_message(format!("Level changed to {}",selected_tile.level.clone()));         
+        println!("Level changed to {}",selected_tile.level.clone());        
     }
 }
 
@@ -274,11 +258,12 @@ fn change_selected_sprite(mut commands : &mut Commands,
         }
         
         let mouse_tile = palette.tiles_in_category(category)[idx as usize];
-        let sprite_width = mouse_tile.sprite.size().x() * current_scale;
-        let sprite_height = mouse_tile.sprite.size().y() * current_scale;
-
+        let scaled_size = mouse_tile.sprite.scaled_size(current_scale);
+        let scaled_location = Vec3::new(-(window_size.0 as f32 / 2.)+scaled_size.x() + camera_offset.0, 
+            -(window_size.1 as f32 / 2.)+scaled_size.y() + camera_offset.1, 
+            100.);
         if let Some((entity, t)) = &mut free_tile.iter().into_iter().last() {
-            let comps = mouse_tile.sprite.to_components(Vec3::new(-(window_size.0 as f32 / 2.)+sprite_width + camera_offset.0, -(window_size.1 as f32 / 2.)+sprite_height + camera_offset.1, 100.), Scale(current_scale));
+            let comps = mouse_tile.sprite.to_components(scaled_location, Scale(current_scale));
             
             println!("Updating Existing Sprite, {:?} {:?}", current_scale, comps.translation);
             commands                
@@ -286,8 +271,8 @@ fn change_selected_sprite(mut commands : &mut Commands,
         } else {
             println!("Adding Existing Sprite");
             commands                
-            .spawn(mouse_tile.sprite.to_components(Vec3::new(-(window_size.0 as f32 / 2.)+sprite_width + camera_offset.0, -(window_size.1 as f32 / 2.)+sprite_height +  camera_offset.1, 100.), Scale(current_scale)))
-            .with(FreeTile);
+                .spawn(mouse_tile.sprite.to_components(scaled_location,Scale(current_scale)))
+                .with(FreeTile);
         }
 
         idx as usize

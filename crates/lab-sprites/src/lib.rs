@@ -33,6 +33,10 @@ impl SpriteInfo {
     pub fn size(&self) -> Vec2 {
         return Vec2::new(self.width as f32, self.height as f32);
     }
+
+    pub fn scaled_size(&self, scale : f32) -> Vec2 {
+        return Vec2::new(self.width as f32 * scale, self.height as f32 * scale);
+    }
 }
 
 pub struct Letter;
