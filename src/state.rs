@@ -1,6 +1,4 @@
-/// Module for all state
-/// 
-/// 
+/// Module for game state
 
 use bevy::{prelude::*, render::*};
 use lab_entities::{Named, world::*};
@@ -11,6 +9,7 @@ use std::time::Duration;
 #[derive(Clone, Debug)]
 pub enum StateType {
     Init,
+    Paused,
     Menu(Menu),
     CharacterScreen,
     Map,
@@ -56,6 +55,7 @@ pub fn state_transition (
             StateType::CharacterScreen => {}
             StateType::Map => {}
             StateType::Combat => {}
+            _ => {}
         }
     }
 }

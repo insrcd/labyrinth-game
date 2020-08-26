@@ -10,10 +10,22 @@ use lab_entities::prelude::*;
 use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
-use lab_core::stage;
+use lab_core::{stage,*};
 
 
 const TILE_SIZE : f32 = 16.;
+
+pub mod layers {
+    // z indexes of sprites 
+    pub const TOP : f32 = 999.;
+    pub const BOTTOM : f32 = -999.;
+    pub const ITEM : f32 = 30.;
+    pub const TILE : f32    = 1.;
+    pub const PLAYER : f32 = 35.;
+    pub const NPC : f32    = 40.;
+    pub const ABOVE_PLAYER : f32 = 40.;
+}
+
 fn main() {
     App::build()
     .add_default_plugins()    
@@ -46,12 +58,13 @@ fn setup (
     
     let npc_sprite = sprites.get("mob_0").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();   
     
-    let mut walk_left = sprites.sprites_in_category("walk_left");    
-    
-    let mut walk_right = sprites.sprites_in_category("walk_right");
+    let walk_left = sprites.sprites_in_category("walk_left");        
+    let walk_right = sprites.sprites_in_category("walk_right");
+
     let player_sprite = walk_left[0].clone();
 
     let font_handle = asset_server.load_sync(&mut assets, "resources/fonts/FiraSans-Bold.ttf").unwrap();
+
     commands
     .spawn(UiCameraComponents::default())
     .spawn(Camera2dComponents::default())
@@ -59,9 +72,8 @@ fn setup (
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
     .spawn(( Mouse { position: Vec2::new(0.,0.)}, Translation::new(0.,0.,0.)))
     .spawn( 
-        PlayerComponents::new("Adam", 
-        Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World)))
-        .with_bundle(player_sprite.to_components(Location(-TILE_SIZE, -TILE_SIZE, 51.,world::WorldLocation::World).into(), Scale(1.)))
+        PlayerComponents::new("Adam"))
+        .with_bundle(player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
         .with( MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),
@@ -69,23 +81,24 @@ fn setup (
             right: walk_right[3..6].to_vec(),
             ..Default::default()
         }).with(player_sprite)
-    .spawn( (NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), npc_sprite.clone()),)
+    .spawn( (NonPlayer, Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement))
+    .with_bundle(npc_sprite.to_components(Location(100., 100., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)))
     .spawn(TextComponents {
         style: Style {
-            align_self: AlignSelf::FlexEnd,
+            align_self: AlignSelf::FlexStart,
             ..Default::default()
         },
         text: Text {
-            value: "Demo".to_string(),
+            value: "Welcome to Labyrinth Brewery".to_string(),
             font: font_handle,
             style: TextStyle {
-                font_size: 60.0,
+                font_size: 20.0,
                 color: Color::WHITE,
             },
         },
         draw: Draw {is_visible: true, ..Default::default()},
         ..Default::default()
-    }).with(Named("main".to_string()));
+    }).with(Named("main".to_string()));    
     
     /*
     for _n in 0..50 {

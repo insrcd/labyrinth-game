@@ -328,7 +328,8 @@ pub fn save_world_system(world: &mut World, resources: &mut Resources) {
 }
 
 /**
- * I tried using camera scale, but it doesn't seem to be able to zoom in when scale < 1
+ * I tried using camera scale, but it doesn't seem to be able to zoom in when scale < 1. This seems to be a bug 
+ * 
  */
 pub fn zoom_system(
     mut scroll: ResMut<lab_input::ScrollState>,
@@ -357,11 +358,10 @@ pub fn npc_move_system(
         &NonPlayer,
         &mut MoveTimer,
         &mut Translation,
-        &mut Movement,
-        &mut Moveable,
+        &mut Movement
     )>,
 ) {
-    for (_npc, mut timer, mut trans, mut m, _mm) in &mut query.iter() {
+    for (_npc, mut timer, mut trans, mut m) in &mut query.iter() {
         timer.0.tick(time.delta_seconds);
         if timer.0.finished {
             let old_loc = Location::from(*trans);

@@ -49,10 +49,9 @@ pub struct PlayerComponents {
 }
 
 impl PlayerComponents {
-    pub fn new(name : &'static str, loc : Location) -> PlayerComponents{
+    pub fn new(name : &'static str) -> PlayerComponents{
         PlayerComponents {
-            named: Named(String::from(name)),       
-            location: loc,     
+            named: Named(String::from(name)),
             ..Default::default()
         }
     }
