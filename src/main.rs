@@ -91,7 +91,7 @@ fn setup (
             ..Default::default()
         },
         text: Text {
-            value: "Welcome to Labyrinth Brewery - Demo".to_string(),
+            value: "Welcome to Labyrinth".to_string(),
             font: font_handle,
             style: TextStyle {
                 font_size: 20.0,
