@@ -30,6 +30,7 @@ fn main() {
     .add_system_to_stage(stage::PROCESSING, dialog_system.system())
     .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
+    //.add_system(update_ui_text_system.system())
     //.add_system(test.system())
     .run();
 }

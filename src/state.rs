@@ -3,7 +3,7 @@
 /// 
 
 use bevy::{prelude::*, render::*};
-use lab_entities::world::*;
+use lab_entities::{Named, world::*};
 use lab_input::prelude::*;
 use lab_sprites::*;
 use std::time::Duration;

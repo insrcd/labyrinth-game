@@ -41,7 +41,7 @@ pub fn update_tile_system (mut commands : Commands,
     let window = windows.iter().last().unwrap();
 
     for (c, t) in &mut camera_query.iter(){
-        if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
+        if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
             
 
             let camera_offset_x = t.x();
@@ -53,7 +53,7 @@ pub fn update_tile_system (mut commands : Commands,
                 // update the preview tile position
                 //println!("Moving tile position {:?}", _d.is_visible);
                 let new_loc = Vec3::new(-(window.width as f32 / 2.)+sprite_width + camera_offset_x, -(window.height as f32 / 2.)+sprite_height + camera_offset_y, 100.);
-                println!("{:?}, {:?}", t.0, new_loc);
+                //println!("{:?}, {:?}", t.0, new_loc);
                 *t.0.x_mut() = new_loc.x();
                 *t.0.y_mut() = new_loc.y();
             }
@@ -171,7 +171,7 @@ pub fn builder_keyboard_system (
     let window = windows.iter().last().unwrap();
 
     for (c, t) in &mut camera_query.iter(){
-        if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
+        if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
             camera_offset_x = t.x();
             camera_offset_y = t.y();
         }

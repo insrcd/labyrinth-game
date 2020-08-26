@@ -89,6 +89,9 @@ impl Inventory {
             items: Vec::<Item>::new()
         }
     }
+    pub fn has(&self, predicate: fn (&Item) -> bool) -> bool {
+        self.items.iter().any(|i| predicate(i))
+    }
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
