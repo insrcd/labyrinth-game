@@ -44,3 +44,5 @@ pub struct BuilderSettings {
     pub move_mode: bool
 }
 
+/// Mark a tile as moving (i.e. being dragged)
+pub struct MovingTile;

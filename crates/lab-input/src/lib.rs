@@ -1,15 +1,8 @@
-use bevy::{
-    prelude::*,
-    render::{camera::Camera},
-    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion, MouseWheel} },
-};
+use bevy::{input::mouse::*, prelude::*};
 
 mod systems;
-use systems::*;
 use lab_entities::world::*;
 use lab_entities::player;
-
-use std::time::Duration;
 
 mod menu;
 

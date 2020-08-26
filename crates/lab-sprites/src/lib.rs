@@ -166,7 +166,7 @@ impl SpriteLibrary {
         sorted_vec
     }
     pub fn write_despawning_text(&self,  
-        mut commands : &mut Commands,
+        commands : &mut Commands,
         st : String, 
         duration : Duration, 
         location : Vec3){
@@ -178,7 +178,7 @@ impl SpriteLibrary {
         };
     }
     pub fn write_text(&self,  
-        mut commands : &mut Commands,
+        commands : &mut Commands,
         st : String,  
         location : Vec3) -> Vec<Entity>
     {
@@ -189,7 +189,7 @@ impl SpriteLibrary {
         
     }
     pub fn place_despawning_sprite(&self,  
-        mut commands :&mut Commands,
+        commands :&mut Commands,
         name : String, 
         scale : Scale, 
         duration : Duration, 

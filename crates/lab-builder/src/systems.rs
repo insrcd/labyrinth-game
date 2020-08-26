@@ -1,11 +1,11 @@
 use bevy::{prelude::*, 
-    render::{camera::Camera}, input::mouse::MouseWheel,};
+    render::{camera::Camera}};
 
 use lab_entities::prelude::*;
 use lab_sprites::*;
 use lab_world::*;
-use crate::{BuilderSettings};
-use lab_input::{Mouse, SelectedTile, State, ScrollState};
+use crate::{BuilderSettings, MovingTile};
+use lab_input::{Mouse, SelectedTile, ScrollState};
 
 
 pub fn make_tile_palette_system(
@@ -15,7 +15,7 @@ pub fn make_tile_palette_system(
     for sprite in sprite_library.iter() {
         //println!("Adding sprite {:?}", sprite);
 
-        if let Some(comp) = palette.components.get(&sprite.name){
+        if let Some(_) = palette.components.get(&sprite.name){
            // already added
             println!("Duplicate sprite detected sprite {:?}", sprite);
         } else {
@@ -27,8 +27,7 @@ pub fn make_tile_palette_system(
 
     }
 }
-pub fn update_tile_system (mut commands : Commands, 
-    mouse : ResMut<Mouse>,
+pub fn update_tile_system (mouse : ResMut<Mouse>,
     windows: Res<Windows>, 
     palette: Res<TilePalette>, 
     scroll_state: Res<ScrollState>, 
@@ -50,26 +49,20 @@ pub fn update_tile_system (mut commands : Commands,
                 let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile];
                 let sprite_width = mouse_tile.sprite.size().x() * scroll_state.current_scale;
                 let sprite_height = mouse_tile.sprite.size().y() * scroll_state.current_scale;
-                // update the preview tile position
-                //println!("Moving tile position {:?}", _d.is_visible);
+
                 let new_loc = Vec3::new(-(window.width as f32 / 2.)+sprite_width + camera_offset_x, -(window.height as f32 / 2.)+sprite_height + camera_offset_y, 100.);
-                //println!("{:?}, {:?}", t.0, new_loc);
+
                 *t.0.x_mut() = new_loc.x();
                 *t.0.y_mut() = new_loc.y();
             }
         }
     }
     for (_ft, mut t, _d) in &mut m_tile_query.iter(){
-        // update the preview tile position
-        //println!("Moving tile position {:?}", _d.is_visible);
-
         *t.0.x_mut() = mouse.position.x();
         *t.0.y_mut() = mouse.position.y();
     }
     
 }
-
-pub struct MovingTile;
 
 pub fn add_tiles_to_world_system (
     mut commands: Commands,
@@ -110,8 +103,8 @@ pub fn add_tiles_to_world_system (
         }
 
         if settings.move_mode {
-            for (entity, tt, si, 
-                    t, scale, d) in &mut interaction_query.iter() {
+            for (entity, _tile_type, si, 
+                    t, scale, _d) in &mut interaction_query.iter() {
                 let true_location = mouse.position;
                 
                 let (x1, y1) = ( t.x() - (si.width/2) as f32* scale.0,  t.y() - (si.height / 2 )as f32* scale.0) ;
@@ -145,7 +138,6 @@ pub fn add_tiles_to_world_system (
 pub struct FreeTile;
 
 pub fn builder_settings_system (
-    mut commands: Commands,
     mut settings : ResMut<BuilderSettings>,
     keyboard_input: Res<Input<KeyCode>>, 
 ){
@@ -232,10 +224,10 @@ pub fn builder_keyboard_system (
     }
 }
 
-fn change_selected_sprite(mut commands : &mut Commands, 
+fn change_selected_sprite(commands : &mut Commands, 
     change : i32, 
     palette: &ResMut<TilePalette>, 
-    mut free_tile: &mut Query<(Entity, &FreeTile)>,
+    free_tile: &mut Query<(Entity, &FreeTile)>,
     category : &str, 
     tile : usize,
     current_scale : f32,
@@ -257,7 +249,7 @@ fn change_selected_sprite(mut commands : &mut Commands,
         let scaled_location = Vec3::new(-(window_size.0 as f32 / 2.)+scaled_size.x() + camera_offset.0, 
             -(window_size.1 as f32 / 2.)+scaled_size.y() + camera_offset.1, 
             100.);
-        if let Some((entity, t)) = &mut free_tile.iter().into_iter().last() {
+        if let Some((entity, _t)) = &mut free_tile.iter().into_iter().last() {
             let comps = mouse_tile.sprite.to_components(scaled_location, Scale(current_scale));
                         
             commands                

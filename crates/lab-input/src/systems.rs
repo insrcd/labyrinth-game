@@ -5,11 +5,10 @@ const PLAYER_SPEED : f32  = 8.;
 use bevy::{
     prelude::*,
     render::{camera::Camera},
-    input::{keyboard::KeyCode, Input, mouse::{MouseButtonInput, MouseMotion} },
+    input::{keyboard::KeyCode, Input },
 };
 
 use lab_sprites::*;
-use lab_core::*;
 
 use crate::*;
 
@@ -75,17 +74,12 @@ pub fn track_mouse_movement_system(
 
 
 pub fn player_movement_system (
-    mut commands: Commands,
-    windows : Res<Windows>,
     time : Res<Time>,
     keyboard_input: Res<Input<KeyCode>>, 
-    mut selected_tile: ResMut<SelectedTile>, 
     mut query: Query<(&player::Player, &Scale, &mut Translation, &mut player::Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
 
     let mut direction = player::Direction::Stationary;
-
-    let window = windows.iter().last().unwrap();
 
     if keyboard_input.pressed(KeyCode::W) {
         direction = player::Direction::Up;
@@ -102,7 +96,7 @@ pub fn player_movement_system (
         direction = player::Direction::Right;
     }
 
-    for (_player, scale, mut loc, mut Movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
+    for (_player, scale, mut loc, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
         timer.0.tick(time.delta_seconds);
         if  timer.0.finished {
             let old_loc = Location::from(*loc);
@@ -134,7 +128,7 @@ pub fn player_movement_system (
             };
 
             if direction != player::Direction::Stationary {
-                *Movement = player::Movement(old_loc, Location::from(*loc), direction);
+                *movement = player::Movement(old_loc, Location::from(*loc), direction);
 
                 if let Some(s) = sprite {
                     *atlas = s.atlas_handle;

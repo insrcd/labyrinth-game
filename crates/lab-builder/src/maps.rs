@@ -3,8 +3,8 @@ use bevy::prelude::*;
 use lab_entities::prelude::*;
 
 use crate::*;
-use lab_world::{TileComponents, settings::WORLD_TILE_SIZE, TilePalette};
-use std::{rc::Rc, borrow::Cow};
+use lab_world::{TileComponents, TilePalette};
+use std::{rc::Rc};
 
 #[derive(Clone, Debug)]
 pub struct Blueprint {

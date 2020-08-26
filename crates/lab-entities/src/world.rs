@@ -1,7 +1,4 @@
-use bevy::{prelude::{Translation, Properties, Bundle, Entity}, math::Vec3};
-use lab_sprites::{TileAnimation, SpriteInfo};
-use lab_core::Zoomable;
-
+use bevy::{prelude::{Translation, Properties}, math::Vec3};
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
     World,

@@ -2,7 +2,6 @@ use lab_world::*;
 use lab_builder::prelude::*;
 use lab_entities::prelude::*;
 use crate::*;
-use bevy::prelude::*;
 use std::rc::Rc;
 /*
  &["gravel","wall","floor","tile","gravel_h","brick","brick_door_closed","chair",
@@ -15,7 +14,7 @@ mod tiles {
     pub const BRICK : &'static str = "brick";
     pub const BRICK_WINDOW : &'static str = "brick_window";
     pub const BRICK_WINDOW_OPEN : &'static str = "brick_window_broken";    
-    pub const NPC : &'static str = "npc_0";   
+    //pub const NPC : &'static str = "npc_0";   
     pub const ITEM : &'static str = "item_50";   
     pub const LOCKED_DOOR : &'static str = "locked_door";   
 }
@@ -49,7 +48,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         },
             description: "Open Door",}
     }
-    if let Some(mut tiles) = palette.components.get(tiles::BRICK_DOOR) {
+    if let Some(tiles) = palette.components.get(tiles::BRICK_DOOR) {
         // open doors
         let mut new_tile = tiles.clone();
 
@@ -113,7 +112,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             println!("Interaction with item {:?}", item);
             
             // do domestuff now
-            if let Some(mut inventory) = ctx.inventory {
+            if let Some(inventory) = ctx.inventory {
                 inventory.items.push(item.clone())
             }
             

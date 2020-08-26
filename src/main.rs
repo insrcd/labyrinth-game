@@ -11,10 +11,7 @@ use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
-use lab_world::{MoveTimer, StaticText};
-
-
-const TILE_SIZE : f32 = 16.;
+use lab_world::StaticText;
 
 pub mod layers {
     // z indexes of sprites 

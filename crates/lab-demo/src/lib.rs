@@ -4,8 +4,6 @@ mod systems;
 
 use systems::*;
 
-use bevy::prelude::*;
-
 pub struct DemoPlugin;
 
 impl Plugin for DemoPlugin {

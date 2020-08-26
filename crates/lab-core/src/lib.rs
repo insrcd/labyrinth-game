@@ -18,7 +18,7 @@ pub mod stage {
 pub struct CorePlugin;
 
 impl Plugin for CorePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, _app: &mut AppBuilder) {
         
     }
 }
@@ -35,5 +35,5 @@ pub struct MenuItem {
     pub name: String
 }
 pub struct MenuDefinition {
-    items : Vec<MenuItem>
+    pub items : Vec<MenuItem>
 }

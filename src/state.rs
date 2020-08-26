@@ -1,12 +1,11 @@
 /// Module for game state
 
-use bevy::{prelude::*, render::*};
-use lab_entities::{Named, world::*};
+use bevy::{prelude::*};
 use lab_input::prelude::*;
 use lab_sprites::*;
-use std::time::Duration;
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub enum StateType {
     Init,
     Paused,
@@ -36,6 +35,7 @@ pub struct SceneState {
     pub next_state: StateType
 }
 
+#[allow(dead_code,unused_variables,unused_mut)]
 pub fn state_transition (
     mut commands : Commands,
     windows : Res<Windows>,
@@ -51,6 +51,7 @@ pub fn state_transition (
             StateType::Init => { 
                 
             }
+            #[allow(unused_variables)]
             StateType::Menu(menu) => {}
             StateType::CharacterScreen => {}
             StateType::Map => {}

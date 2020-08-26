@@ -7,7 +7,8 @@ use crate::{Named, world::Location, prelude::Visible};
 
 use rand::distributions::{Standard, Distribution};
 use rand::Rng;
-use std::{time::Duration, marker::PhantomData};
+use std::time::Duration;
+
 use lab_core::{Zoomable, InputTimer};
 
 #[derive(PartialEq, Debug)]

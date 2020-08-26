@@ -1,9 +1,9 @@
-use bevy::{prelude::*, render::camera::Camera, type_registry::TypeRegistry};
+use bevy::{prelude::*, render::camera::Camera};
 use lab_entities::prelude::*;
 
 use lab_entities::{player::Direction as Dir, Named};
 
-use lab_sprites::{SpriteInfo, SpriteLibrary, StationaryLetter, TileAnimation};
+use lab_sprites::{SpriteInfo, SpriteLibrary, TileAnimation};
 
 use crate::{settings::*, *};
 use lab_core::{Moveable, Zoomable};
@@ -75,8 +75,8 @@ pub fn camera_tracking_system(
     mut player_moved: Query<With<Player, (Entity, &mut Translation)>>,
     mut camera_query: Query<(&Camera, &mut Translation)>,
 ) {
-    for (e, player_translation) in &mut player_moved.iter() {
-        for (c, mut cam_trans) in &mut camera_query.iter() {
+    for (_e, player_translation) in &mut player_moved.iter() {
+        for (_c, mut cam_trans) in &mut camera_query.iter() {
             //if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
                 *cam_trans.0.x_mut() = player_translation.0.x();
                 *cam_trans.0.y_mut() = player_translation.0.y();
@@ -84,6 +84,8 @@ pub fn camera_tracking_system(
         }
     }
 }
+//TODO
+#[allow(dead_code,unused_mut, unused_variables)]
 pub fn object_interaction_system(
     mut commands: Commands,
     sprites: ResMut<SpriteLibrary>,
@@ -104,11 +106,7 @@ pub fn object_interaction_system(
 /// Also includes collision detection.
 ///
 pub fn tile_interaction_system(
-    mut commands: Commands,
-    sprites: ResMut<SpriteLibrary>,
-    mut text_update: ResMut<Events<TextChangeEvent>>,
     mut interaction_event: ResMut<Events<InteractionEvent>>,
-    tile_palette: ResMut<TilePalette>,
     mut wall_query: Query<(
         Entity,
         &mut TileType,
@@ -127,9 +125,7 @@ pub fn tile_interaction_system(
                 Mutated<Movement>,
                 &SpriteInfo,
                 &Scale,
-            ),
-        >,
-    >,
+            )>>,
     mut player_moved: Query<
         With<
             Player,
@@ -140,14 +136,11 @@ pub fn tile_interaction_system(
                 Mutated<Movement>,
                 &mut Inventory,
                 &mut SpriteInfo,
-            ),
-        >,
-    >,
-) {
-    for (tile_entity, _tt, tile_attributes, tile_translation, i, mut tile_sprite) in
+            )>>) {
+    for (tile_entity, _tt, _tile_attributes, tile_translation, _i, tile_sprite) in
         &mut wall_query.iter()
     {
-        for (mov_entity, _m, mut move_transition, movement, move_sprite, scale) in
+        for (mov_entity, _m, move_transition, _movement, move_sprite, scale) in
             &mut moveables.iter()
         {
             let collision = collide(
@@ -170,7 +163,7 @@ pub fn tile_interaction_system(
                 //    player_collision = Some(move_transition.clone());
             }
         }
-        for (e, scale, mut move_translation, movement, mut inventory, mut sprite) in
+        for (e, scale, move_translation, _movement, _inventory, _sprite) in
             &mut player_moved.iter()
         {
             let collision = collide(
@@ -196,12 +189,11 @@ pub fn tile_interaction_system(
 
 pub fn interaction_system(
     mut commands: Commands,
-    sprites: ResMut<SpriteLibrary>,
     interaction_events: ResMut<Events<InteractionEvent>>,
     mut text_update: ResMut<Events<TextChangeEvent>>,
     mut state: ResMut<InteractionState>,
     tile_palette: ResMut<TilePalette>,
-    mut wall_query: Query<(
+    wall_query: Query<(
         Entity,
         &mut TileType,
         &mut TileAttributes,
@@ -209,20 +201,7 @@ pub fn interaction_system(
         &crate::Interaction,
         &mut SpriteInfo,
     )>,
-    mut moveables: Query<
-        Without<
-            Player,
-            (
-                Entity,
-                &Moveable,
-                &mut Translation,
-                &Movement,
-                &SpriteInfo,
-                &Scale,
-            ),
-        >,
-    >,
-    mut player_moved: Query<
+    player_moved: Query<
         With<
             Player,
             (
@@ -311,7 +290,8 @@ pub fn interaction_system(
     }
 }
 
-pub fn save_world_system(world: &mut World, resources: &mut Resources) {
+// TODO Re-implement
+pub fn save_world_system(_world: &mut World, _resources: &mut Resources) {
     /*let type_registry = resources.get::<TypeRegistry>();
     let input = resources.get::<Input<KeyCode>>();
     let scene = Scene::from_world(&world, &type_registry.component.read());
@@ -332,19 +312,14 @@ pub fn save_world_system(world: &mut World, resources: &mut Resources) {
  * 
  */
 pub fn zoom_system(
-    mut commands : Commands,
-    mut windows: ResMut<Windows>,
+    windows: ResMut<Windows>,
     mut scroll: ResMut<lab_input::ScrollState>,
     mut query: Query<(Entity,&mut Scale, &mut Translation, &Zoomable)>,
-    mut query2: Query<(Entity,&mut Movement)>,
+    movement_query: Query<(Entity,&mut Movement)>,
     mut text_query: Query<(Entity, &mut Style, &Zoomable, &mut Transform, &mut Translation, &Dialog, &mut Text)>,
 ) {
     
     let window = windows.iter().last().unwrap();
-    
-    let ease: f32 = 0.25;
-    let mut camera_offset_x : f32 = 0.;
-    let mut camera_offset_y : f32 = 0.;
 
     let mut entities_changed : Vec<(Entity, Location, Location)> = Vec::new();
     
@@ -371,7 +346,7 @@ pub fn zoom_system(
 
 
     for e in entities_changed {
-        match &mut query2.get_mut::<Movement>(e.0) {
+        match &mut movement_query.get_mut::<Movement>(e.0) {
             Ok(movement) => {
                 println!("Setting movement for {:?}", e.0);
                 movement.0 = e.1;
@@ -384,11 +359,11 @@ pub fn zoom_system(
         }
     }
 
-    for (mut entity, style, mut zoom, mut lt, mut trans,dialog, mut text) in &mut text_query.iter() {
+    for (mut _entity, _style, mut _zoom, mut _lt, mut trans, dialog, mut text) in &mut text_query.iter() {
         if scroll.y != 0. {            
             
-            if let Ok(tl) = &mut query.get_mut::<Translation>(dialog.entity) {                
-                let mut sprite_info = &mut query.get_mut::<SpriteInfo>(dialog.entity).unwrap();
+            if let Ok(tl) = query.get::<Translation>(dialog.entity) {                
+                let sprite_info = query.get::<SpriteInfo>(dialog.entity).unwrap();
                 
                 let sprite_scaled_size = sprite_info.scaled_size(scroll.current_scale);        
                 let x = tl.x() + (window.width/2) as f32+sprite_scaled_size.x();
@@ -405,7 +380,7 @@ pub fn zoom_system(
 /// Super Basic right now, Move all NPCs in the scene every n seconds
 pub fn npc_move_system(
     mut commands : Commands,
-    mut time: Res<Time>,
+    time: Res<Time>,
     mut query: Query<(
         Entity,
         &NonPlayer,
@@ -413,7 +388,7 @@ pub fn npc_move_system(
         &mut Translation
     )>,
 ) {
-    for (entity, np,  mut timer, mut trans) in &mut query.iter() {
+    for (entity, _np,  mut timer, mut trans) in &mut query.iter() {
         timer.tick(time.delta_seconds);
         if timer.finished {
             let old_loc = Location::from(*trans);
@@ -437,14 +412,12 @@ pub fn sprite_despawn_system(
     mut commands: Commands,
     mut query: Query<(
         Entity,
-        &Draw,
-        &SpriteInfo,
         &lab_core::Despawn,
         &Timer,
         &mut Translation,
     )>,
 ) {
-    for (e, sprite, s, _dspawn, timer, mut translation) in &mut query.iter() {
+    for (e, _, timer, _translation) in &mut query.iter() {
         if timer.finished {
             commands.despawn(e);
         }
@@ -452,12 +425,11 @@ pub fn sprite_despawn_system(
 }
 
 pub fn static_text_system(
-    mut commands: Commands,
     mut query: Query<(Entity, &Text, &mut Translation, &StaticText)>,
     mut player_query: Query<(Entity, &Player, &Movement, Changed<Translation>)>,
 ) {
-    for (e, _player, movement, t) in &mut player_query.iter() {
-        for (e, _letter, mut translation, _st) in &mut query.iter() {            
+    for (_e, _player, movement, t) in &mut player_query.iter() {
+        for (_e, _letter, mut translation, _st) in &mut query.iter() {            
             let old_loc = movement.0;
             let new_loc = movement.1;
 
