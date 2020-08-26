@@ -1,5 +1,5 @@
 use bevy::{prelude::*};
-use lab_core::{Zoomable, stage};
+use lab_core::{Zoomable, stage, MenuDefinition};
 use std::collections::BTreeMap;
 use std::{fmt::Debug, collections::btree_map::{Values, Keys}};
 use lab_sprites::{TileAnimation, SpriteInfo};
@@ -20,17 +20,20 @@ impl Plugin for WorldPlugin {
         app
             .add_system(systems::npc_move_system.system())
             .add_resource(TilePalette::default())
-            //.add_resource(UiTextState::default())
+            .add_resource(UiTextState::default())
+            .add_resource(InteractionState::default())
+            .add_event::<TextChangeEvent>()
+            .add_event::<InteractionEvent>()
             //.add_system(systems::add_world_sprites_system.system())
             //.add_system(systems::add_interaction_sprites_system.system())
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())
             .add_system(systems::static_text_system.system())
-            .add_system(systems::object_interaction_system.system())
+            .add_system(systems::interaction_system.system())
             .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system());
-           // .add_system(systems::update_ui_text_system.system());
+            .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system())
+            .add_system(systems::update_ui_text_system.system());
     }
 }
 
@@ -88,13 +91,23 @@ pub enum InteractionResult {
     ChangeSprite(SpriteInfo),
     Move(Location),
     PickUp(lab_entities::objs::Item),
+    Log(String),
+    Message(String),
+    Menu(MenuDefinition),
     Block,
     None
 }
+
+impl From<InteractionResult> for Vec<InteractionResult> {
+    fn from( n : InteractionResult) -> Self {
+        vec![n]
+    }
+}
+
 #[derive(Copy, Clone)]
 pub struct Interaction {
     pub description: &'static str,
-    pub call : fn (InteractionContext) -> InteractionResult
+    pub call : fn (InteractionContext) -> Vec<InteractionResult>
 }
 
 impl Debug for Interaction {
@@ -151,12 +164,12 @@ impl Default for TileComponents {
                 match ctx.tile_attributes  { 
                     Some(tile_attributes) =>{
                         if tile_attributes.hardness != 0. {
-                            InteractionResult::Block
+                            InteractionResult::Block.into()
                         } else {
-                            InteractionResult::None 
+                            InteractionResult::None.into()
                         }
                     },
-                    None => InteractionResult::None 
+                    None => InteractionResult::None.into()
                 }                
             } },
             tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: None, message:None },
@@ -172,7 +185,7 @@ pub struct InteractionContext <'a> {
     pub player_location: Option<Location>,
     pub interaction_location: Option<Location>,
     pub sprite_info: Option<&'a SpriteInfo>,
-    pub tile_attributes: Option<TileAttributes>,
+    pub tile_attributes: Option<&'a TileAttributes>,
     pub tile_palette: Option<&'a TilePalette>
 }
 
@@ -200,17 +213,28 @@ impl Default for InteractableComponents {
                 match ctx.tile_attributes  { 
                     Some(tile_attributes) =>{
                         if tile_attributes.hardness != 0. {
-                            InteractionResult::Block
+                            InteractionResult::Block.into()
                         } else {
-                            InteractionResult::None 
+                            InteractionResult::None.into()
                         }
                     },
-                    None => InteractionResult::None 
+                    None => InteractionResult::None.into()
                 }                
             } },
             interactable: Interactable
         }
     }
+}
+
+/// Events
+pub enum InteractionType {
+    Collision,
+    Action(String)
+}
+pub struct InteractionEvent {
+    pub source : Entity,
+    pub destination : Entity,
+    pub interaction_type: InteractionType
 }
 
 pub struct TextChangeEvent {
@@ -219,5 +243,11 @@ pub struct TextChangeEvent {
 }
 #[derive(Default)]
 pub struct UiTextState {
-    //pub change_events: EventReader<TextChangeEvent>, 
+    pub change_events: EventReader<TextChangeEvent>, 
 }
+#[derive(Default)]
+pub struct InteractionState {
+    pub interaction_events: EventReader<InteractionEvent>, 
+}
+pub struct MoveTimer(pub Timer);
+pub struct DialogTimer(pub Timer);

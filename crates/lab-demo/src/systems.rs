@@ -45,7 +45,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 1;
         tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite), ..Default::default()})
+            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite), ..Default::default()}).into()
         },
             description: "Open Door",}
     }
@@ -57,25 +57,24 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         new_tile.tile_attributes.hardness = 1.;
         new_tile.tile_attributes.hit_points = 1;
         new_tile.interaction = lab_world::Interaction { call: |ctx| {    
-             
+            let palette = ctx.tile_palette.unwrap_or_else(|| panic!("Did not receive a palette in the interaction context."));
+
             // poor state tracking right now TODO Refactor and make safer
-            let open_sprite = ctx.tile_palette.unwrap().components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite;
+            let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite;
             let current_sprite = ctx.sprite_info.unwrap().atlas_sprite;
 
             if open_sprite == current_sprite {
-                return InteractionResult::None;
+                return InteractionResult::None.into()
             }
 
             if let Some(inventory) = ctx.inventory 
             {
 
-                println!("inventory: {}, current_sprite: {} open_sprite: {}", inventory.items.len(), current_sprite, open_sprite);
                 if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
-                    //ctx.text.send(TextChangeEvent { text: "You have the key, Unlocked the door!".to_string(), name: "main".to_string()} );
-                    return InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), ..Default::default()})
+                    return InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), message: Some("You have the key, Unlocked the door!"), ..Default::default()}).into()
                 }
             }
-            InteractionResult::Block
+            InteractionResult::Block.into()
         },
             description: "Open Door",};
 
@@ -94,8 +93,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                  
             // if a non-player hits a window, crash it if not block it 
             match ctx.player {
-                None => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}),
-                _ => InteractionResult::Block
+                None => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
+                _ => InteractionResult::Block.into()
             }
         },
             description: "Break Window",}
@@ -118,7 +117,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 inventory.items.push(item.clone())
             }
             
-            InteractionResult::PickUp(item)
+            InteractionResult::PickUp(item).into()
         },
             description: "Get Item",}
     }

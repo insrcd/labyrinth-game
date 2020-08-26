@@ -85,7 +85,7 @@ fn setup (
         },
         draw: Draw {is_visible: true, ..Default::default()},
         ..Default::default()
-    });
+    }).with(Named("main".to_string()));
     
     /*
     for _n in 0..50 {

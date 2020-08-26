@@ -30,3 +30,10 @@ pub struct Moveable;
 /// This defines an entity as zoomable. It will be modified by the zoom system.
 #[derive(Debug, Clone, Copy, Properties)]
 pub struct Zoomable;
+
+pub struct MenuItem {
+    pub name: String
+}
+pub struct MenuDefinition {
+    items : Vec<MenuItem>
+}
