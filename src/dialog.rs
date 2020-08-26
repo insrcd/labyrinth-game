@@ -2,23 +2,33 @@ use bevy::{prelude::*};
 use lab_sprites::{SpriteInfo, SpriteLibrary};
 use std::time::Duration;
 use lab_entities::prelude::{Movement, NonPlayer};
+use lab_world::Dialog;
+use lab_core::Zoomable;
 
-pub struct Dialog {
-    text : String,
-    entity: Entity
-}
 pub fn npc_dialog_system (  
     mut commands : Commands,  
-    mut query : Query<(Entity, Added<NonPlayer>, &Translation, &SpriteInfo, &Scale)>){
+    mut query : Query<(Entity, &NonPlayer, &Translation, &SpriteInfo, &Scale)>,    
+    mut m_query: Query<(Entity, &NonPlayer, &Translation, &Timer)>,
+    mut d_query: Query<(Entity,&Dialog)>)
+{
+    for (entity, np, sprite, timer) in &mut m_query.iter() {       
+        if timer.elapsed == 0. {
+            println!("timer finished");
+            if let Some(d) = d_query.iter().into_iter().filter(|i| i.1.entity == entity).last(){         
+                commands.despawn(d.0);
+            }          
+        }
+    }       
     for (entity, np, t, sprite_info, scale) in &mut query.iter(){
-    // if a npc doesn't have dialog, make them say something
-        println!("Adding dialog");       
+        // if a npc doesn't have dialog, make them say something
+        if let None = d_query.iter().into_iter().filter(|i| i.1.entity == entity).last() {
+            println!("Adding dialog");       
 
-        let e = Entity::new();
-
-        commands.spawn_as_entity(e,(scale.clone(), sprite_info.clone(), t.clone(), Dialog { text: "I'm an npc that talks and moves!".to_string(), entity:entity },));
-        //commands.insert_children(entity, 0, &[e]);
+            commands.spawn((scale.clone(), sprite_info.clone(), t.clone(), Dialog { text: "I'm an NPC".to_string(), entity:entity },));
+        }       
     }
+
+    //commands.insert_children(entity, 0, &[e]);
 }
 
 pub fn dialog_system (
@@ -27,8 +37,8 @@ pub fn dialog_system (
     asset_server: Res<AssetServer>,
     windows: Res<Windows>,
     mut assets: ResMut<Assets<Font>>,
-    mut query : Query<Without<Text, (Entity, &mut Dialog, &SpriteInfo, &Translation, &Scale)>>,
-    mut m_query: Query<(Entity, &NonPlayer, &Translation, &Movement)>
+    mut d_query: Query<(Entity,&Dialog)>,
+    mut query : Query<(Entity, Added<Dialog>, &SpriteInfo, &Translation, &Scale)>
 ) {
     for (entity, mut dialog, sprite_info, translation, scale) in &mut query.iter() {       
     
@@ -37,12 +47,12 @@ pub fn dialog_system (
 
         let window = windows.iter().last().unwrap();
 
-        let mut loc = translation.0.clone() + sprite_scaled_size;
+        let mut loc = translation.0.clone();
 
         commands.spawn(  TextComponents {        
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect { top:Val::Px(loc.x() -(window.width/4) as f32), left: Val::Px(loc.y()-(window.height/2) as f32) , ..Default::default()},
+                position: Rect { bottom:Val::Px(loc.y()), left: Val::Px(loc.x()) , ..Default::default()},
 
                 ..Default::default()
             },
@@ -56,9 +66,6 @@ pub fn dialog_system (
             },
             draw: Draw {is_visible: true, ..Default::default()},
             ..Default::default()
-        });
-    }
-    /*for (entity, np, sprite, dialog, mov) in &mut m_query.iter() {                
-        commands.remove_one::<Dialog>(entity);
-    }*/
+        }).with_bundle((dialog.clone(),Zoomable,Translation::new(loc.x() as f32 + (window.width/2) as f32+sprite_scaled_size.x(),loc.y() as f32 + (window.height/2) as f32 + (sprite_scaled_size.y() * 0.6),0.)));
+    }    
 }

@@ -77,10 +77,10 @@ pub fn camera_tracking_system(
 ) {
     for (e, player_translation) in &mut player_moved.iter() {
         for (c, mut cam_trans) in &mut camera_query.iter() {
-            if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
+            //if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
                 *cam_trans.0.x_mut() = player_translation.0.x();
                 *cam_trans.0.y_mut() = player_translation.0.y();
-            }
+            //}
         }
     }
 }
@@ -332,52 +332,103 @@ pub fn save_world_system(world: &mut World, resources: &mut Resources) {
  * 
  */
 pub fn zoom_system(
+    mut commands : Commands,
+    mut windows: ResMut<Windows>,
     mut scroll: ResMut<lab_input::ScrollState>,
-    mut query: Query<(&mut Scale, &mut Translation, &Zoomable)>,
+    mut query: Query<(Entity,&mut Scale, &mut Translation, &Zoomable)>,
+    mut query2: Query<(Entity,&mut Movement)>,
+    mut text_query: Query<(Entity, &mut Style, &Zoomable, &mut Transform, &mut Translation, &Dialog, &mut Text)>,
 ) {
-    for (mut scale, mut trans, _tt) in &mut query.iter() {
+    
+    let window = windows.iter().last().unwrap();
+    
+    let ease: f32 = 0.25;
+    let mut camera_offset_x : f32 = 0.;
+    let mut camera_offset_y : f32 = 0.;
+
+    let mut entities_changed : Vec<(Entity, Location, Location)> = Vec::new();
+    
+    for (entity, mut scale, mut trans, _tt) in &mut query.iter() {
         if scroll.y != 0. {
+            
             // ease in the zoom by about .25 of the scroll intensity
             let ease: f32 = 0.25;
 
             let factor = (scroll.y.clone() * ease) + 1.;
+
+            let translation_before = trans.clone();
 
             *scale = Scale(scale.0 * factor);
 
             *trans.x_mut() *= factor;
             *trans.y_mut() *= factor;
 
+            entities_changed.push((entity, translation_before.into(), (*trans).into()));
+
             scroll.current_scale = scale.0;
         }
     }
+
+
+    for e in entities_changed {
+        match &mut query2.get_mut::<Movement>(e.0) {
+            Ok(movement) => {
+                println!("Setting movement for {:?}", e.0);
+                movement.0 = e.1;
+                movement.1 = e.2;
+                movement.2 = Dir::Stationary;                    
+            }
+            Err(err) => {                    
+                println!("Setting movement for {:?} {:?}", e.0, err);
+            }
+        }
+    }
+
+    for (mut entity, style, mut zoom, mut lt, mut trans,dialog, mut text) in &mut text_query.iter() {
+        if scroll.y != 0. {            
+            
+            if let Ok(tl) = &mut query.get_mut::<Translation>(dialog.entity) {                
+                let mut sprite_info = &mut query.get_mut::<SpriteInfo>(dialog.entity).unwrap();
+                
+                let sprite_scaled_size = sprite_info.scaled_size(scroll.current_scale);        
+                let x = tl.x() + (window.width/2) as f32+sprite_scaled_size.x();
+                let y = tl.y() + (window.height/2) as f32 + (sprite_scaled_size.y() * 0.8);
+
+                *trans.x_mut() = x;
+                *trans.y_mut() = y;
+
+                (*text).style.font_size = 10. * scroll.current_scale 
+            }
+        }
+    }
 }
-/// Super Basic right now, Move all NPCs in the scene every 1.5 seconds
+/// Super Basic right now, Move all NPCs in the scene every n seconds
 pub fn npc_move_system(
-    time: Res<Time>,
+    mut commands : Commands,
+    mut time: Res<Time>,
     mut query: Query<(
+        Entity,
         &NonPlayer,
-        &mut MoveTimer,
-        &mut Translation,
-        &mut Movement
+        &mut Timer,
+        &mut Translation
     )>,
 ) {
-    for (_npc, mut timer, mut trans, mut m) in &mut query.iter() {
-        timer.0.tick(time.delta_seconds);
-        if timer.0.finished {
+    for (entity, np,  mut timer, mut trans) in &mut query.iter() {
+        timer.tick(time.delta_seconds);
+        if timer.finished {
             let old_loc = Location::from(*trans);
             let direction = rand::random::<Dir>();
-
             match direction {
-                Dir::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE,
+                Dir::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE, // replace with npc speed
                 Dir::Up => *trans.0.y_mut() += WORLD_TILE_SIZE,
                 Dir::Down => *trans.0.y_mut() -= WORLD_TILE_SIZE,
                 Dir::Right => *trans.0.x_mut() += WORLD_TILE_SIZE,
                 Dir::Stationary => {}
             }
 
-            *m = Movement(old_loc, Location::from(*trans), direction);
+            commands.insert(entity, (Movement(old_loc, Location::from(*trans), direction),));
 
-            timer.0.reset();
+            timer.reset();
         }
     }
 }
@@ -402,19 +453,22 @@ pub fn sprite_despawn_system(
 
 pub fn static_text_system(
     mut commands: Commands,
-    mut query: Query<(Entity, &Text, &mut Translation)>,
-    mut player_query: Query<(Entity, &Player, Changed<Movement>)>,
+    mut query: Query<(Entity, &Text, &mut Translation, &StaticText)>,
+    mut player_query: Query<(Entity, &Player, &Movement, Changed<Translation>)>,
 ) {
-    for (e, _player, movement) in &mut player_query.iter() {
-        for (e, _letter, mut translation) in &mut query.iter() {
+    for (e, _player, movement, t) in &mut player_query.iter() {
+        for (e, _letter, mut translation, _st) in &mut query.iter() {            
             let old_loc = movement.0;
             let new_loc = movement.1;
 
             let x_change = old_loc.0 - new_loc.0;
             let y_change = old_loc.1 - new_loc.1;
-
-            *translation.x_mut() -= x_change;
-            *translation.y_mut() -= y_change;
+            let t_vec : Vec3 = old_loc.into();
+            // make sure there actually was a movement change in translation
+            if Translation::from(t_vec) != *t {
+                *translation.x_mut() -= x_change;
+                *translation.y_mut() -= y_change;
+            }
         }
     }
 }

@@ -18,7 +18,6 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_system(systems::npc_move_system.system())
             .add_resource(TilePalette::default())
             .add_resource(UiTextState::default())
             .add_resource(InteractionState::default())
@@ -29,15 +28,22 @@ impl Plugin for WorldPlugin {
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system(systems::static_text_system.system())
+            .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::interaction_system.system())
             .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
             .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system())
-            .add_system(systems::update_ui_text_system.system());
+            .add_system(systems::update_ui_text_system.system())
+            .add_system_to_stage(stage::PRE_UPDATE, systems::npc_move_system.system());
     }
 }
 
+pub struct StaticText;
 
+#[derive(Clone, Debug)]
+pub struct Dialog {
+    pub text : String,
+    pub entity: Entity
+}
 #[derive(Default, Clone, Debug)]
 pub struct TilePalette {
     pub components: BTreeMap<String, TileComponents>

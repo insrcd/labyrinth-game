@@ -18,7 +18,6 @@ impl Plugin for SpritesPlugin {
     }
 }
 
-
 #[derive(Clone, Properties, Debug, Default, Eq)]
 pub struct SpriteInfo {
     pub name:  String,

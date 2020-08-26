@@ -11,6 +11,7 @@ use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
+use lab_world::{MoveTimer, StaticText};
 
 
 const TILE_SIZE : f32 = 16.;
@@ -39,7 +40,7 @@ fn main() {
     .add_plugin(lab_builder::BuilderPlugin)
     .add_startup_system_to_stage(stage::POST_INIT, setup.system())        
     .add_system(npc_dialog_system.system())
-    .add_system_to_stage(stage::PROCESSING, dialog_system.system())
+    .add_system_to_stage(stage::POST_UPDATE, dialog_system.system())
     .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
     //.add_system(update_ui_text_system.system())
@@ -81,15 +82,16 @@ fn setup (
             right: walk_right[3..6].to_vec(),
             ..Default::default()
         }).with(player_sprite)
-    .spawn( (NonPlayer, Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement))
+    .spawn( (NonPlayer, Timer::from_seconds(5., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
     .with_bundle(npc_sprite.to_components(Location(100., 100., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)))
     .spawn(TextComponents {
         style: Style {
-            align_self: AlignSelf::FlexStart,
+            position_type: PositionType::Absolute,
+            position: Rect {bottom:Val::Px(5.), left:Val::Px(0.), ..Default::default()},
             ..Default::default()
         },
         text: Text {
-            value: "Welcome to Labyrinth Brewery".to_string(),
+            value: "Welcome to Labyrinth Brewery - Demo".to_string(),
             font: font_handle,
             style: TextStyle {
                 font_size: 20.0,
@@ -98,7 +100,7 @@ fn setup (
         },
         draw: Draw {is_visible: true, ..Default::default()},
         ..Default::default()
-    }).with(Named("main".to_string()));    
+    }).with_bundle((Named("main".to_string()), StaticText, Translation::new(60.,0.,0.)));    
     
     /*
     for _n in 0..50 {

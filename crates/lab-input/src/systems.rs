@@ -138,7 +138,7 @@ pub fn player_movement_system (
 
                 if let Some(s) = sprite {
                     *atlas = s.atlas_handle;
-                    *texture_sprite = TextureAtlasSprite::new(s.atlas_sprite);
+                    (*texture_sprite).index = s.atlas_sprite;
                 }
             }
             timer.0.reset();
