@@ -10,7 +10,7 @@ The owners of Labyrinth Brewery are highly involved in local community and great
 
 Currently, this codebase is merely being used to design the basic systems and datatypes needed for the game. It is going to leverage the rust scripting engine RHAI for NPC / Powers / AI development.
 
-So, join us in solving the mystery of the Labynrith Below Labyrinth!
+So, join us in solving the mystery of the Labyrinth Below Labyrinth!
 
 ## Keybindings
 
