@@ -129,7 +129,7 @@ pub fn tile_interaction_system (
                             player_location: Some(movement.0.into()),
                             tile_attributes: Some(*tile_attributes),
                             tile_palette: Some(&*tile_palette),
-                            sprite_info: Some(&*tile_sprite)
+                            sprite_info: Some(&*tile_sprite),
                         }) {      
                             InteractionResult::ChangeTile(attr) => {
                             
@@ -172,7 +172,7 @@ pub fn tile_interaction_system (
                             inventory: Some(&mut inventory),
                             player: Some(e),
                             player_location: Some(movement.0.into()),
-                            tile_attributes: Some(*tile_attributes),
+                            tile_attributes: Some(tile_attributes.clone()),
                             tile_palette: Some(&*tile_palette),
                             sprite_info: Some(&*tile_sprite)
                         }) {      
@@ -303,3 +303,16 @@ pub fn static_text_system(
         }
     }
 }
+
+/*
+
+pub fn update_ui_text_system(mut state: Local<UiTextState>, my_events: Res<Events<TextChangeEvent>>, 
+    mut text_element_query: Query<(&mut Text, &Named)>) {
+    for event in state.change_events.iter(&my_events) {
+        for (mut t, n) in &mut text_element_query.iter() {
+            if n.0 == event.name {
+                (*t).value = event.text.clone();
+            }
+        }
+    }
+}*/

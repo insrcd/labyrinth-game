@@ -50,7 +50,7 @@ pub fn track_mouse_movement_system(
         let mut camera_offset_y : f32 = 0.;
         
         for (c, t) in &mut camera_query.iter(){
-            if *(c.name.as_ref()).unwrap_or(&"".to_string()) == "UiCamera" {
+            if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
                 camera_offset_x = t.x();
                 camera_offset_y = t.y() ;
             }

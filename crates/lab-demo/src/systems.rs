@@ -70,8 +70,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             {
 
                 println!("inventory: {}, current_sprite: {} open_sprite: {}", inventory.items.len(), current_sprite, open_sprite);
-                if inventory.items.len() > 0 {
-                    println!("Unlocked door");
+                if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
+                    //ctx.text.send(TextChangeEvent { text: "You have the key, Unlocked the door!".to_string(), name: "main".to_string()} );
                     return InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), ..Default::default()})
                 }
             }
@@ -83,29 +83,41 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_WINDOW) {
         // break windows
+
+        // probably gonna get rid of hardness as a component
+        
         tiles.hardness = Hardness(0.5);
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 1;
-        tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite), ..Default::default()})
+        tiles.interaction = lab_world::Interaction { call: |ctx| {  
+            let open_sprite = Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
+                 
+            // if a non-player hits a window, crash it if not block it 
+            match ctx.player {
+                None => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}),
+                _ => InteractionResult::Block
+            }
         },
             description: "Break Window",}
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::ITEM) {
         // break windows
-        tiles.interaction = lab_world::Interaction { call: |ctx| {    
+        tiles.interaction = lab_world::Interaction { call: |ctx| { 
+            // demoooo   
             let item = Item { 
                 id : 1,
                 name: "Test Item".to_string(),
                 weight: Weight(0.1),
-                item_type: ItemType::Weapon,
+                item_type: ItemType::Key,
                 item_slot: ItemSlot::LeftHand
             };
             println!("Interaction with item {:?}", item);
             
+            // do domestuff now
             if let Some(mut inventory) = ctx.inventory {
                 inventory.items.push(item.clone())
             }
+            
             InteractionResult::PickUp(item)
         },
             description: "Get Item",}

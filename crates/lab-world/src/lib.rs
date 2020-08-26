@@ -20,6 +20,7 @@ impl Plugin for WorldPlugin {
         app
             .add_system(systems::npc_move_system.system())
             .add_resource(TilePalette::default())
+            //.add_resource(UiTextState::default())
             //.add_system(systems::add_world_sprites_system.system())
             //.add_system(systems::add_interaction_sprites_system.system())
             .add_system(systems::save_world_system.thread_local_system())
@@ -29,6 +30,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::object_interaction_system.system())
             .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
             .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system());
+           // .add_system(systems::update_ui_text_system.system());
     }
 }
 
@@ -106,11 +108,13 @@ impl Debug for Interaction {
 
 /// Attributes for a tile. These are meant to be changed by the player or interactions.
 
-#[derive(Default, Clone, Copy, Properties, Debug)]
+#[derive(Default, Clone, Properties, Debug, Copy)]
 pub struct TileAttributes {
     pub hit_points: u32,
     pub hardness: f32, 
-    pub sprite_idx: Option<u32>
+    pub sprite_idx: Option<u32>,
+    #[property(ignore)]
+    pub message : Option<&'static str>
 }
 
 #[derive(Bundle, Clone, Debug)]
@@ -155,15 +159,13 @@ impl Default for TileComponents {
                     None => InteractionResult::None 
                 }                
             } },
-            tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: None },
+            tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: None, message:None },
             sprite: SpriteInfo::default(),
             animation: TileAnimation::default(),
             zoomable: Zoomable
         }
     }
 }
-
-#[derive(Default)]
 pub struct InteractionContext <'a> {
     pub inventory: Option<&'a mut crate::player::Inventory>,
     pub player: Option<Entity>,
@@ -209,4 +211,13 @@ impl Default for InteractableComponents {
             interactable: Interactable
         }
     }
+}
+
+pub struct TextChangeEvent {
+    pub text: String,
+    pub name: String
+}
+#[derive(Default)]
+pub struct UiTextState {
+    //pub change_events: EventReader<TextChangeEvent>, 
 }
