@@ -30,7 +30,8 @@ fn main() {
     .add_startup_stage(stage::INIT)
     .add_startup_stage(stage::POST_INIT)
     .add_stage_after(stage::UPDATE, stage::PROCESSING)
-    .add_stage_after(stage::PROCESSING, stage::POST_UPDATE)   
+    .add_stage_after(stage::PROCESSING, stage::POST_UPDATE)
+    .add_plugin(lab_core::CorePlugin)   
     .add_plugin(lab_sprites::SpritesPlugin)
     .add_plugin(lab_input::InputPlugin)
     .add_plugin(lab_world::WorldPlugin)
@@ -68,7 +69,7 @@ fn setup (
     .spawn(Camera2dComponents::default())
    
     .spawn(( state::SceneState { next_state: state::StateType::Init }, ))
-    .spawn(( Mouse { position: Vec2::new(0.,0.)}, Translation::new(0.,0.,0.)))
+    .spawn( (Mouse::default(),) )
     .spawn( 
         PlayerComponents::new("Adam"))
         .with_bundle(player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))

@@ -18,8 +18,8 @@ pub mod stage {
 pub struct CorePlugin;
 
 impl Plugin for CorePlugin {
-    fn build(&self, _app: &mut AppBuilder) {
-        
+    fn build(&self, app: &mut AppBuilder) {
+        app.init_resource::<WorldSettings>();
     }
 }
 #[derive(Debug)]
@@ -36,4 +36,22 @@ pub struct MenuItem {
 }
 pub struct MenuDefinition {
     pub items : Vec<MenuItem>
+}
+
+pub struct WorldSettings {
+    pub tile_size: f32,
+    pub base_player_speed: f32,
+    pub base_npc_speed: f32,
+    pub base_scale: f32
+}
+
+impl Default for WorldSettings {
+    fn default() -> Self {
+        WorldSettings {
+            tile_size: 16.,
+            base_player_speed: 8.,
+            base_npc_speed: 8.,
+            base_scale: 5.
+        }
+    }
 }

@@ -5,7 +5,7 @@ use lab_entities::prelude::*;
 use lab_sprites::*;
 use lab_world::*;
 use crate::{BuilderSettings, MovingTile};
-use lab_input::{Mouse, SelectedTile, ScrollState};
+use lab_input::{Mouse, SelectedTile, ScrollState, MouseClickEvent, MouseState};
 
 
 pub fn make_tile_palette_system(
@@ -72,67 +72,63 @@ pub fn add_tiles_to_world_system (
     palette: Res<TilePalette>,
     mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
+    mouse_events : ResMut<Events<MouseClickEvent>>,
+    mut mouse_click : ResMut<MouseState>,
     mut interaction_query: Query<(Entity, &TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>,
     mut moving_tile_query: Query<(Entity, &MovingTile, &mut Translation)>
 ) {    
-    if mouse_input.just_pressed(MouseButton::Left) {
-        let components = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
+    for clicks in &mut mouse_click.click_events.iter(&mouse_events) {
+        match clicks.button {
+            MouseButton::Left => {
+                let x = clicks.world_position.x();
+                let y = clicks.world_position.y();
+
+                let components = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
         
-        /* snap to grid */
+                let st = selected_tile.clone();                    
 
-        let st = selected_tile.clone();                    
-
-        let mut x = mouse.position.x() ;
-        let mut y = mouse.position.y() ;
-        
-
-        let grid_x = x  / (components.sprite.size().x() * scroll_state.current_scale);
-        let grid_y = y  / (components.sprite.size().y() * scroll_state.current_scale);
-        
-        let width= components.sprite.size().x() * scroll_state.current_scale;
-        let height = components.sprite.size().y() * scroll_state.current_scale;
-
-
-        x = grid_x.round() * width;
-        y = grid_y.round() * height;
-
-        for (entity, _tt, mut t) in &mut moving_tile_query.iter() {
-            *t = Translation::new(x, y, st.level);
-            commands.remove_one::<MovingTile>(entity);
-            return
-        }
-
-        if settings.move_mode {
-            for (entity, _tile_type, si, 
-                    t, scale, _d) in &mut interaction_query.iter() {
-                let true_location = mouse.position;
                 
-                let (x1, y1) = ( t.x() - (si.width/2) as f32* scale.0,  t.y() - (si.height / 2 )as f32* scale.0) ;
-                let (x2, y2) = (t.x() + ((si.width/2) as f32 * scale.0), t.y() + ((si.height/2) as f32 * scale.0));
-                
-                //println!("mouse click: {:?} tile location: ({:?},{:?}) ({:?},{:?})",mouse.position, x1,y1,x2,y2);
-
-                if  true_location.x() >= x1 && true_location.x() <= x2 
-                    && true_location.y() >= y1 && true_location.y() <= y2 {
-                        println!("Click on sprite {}", si.name);
-
-                        commands.insert_one(entity, MovingTile);
-
-                        return;
+                for (entity, _tt, mut t) in &mut moving_tile_query.iter() {
+                    *t = Translation::new(x, y, st.level);
+                    commands.remove_one::<MovingTile>(entity);
+                    return
                 }
+
+                if settings.move_mode {
+                    for (entity, _tile_type, si, 
+                            t, scale, _d) in &mut interaction_query.iter() {
+                        let true_location = mouse.position;
+                        
+                        let (x1, y1) = ( t.x() - (si.width/2) as f32* scale.0,  t.y() - (si.height / 2 )as f32* scale.0) ;
+                        let (x2, y2) = (t.x() + ((si.width/2) as f32 * scale.0), t.y() + ((si.height/2) as f32 * scale.0));
+                        
+                        //println!("mouse click: {:?} tile location: ({:?},{:?}) ({:?},{:?})",mouse.position, x1,y1,x2,y2);
+
+                        if  true_location.x() >= x1 && true_location.x() <= x2 
+                            && true_location.y() >= y1 && true_location.y() <= y2 {
+                                println!("Click on sprite {}", si.name);
+
+                                commands.insert_one(entity, MovingTile);
+
+                                return;
+                        }
+                    }
+                }
+
+                let mut clone = components.clone();
+                let sprite: SpriteInfo = clone.sprite.clone();
+
+                clone.location = Location(x, y, st.level,  world::WorldLocation::World);
+                        
+                commands
+                    .spawn(sprite.to_components( Vec3::new(x,y,st.level), Scale(scroll_state.current_scale)))
+                    .with_bundle(clone); 
             }
+            MouseButton::Right => {}
+            MouseButton::Middle => {}
+            MouseButton::Other(_) => {}
+            
         }
-
-        let mut clone = components.clone();
-        let sprite: SpriteInfo = clone.sprite.clone();
-
-        clone.location = Location(x, y, st.level,  world::WorldLocation::World);
-                
-        commands
-            .spawn(sprite.to_components( Vec3::new(x,y,st.level), Scale(scroll_state.current_scale)))
-            .with_bundle(clone);      
-         
-             
     }
 }
 pub struct FreeTile;
@@ -253,7 +249,7 @@ fn change_selected_sprite(commands : &mut Commands,
             let comps = mouse_tile.sprite.to_components(scaled_location, Scale(current_scale));
                         
             commands                
-                .insert(*entity, (comps.sprite, comps.texture_atlas.clone(), Scale(current_scale), comps.translation));
+                .insert(*entity, (comps.sprite, comps.texture_atlas.clone(), Scale(current_scale), comps.translation, FreeTile));
             
         } else {
             commands                

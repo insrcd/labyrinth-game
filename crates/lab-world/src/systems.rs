@@ -348,13 +348,13 @@ pub fn zoom_system(
     for e in entities_changed {
         match &mut movement_query.get_mut::<Movement>(e.0) {
             Ok(movement) => {
-                println!("Setting movement for {:?}", e.0);
+                //println!("Setting movement for {:?}", e.0);
                 movement.0 = e.1;
                 movement.1 = e.2;
                 movement.2 = Dir::Stationary;                    
             }
             Err(err) => {                    
-                println!("Setting movement for {:?} {:?}", e.0, err);
+                //println!("Setting movement for {:?} {:?}", e.0, err);
             }
         }
     }

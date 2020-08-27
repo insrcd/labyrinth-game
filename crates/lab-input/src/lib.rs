@@ -11,6 +11,23 @@ pub mod prelude {
     pub use menu::*;
 }
 
+impl Plugin for InputPlugin {
+    fn build(&self, app: &mut AppBuilder) {
+        app
+            .add_event::<MouseClickEvent>()
+            .init_resource::<SelectedTile>()
+            .init_resource::<State>()
+            .init_resource::<ScrollState>()
+            .init_resource::<Mouse>()
+            .init_resource::<MouseState>()
+            .add_startup_system(input_timers.system())
+            .add_system(systems::player_movement_system.system())
+            .add_system_to_stage(lab_core::stage::PRE_UPDATE, systems::track_mouse_movement_system.system())
+            .add_system_to_stage(lab_core::stage::PROCESSING, systems::mouse_wheel_system.system())
+            .add_system_to_stage(lab_core::stage::PRE_UPDATE, systems::mouse_click_system.system());
+    }
+}
+
 #[derive(Clone, Properties, Debug)]
 pub struct SelectedTile {
     pub name: String,
@@ -54,22 +71,8 @@ impl Default for ScrollState {
     }
 }
 
-impl Plugin for InputPlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        app
-            .init_resource::<SelectedTile>()
-            .init_resource::<State>()
-            .init_resource::<ScrollState>()
-            .init_resource::<Mouse>()
-            .add_startup_system(input_timers.system())
-            .add_system(systems::player_movement_system.system())
-            .add_system(systems::track_mouse_movement_system.system())
-            .add_system(systems::mouse_wheel_system.system());
-    }
-}
-
 fn input_timers (mut commands : Commands) {
-    commands.spawn((ScrollTimer(Timer::from_seconds(0.1, false)),));
+    commands.spawn((ScrollTimer(Timer::from_seconds(0.3, false)),));
 }
 #[allow(dead_code)]
 #[derive(Default)]
@@ -79,14 +82,22 @@ pub struct State {
     pub cursor_moved_event_reader: EventReader<CursorMoved>,
     pub mouse_wheel_event_reader: EventReader<MouseWheel>
 }
-#[derive(Default)]
+/// Resource for quick access to the current mouse position
+#[derive(Default, Debug)]
 pub struct Mouse {
-    pub position: Vec2
+    pub position : Vec2,
+    pub ui_position : Vec2,
+    pub world_position: Vec3
 }
 
-pub struct MouseClick {
-    pub timestamp: i64,
+pub struct MouseClickEvent {
+    pub timestamp: f64,
     pub button : MouseButton,
     pub ui_position: Vec2,
-    pub map_position: Vec3
+    pub world_position: Vec3
+}
+
+#[derive(Default)]
+pub struct MouseState {
+    pub click_events: EventReader<MouseClickEvent>, 
 }

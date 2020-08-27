@@ -11,6 +11,10 @@ use bevy::{
 use lab_sprites::*;
 
 use crate::*;
+use lab_core::WorldSettings;
+
+/// System to sample mouse wheel events and update athe ScrollState
+/// resource that can be used by other systems.
 
 pub fn mouse_wheel_system (
     time : Res<Time>,
@@ -27,8 +31,9 @@ pub fn mouse_wheel_system (
             
                 let mw : &MouseWheel = event.into();
 
-                scroll_state.y += mw.y;
-                scroll_state.x += mw.x;
+                // scale by whole numbers
+                scroll_state.y = (scroll_state.y + mw.y).round();
+                scroll_state.x = (scroll_state.x + mw.x).round();
                 
                 timer.0.reset()
             }
@@ -44,6 +49,8 @@ pub fn track_mouse_movement_system(
     mut state: ResMut<State>,
     mut mouse: ResMut<Mouse>,
     windows: Res<Windows>,
+    scroll_state : Res<ScrollState>,
+    world : Res<WorldSettings>,
     mut camera_query: Query<(&Camera, &Translation)>) {
         let mut camera_offset_x : f32 = 0.;
         let mut camera_offset_y : f32 = 0.;
@@ -55,23 +62,58 @@ pub fn track_mouse_movement_system(
             }
         }
 
-        /*for window in windows.iter() {
-            println!("{:?}",window);
-        }*/
-
         let window = windows.iter().last().unwrap();
         let x_window_offset = window.width;
         let y_window_offset = window.height;
         
         for event in state.cursor_moved_event_reader.iter(&cursor_moved_events) {
-            //println!("{},{} - {},{}", camera_offset_x, camera_offset_y, event.position.x(), event.position.y() );
+            
+            let mut normalized_x = event.position.x() + camera_offset_x - (x_window_offset/2) as f32;
+            let mut normalized_y = event.position.y() + camera_offset_y - (y_window_offset/2) as f32;
+        
+            // snap to grid
 
-            mouse.position = Vec2::new(event.position.x() + camera_offset_x - (x_window_offset/2) as f32, event.position.y() + camera_offset_y - (y_window_offset/2) as f32);
+            let grid_x = normalized_x  / (world.tile_size * scroll_state.current_scale);
+            let grid_y = normalized_y  / (world.tile_size * scroll_state.current_scale);    
+
+            normalized_x = grid_x.round() * world.tile_size * scroll_state.current_scale;
+            normalized_y = grid_y.round() * world.tile_size * scroll_state.current_scale;
+            
+            // backwards compat            
+            mouse.position = Vec2::new(normalized_x, normalized_y);
+
+            // fields that give us both ui and world positions
+            mouse.world_position = Vec3::new(normalized_x, normalized_y, 0.);
+            mouse.ui_position = event.position.clone();
+
+            log::trace! ("Mouse position: {:?}", *mouse);
         }
 }
 
 
+pub fn mouse_click_system (
+    mouse_input: Res<Input<MouseButton>>,
+    mut events : ResMut<Events<MouseClickEvent>>,
+    time : Res<Time>,
+    mouse : ResMut<Mouse>
+) {    
+    let button = if mouse_input.just_pressed(MouseButton::Left) {
+        Some(MouseButton::Left)
+    } else if mouse_input.just_pressed(MouseButton::Right)  {
+        Some(MouseButton::Right)
+    } else if mouse_input.just_pressed(MouseButton::Middle)  {
+        Some(MouseButton::Middle)
+    } else { None };
 
+    if let Some(button) = button { 
+        events.send(MouseClickEvent {  
+            timestamp: time.seconds_since_startup,
+            button : button,
+            ui_position: mouse.ui_position,
+            world_position: mouse.world_position}) 
+    };
+
+}
 
 pub fn player_movement_system (
     time : Res<Time>,
