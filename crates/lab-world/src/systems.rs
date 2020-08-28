@@ -113,7 +113,7 @@ pub fn tile_interaction_system(
         &crate::Interaction,
         &SpriteInfo
     )>,
-    mut moveables: Query<(Entity,Changed<Translation>,&Scale)>)
+    mut moveables: Query<(Entity,Mutated<Translation>,&Scale)>)
 {
     for (mov_entity, move_translation, scale) in
         &mut moveables.iter()
@@ -148,6 +148,7 @@ pub fn interaction_system(
     mut text_update: ResMut<Events<TextChangeEvent>>,
     mut state: ResMut<InteractionState>,
     tile_palette: ResMut<TilePalette>,
+    interactable_type_query: Query<(Entity, &InteractableType)>,
     wall_query: Query<(
         Entity,
         &mut TileType,
@@ -170,7 +171,17 @@ pub fn interaction_system(
     for event in state.interaction_events.iter(&interaction_events) {
         match event.interaction_type {
             InteractionType::Collision => {
-                println!("Got collision {:?}", event.source);
+                let source_type = 
+                    if let Ok(it) = interactable_type_query.get::<InteractableType>(event.source) {
+                        Some(*it)
+                    } else {
+                        None
+                    };
+                let destination_type = if let Ok(it) = interactable_type_query.get::<InteractableType>(event.destination) {
+                    Some(*it)
+                } else {
+                    None
+                };
                 if let Ok(src_move) = move_query.get_mut::<Movement>(event.source) {
                     if let Ok(tile_interaction) =
                         wall_query.get_mut::<crate::Interaction>(event.destination)
@@ -188,10 +199,13 @@ pub fn interaction_system(
                             wall_query.get::<Translation>(event.destination).unwrap();
 
                         for r in (tile_interaction.call)(InteractionContext {
-                            interaction_location: Some(Location::from(*tile_location)),
                             inventory: Some(&mut inventory),
-                            player: Some(event.source),
-                            player_location: Some(src_move.0.into()),
+                            source: event.source,
+                            source_type: source_type,
+                            source_location: Some(src_move.0.into()),
+                            destination: event.destination,
+                            destination_type: destination_type,
+                            interaction_location: Some(Location::from(*tile_location)),
                             tile_attributes: Some(&mut tile_attributes),
                             tile_palette: Some(&*tile_palette),
                             sprite_info: Some(&*tile_sprite),

@@ -144,7 +144,8 @@ pub struct TileComponents {
     pub sprite: SpriteInfo,
     pub animation: TileAnimation,
     pub tile_attributes: TileAttributes,
-    pub zoomable: Zoomable
+    pub zoomable: Zoomable,
+    pub interactable_type: InteractableType
 }
 
 impl TileComponents {
@@ -179,14 +180,29 @@ impl Default for TileComponents {
             tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: None, message:None },
             sprite: SpriteInfo::default(),
             animation: TileAnimation::default(),
-            zoomable: Zoomable
+            zoomable: Zoomable,
+            interactable_type: InteractableType::Tile
         }
     }
 }
+
+#[derive(Copy, Clone, Debug)]
+pub enum InteractableType {
+    Player,
+    Npc,
+    Item,
+    Spell,
+    Weapon,
+    Tile,
+    None
+}
 pub struct InteractionContext <'a> {
     pub inventory: Option<&'a mut crate::player::Inventory>,
-    pub player: Option<Entity>,
-    pub player_location: Option<Location>,
+    pub source: Entity,
+    pub source_type: Option<InteractableType>,
+    pub destination: Entity,
+    pub destination_type: Option<InteractableType>,
+    pub source_location: Option<Location>,
     pub interaction_location: Option<Location>,
     pub sprite_info: Option<&'a SpriteInfo>,
     pub tile_attributes: Option<&'a TileAttributes>,

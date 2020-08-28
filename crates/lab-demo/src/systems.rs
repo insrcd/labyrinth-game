@@ -93,9 +93,13 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             let open_sprite = Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
                  
             // if a non-player hits a window, crash it if not block it 
-            match ctx.player {
-                None => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
-                _ => vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
+            if let Some(source_type) = ctx.source_type {
+                return match source_type {
+                    InteractableType::Item |  InteractableType::Npc => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
+                    _ => vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
+                };
+            } else {
+                vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
             }
         },
             description: "Break Window",}

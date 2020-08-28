@@ -11,7 +11,7 @@ use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
-use lab_world::TextChangeEvent;
+use lab_world::{InteractableType, TextChangeEvent};
 
 pub mod layers {
     // z indexes of sprites 
@@ -83,15 +83,15 @@ fn setup (
     .spawn( (Mouse::default(),) )
     .spawn( 
         PlayerComponents::new("Adam"))
-        .with_bundle(player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
-        .with( MoveAnimation {
+        .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
+        .with_bundle(( MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),
             left: walk_left[0..4].to_vec(),
             right: walk_right[3..6].to_vec(),
             ..Default::default()
-        }).with(player_sprite)
-    .spawn( (NonPlayer, Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
+        }, player_sprite, InteractableType::Player))
+    .spawn( (NonPlayer, InteractableType::Npc,  Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
         .with_bundle(npc_sprite.to_components(Location(32., -32., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)));  
     
     /*
