@@ -1,4 +1,5 @@
 
+use lab_entities::player::*;
 
 pub enum ConsumerType {
     Individual,
@@ -8,6 +9,7 @@ pub enum ConsumerType {
 
 pub struct ProducerErr <T : Good + Sized> {
     pub reason : String,
+    // what materials are returned from the production process.
     pub result : Vec<T>
 }
 
@@ -19,51 +21,15 @@ pub trait Consumer {
     fn consume(good : impl Good) -> bool;
 }
 
-#[derive(PartialEq)]
-pub enum BeerStyle {
-    PaleAle,
-    IPA,
-    DIPA,
-    RyePA,
-    Stout,
-    Porter,
-    Sour,
-    KettleSour,
-    Wheat,
-    Blond,
-    Lager,
-    PaleLager,
-    Pilsner,
-    CreamAle,
-    FruitBeer,
-    RedAle,
-    Gose,
-    Tripple,
-    Double,
-    Trappist
-}
-
-pub struct Beer {
-    pub name : &'static str,
-    pub style : BeerStyle,
-    pub price: u32,
-    pub quality: f32
-}
 pub trait Good {
     fn price(&self) -> u32;
     fn quality(&self) -> f32;
 }
 
-impl Good for Beer {
-    fn price(&self) -> u32{
-        self.price
-    }
-    fn quality(&self) -> f32{
-        self.quality
-    }
-}
 
 /// Identifies a identity as a converer or someone who brings something from one inventory to another
-pub struct Conveyer {
-
+trait Conveyer {
+    fn distribution_rate () -> u32;
+    fn convey (source : Inventory, destination: Inventory) -> bool;
 }
+

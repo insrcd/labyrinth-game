@@ -14,6 +14,8 @@ rand = "0.7.3"
 strum = "0.19.2"
 strum_macros = "0.19.2"
 
+sled = "0.34.3"
+
 # Local 
 
 lab-world = { path = "crates/lab-world", version = "0.1.0" }

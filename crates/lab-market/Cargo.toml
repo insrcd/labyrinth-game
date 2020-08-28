@@ -10,3 +10,5 @@ edition = "2018"
 
 log = { version = "0.4", features = ["release_max_level_info"] }
 serde = { version = "1.0", features = ["derive"]}
+
+lab-entities = { path = "../lab-entities"}
