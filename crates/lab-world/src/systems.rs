@@ -72,7 +72,7 @@ pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) ->
 }
 
 pub fn camera_tracking_system(
-    mut player_moved: Query<With<Player, (Entity, &mut Translation)>>,
+    mut player_moved: Query<With<Player, (Entity, Mutated<Translation>)>>,
     mut camera_query: Query<(&Camera, &mut Translation)>,
 ) {
     for (_e, player_translation) in &mut player_moved.iter() {
@@ -237,7 +237,6 @@ pub fn interaction_system(
                                 InteractionResult::None => {}
                                 InteractionResult::Log(_) => {}
                                 InteractionResult::Message(message) => {
-                                    println!("Sending text change event {}", message);
                                     text_update.send(TextChangeEvent {
                                         text: message.to_string(),
                                         name: "main".to_string(),

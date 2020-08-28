@@ -33,7 +33,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::interaction_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
             .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system());
+            .add_system(systems::camera_tracking_system.system());
     }
 }
 

@@ -41,8 +41,7 @@ pub fn update_tile_system (mouse : ResMut<Mouse>,
 
     for (c, t) in &mut camera_query.iter(){
         if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
-            
-
+        
             let camera_offset_x = t.x();
             let camera_offset_y = t.y();
             for (_ft, mut t, _d) in &mut f_tile_query.iter(){        
@@ -50,7 +49,7 @@ pub fn update_tile_system (mouse : ResMut<Mouse>,
                 let sprite_width = mouse_tile.sprite.size().x() * scroll_state.current_scale;
                 let sprite_height = mouse_tile.sprite.size().y() * scroll_state.current_scale;
 
-                let new_loc = Vec3::new(-(window.width as f32 / 2.)+sprite_width + camera_offset_x, -(window.height as f32 / 2.)+sprite_height + camera_offset_y, 100.);
+                let new_loc = Vec3::new((window.width as f32 / 2.) - sprite_width + camera_offset_x - 20., -(window.height as f32 / 2.)+sprite_height + camera_offset_y, 100.);
 
                 *t.0.x_mut() = new_loc.x();
                 *t.0.y_mut() = new_loc.y();
@@ -242,7 +241,7 @@ fn change_selected_sprite(commands : &mut Commands,
         println!("Changed to tile {:?}", mouse_tile.sprite);
         
         let scaled_size = mouse_tile.sprite.scaled_size(current_scale);
-        let scaled_location = Vec3::new(-(window_size.0 as f32 / 2.)+scaled_size.x() + camera_offset.0, 
+        let scaled_location = Vec3::new(window_size.0/2.-scaled_size.x()- 20. + camera_offset.0, 
             -(window_size.1 as f32 / 2.)+scaled_size.y() + camera_offset.1, 
             100.);
         if let Some((entity, _t)) = &mut free_tile.iter().into_iter().last() {

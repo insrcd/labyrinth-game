@@ -17,6 +17,7 @@ mod tiles {
     //pub const NPC : &'static str = "npc_0";   
     pub const ITEM : &'static str = "item_50";   
     pub const LOCKED_DOOR : &'static str = "locked_door";   
+    pub const ENEMY : &'static str = "mob_19";
 }
 
 /// Adds a simple map using the map builder for the purposes of a demo.
@@ -47,6 +48,18 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite), ..Default::default()}).into()
         },
             description: "Open Door",}
+    }
+    if let Some(mut tiles) = palette.components.get_mut(tiles::ENEMY) {
+        // open doors
+        tiles.interaction = lab_world::Interaction { call: |ctx| {            
+            if let Some(source) = ctx.source_type {
+                return vec![
+                    InteractionResult::Message("Hello, you are my enemy. Lets fight.".into()).into(),
+                    InteractionResult::Block.into()];
+            }
+            InteractionResult::Block.into()
+        },
+            description: "Enemy Interaction",}
     }
     if let Some(tiles) = palette.components.get(tiles::BRICK_DOOR) {
         // open doors
@@ -170,7 +183,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
         .set_position(Location(16.,0.,3., WorldLocation::World))
-        .add_tiles(RelativePosition::Below, 1,  tiles::ITEM.to_string());
+        .add_tiles(RelativePosition::Below, 1,  tiles::ITEM.to_string())
+        .set_position(Location(-32.,64.,3., WorldLocation::World))
+        .add_tiles(RelativePosition::Below, 5,  tiles::ENEMY.to_string());
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
     
