@@ -3,9 +3,8 @@ use lab_builder::prelude::*;
 use lab_entities::prelude::*;
 use crate::*;
 use std::rc::Rc;
-/*
- &["gravel","wall","floor","tile","gravel_h","brick","brick_door_closed","chair",
-            "gravel_v","brick_window","brick_door_open","shelf","brick_window_broken","bed","table","fridge"];*/
+
+// move to a resources file of some sort.
 mod tiles {
     pub const WALL : &'static str = "wall";
     pub const FLOOR : &'static str = "floor";
