@@ -186,7 +186,7 @@ impl Default for TileComponents {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum InteractableType {
     Player,
     Npc,

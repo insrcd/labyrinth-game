@@ -82,10 +82,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         palette.components.insert("locked_door".to_string(), new_tile);
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_WINDOW) {
-        // break windows
 
-        // probably gonna get rid of hardness as a component
-        
         tiles.hardness = Hardness(0.5);
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 1;
@@ -120,11 +117,17 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             if let Some(inventory) = ctx.inventory {
                 inventory.items.push(item.clone())
             }
+
+            if let Some(source_type) = ctx.source_type {
+                if source_type == InteractableType::Player {
+                    return vec![ 
+                        InteractionResult::Despawn, 
+                        InteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
+                        ]
+                };
+            };
             
-            vec![ 
-                InteractionResult::Despawn, 
-                InteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
-                ]
+            InteractionResult::None.into()
         },
             description: "Get Item",}
     }
