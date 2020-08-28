@@ -94,7 +94,7 @@ pub enum InteractionResult {
     Damage(u32),
     ChangeSprite(SpriteInfo),
     Move(Location),
-    PickUp(lab_entities::objs::Item),
+    Despawn,
     Log(String),
     Message(String),
     Menu(MenuDefinition),

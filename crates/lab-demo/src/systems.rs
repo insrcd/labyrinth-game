@@ -72,10 +72,10 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
                     return vec![
                             InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), message: Some(""), ..Default::default()}),
-                            InteractionResult::Message("You have the key, Unlocked the door!".to_string())];
+                            InteractionResult::Message("You have the key, Unlocked the door!".into())];
                 }
             }
-            InteractionResult::Block.into()
+            vec![InteractionResult::Block, InteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
         },
             description: "Open Door",};
 
@@ -95,7 +95,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             // if a non-player hits a window, crash it if not block it 
             match ctx.player {
                 None => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
-                _ => InteractionResult::Block.into()
+                _ => vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
             }
         },
             description: "Break Window",}
@@ -118,8 +118,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             }
             
             vec![ 
-                InteractionResult::PickUp(item), 
-                InteractionResult::Message(format!("You picked up an item: {}", item.name.clone()).to_string())
+                InteractionResult::Despawn, 
+                InteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
                 ]
         },
             description: "Get Item",}

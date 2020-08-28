@@ -245,7 +245,6 @@ pub fn interaction_system(
                         }) {
                             match r {
                                 InteractionResult::ChangeTile(attr) => {
-                                    println!("Got change tile: {:?}", attr);
 
                                     //TODO: clean this up so a change to spriteinfo will change the tile
                                     tile_sprite.atlas_sprite = attr.sprite_idx.unwrap();
@@ -254,8 +253,6 @@ pub fn interaction_system(
                                         event.destination,
                                         (
                                             attr,
-                                            Location::from(*tile_location),
-                                            attr,
                                             TextureAtlasSprite::new(attr.sprite_idx.unwrap()),
                                         ),
                                     );
@@ -263,7 +260,7 @@ pub fn interaction_system(
                                 InteractionResult::Damage(_) => {}
                                 InteractionResult::ChangeSprite(_) => {}
                                 InteractionResult::Move(_) => {}
-                                InteractionResult::PickUp(_) => {
+                                InteractionResult::Despawn => {
                                     commands.despawn(event.destination);
                                 }
                                 InteractionResult::Block => {
