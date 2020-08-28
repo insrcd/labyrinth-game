@@ -25,15 +25,15 @@ impl Plugin for WorldPlugin {
             .add_event::<InteractionEvent>()
             //.add_system(systems::add_world_sprites_system.system())
             //.add_system(systems::add_interaction_sprites_system.system())
+            .add_system_to_stage(stage::PRE_UPDATE, systems::npc_move_system.system())
+            .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::interaction_system.system())
-            .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
-            .add_system_to_stage(stage::PRE_UPDATE, systems::npc_move_system.system());
+            .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
+            .add_system_to_stage(stage::POST_UPDATE, systems::camera_tracking_system.system());
     }
 }
 

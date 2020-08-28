@@ -91,8 +91,8 @@ fn setup (
             right: walk_right[3..6].to_vec(),
             ..Default::default()
         }).with(player_sprite)
-    .spawn( (NonPlayer, Timer::from_seconds(5., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
-    .with_bundle(npc_sprite.to_components(Location(100., 100., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)));  
+    .spawn( (NonPlayer, Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
+        .with_bundle(npc_sprite.to_components(Location(32., -32., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)));  
     
     /*
     for _n in 0..50 {

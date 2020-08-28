@@ -61,19 +61,21 @@ impl<'a>  MapBuilder {
         self
     }
 
-    pub fn to_blueprint(&mut self, name : &str) -> &mut MapBuilder{
-        self.blueprints.push(Blueprint {
-               name: name.to_string(),
-               tiles: self.tiles.clone()
-        });
+    pub fn to_blueprint(&mut self, name : &str) -> Blueprint {
+        let bp =Blueprint {
+            name: name.to_string(),
+            tiles: self.tiles.clone()
+        };
 
-        self.tiles = Vec::new();
+        self.blueprints.push(bp.clone());
+
+        self.tiles.clear();
 
         self.current_location = self.starting_location;
 
         println!("Adding blueprint loc reset to: {:?}", self.starting_location);
 
-        self
+        bp
     }
 
     pub fn add_tiles_from_blueprint(&mut self, name : &str) -> &mut MapBuilder {

@@ -109,62 +109,17 @@ pub fn tile_interaction_system(
     mut interaction_event: ResMut<Events<InteractionEvent>>,
     mut wall_query: Query<(
         Entity,
-        &mut TileType,
-        &mut TileAttributes,
-        &mut Translation,
+        &Translation,
         &crate::Interaction,
-        &mut SpriteInfo,
+        &SpriteInfo
     )>,
-    mut moveables: Query<
-        Without<
-            Player,
-            (
-                Entity,
-                &Moveable,
-                &mut Translation,
-                Mutated<Movement>,
-                &SpriteInfo,
-                &Scale,
-            )>>,
-    mut player_moved: Query<
-        With<
-            Player,
-            (
-                Entity,
-                &Scale,
-                &mut Translation,
-                Mutated<Movement>,
-                &mut Inventory,
-                &mut SpriteInfo,
-            )>>) {
-    for (tile_entity, _tt, _tile_attributes, tile_translation, _i, tile_sprite) in
-        &mut wall_query.iter()
+    mut moveables: Query<(Entity,Changed<Translation>,&Scale)>)
+{
+    for (mov_entity, move_translation, scale) in
+        &mut moveables.iter()
     {
-        for (mov_entity, _m, move_transition, _movement, move_sprite, scale) in
-            &mut moveables.iter()
-        {
-            let collision = collide(
-                move_transition.0,
-                (move_sprite.size() * scale.0) - Vec2::new(16. * scale.0, 16. * scale.0),
-                tile_translation.0,
-                tile_sprite.size() * scale.0,
-                false,
-            );
-
-            if let Some(collision) = collision {
-                match collision {
-                    _ => interaction_event.send(InteractionEvent {
-                        source: mov_entity,
-                        destination: tile_entity,
-                        interaction_type: InteractionType::Collision,
-                    }),
-                }
-            } else {
-                //    player_collision = Some(move_transition.clone());
-            }
-        }
-        for (e, scale, move_translation, _movement, _inventory, _sprite) in
-            &mut player_moved.iter()
+            for (destination_entity, tile_translation, _, tile_sprite) in
+            &mut wall_query.iter()
         {
             let collision = collide(
                 move_translation.0,
@@ -177,12 +132,12 @@ pub fn tile_interaction_system(
             if let Some(collision) = collision {
                 match collision {
                     _ => interaction_event.send(InteractionEvent {
-                        source: e,
-                        destination: tile_entity,
+                        source: mov_entity,
+                        destination: destination_entity,
                         interaction_type: InteractionType::Collision,
                     }),
                 }
-            }
+            } 
         }
     }
 }
@@ -201,31 +156,29 @@ pub fn interaction_system(
         &crate::Interaction,
         &mut SpriteInfo,
     )>,
-    player_moved: Query<
-        With<
-            Player,
-            (
-                Entity,
-                &Scale,
-                &mut Translation,
-                &Movement,
-                &mut Inventory,
-                &mut SpriteInfo,
-            ),
-        >,
+    move_query: Query<
+        (
+            Entity,
+            &Scale,
+            &mut Translation,
+            &Movement,
+            &mut Inventory,
+            &mut SpriteInfo,
+        ),
     >,
 ) {
     for event in state.interaction_events.iter(&interaction_events) {
         match event.interaction_type {
             InteractionType::Collision => {
-                if let Ok(src_move) = player_moved.get_mut::<Movement>(event.source) {
+                println!("Got collision {:?}", event.source);
+                if let Ok(src_move) = move_query.get_mut::<Movement>(event.source) {
                     if let Ok(tile_interaction) =
                         wall_query.get_mut::<crate::Interaction>(event.destination)
                     {
                         let mut inventory =
-                            player_moved.get_mut::<Inventory>(event.source).unwrap();
+                            move_query.get_mut::<Inventory>(event.source).unwrap();
                         let mut move_translation =
-                            player_moved.get_mut::<Translation>(event.source).unwrap();
+                            move_query.get_mut::<Translation>(event.source).unwrap();
                         let mut tile_sprite =
                             wall_query.get_mut::<SpriteInfo>(event.destination).unwrap();
                         let mut tile_attributes = wall_query
@@ -350,7 +303,7 @@ pub fn zoom_system(
                 movement.1 = e.2;
                 movement.2 = Dir::Stationary;                    
             }
-            Err(err) => {                    
+            Err(_err) => {                    
                 // this will happen if the entity doesn't have a movement
             }
         }

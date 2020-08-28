@@ -89,7 +89,11 @@ pub struct StaticText;
 
 impl AdventureLog {
     pub fn add_message(&mut self, log : String) -> &mut AdventureLog {
-        self.logs.push(log);
+
+        // don't repeat the messages
+        if self.logs.len() == 0 || self.logs[self.logs.len()-1] != log {
+            self.logs.push(log);
+        }
 
         self
     }
@@ -109,14 +113,14 @@ impl AdventureLog {
             commands.spawn_as_entity(e, TextComponents {
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position: Rect {bottom:Val::Px(20. + (length-n) as f32 * 20.), left:Val::Px(5.), ..Default::default()},
+                    position: Rect {bottom:Val::Px(20. + (length-n) as f32 * 25.), left:Val::Px(5.), ..Default::default()},
                     ..Default::default()
                 },
                 text: Text {
                     value: "".to_string(),
                     font: font_handle,
                     style: TextStyle {
-                        font_size: 16.0,
+                        font_size: 20.0,
                         color: Color::WHITE,
                     },
                 },

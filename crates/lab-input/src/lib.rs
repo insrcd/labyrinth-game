@@ -72,7 +72,7 @@ impl Default for ScrollState {
 }
 
 fn input_timers (mut commands : Commands) {
-    commands.spawn((ScrollTimer(Timer::from_seconds(0.3, false)),));
+    commands.spawn((ScrollTimer(Timer::from_seconds(0.1, false)),));
 }
 #[allow(dead_code)]
 #[derive(Default)]
