@@ -2,14 +2,14 @@
 
 use bevy::{ prelude::* };
 use crate::objs::Item;
-use crate::{Named, world::Location, prelude::Visible};
+use crate::{world::Location, prelude::Visible};
 
 
 use rand::distributions::{Standard, Distribution};
 use rand::Rng;
 use std::time::Duration;
 
-use lab_core::{Zoomable, InputTimer};
+use lab_core::{Zoomable, InputTimer, Named};
 
 #[derive(PartialEq, Debug)]
 pub struct Movement(pub Location, pub Location, pub Direction);

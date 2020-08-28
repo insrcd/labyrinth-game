@@ -1,8 +1,8 @@
-use bevy::{prelude::*};
+use bevy::{prelude::*, render::camera::Camera};
 use lab_sprites::SpriteInfo;
-use lab_entities::prelude::NonPlayer;
-use lab_world::Dialog;
-use lab_core::Zoomable;
+use lab_entities::prelude::{Player, NonPlayer, Location};
+use lab_world::{TextChangeEvent, Dialog};
+use lab_core::{Named, Zoomable};
 
 pub fn npc_dialog_system (  
     mut commands : Commands,  
@@ -28,23 +28,38 @@ pub fn npc_dialog_system (
     //commands.insert_children(entity, 0, &[e]);
 }
 
+
 pub fn dialog_system (
-    mut commands : Commands,
-    asset_server: Res<AssetServer>,
+    mut text: ResMut<Events<TextChangeEvent>>,
     windows: Res<Windows>,
-    mut assets: ResMut<Assets<Font>>,
-    mut query : Query<(Entity, Added<Dialog>, &SpriteInfo, &Translation, &Scale)>
+    mut player_query : Query<(Entity, &Player, &Translation)>,
+    mut m_query: Query<(Entity, &NonPlayer, &Translation, &Named)>,
+    mut query : Query<(Entity, Added<Dialog>, &Translation)>,
+    mut camera_query: Query<(&Camera, &Translation)>
 ) {
-    for (_entity, dialog, sprite_info, translation, scale) in &mut query.iter() {       
+    let window = windows.iter().last().unwrap();
+    let c_trans = camera_query.iter()
+        .into_iter()
+        .filter_map(|(c,t)| if c.name == Some("Camera2d".to_string()) { Some(t) } else {None} )
+        .last();
+         
+    if let Some(t) = player_query.iter().into_iter().last() {
+        for (_entity, dialog, translation) in &mut query.iter() {  
+            let distance = Vec2::new((*t.2).x(), (*t.2).y()) - Vec2::new(translation.x(), translation.y());
+            if distance.x().abs() + distance.y().abs() < 100. { 
+                if let Ok(named) = &mut m_query.get::<Named>(dialog.entity) {     
+                    text.send(TextChangeEvent { text: format!("{} says: \"{}\"", named.0, dialog.text).to_string(), name: "log".to_string()});
+                }
+            }
+
+        }
+    }
     
-        let font_handle = asset_server.load_sync(&mut assets, "resources/fonts/FiraSans-Bold.ttf").unwrap();
-        let sprite_scaled_size = sprite_info.scaled_size(scale.0);
-
-        let window = windows.iter().last().unwrap();
-
-        let loc = translation.0.clone();
-
-        commands.spawn(  TextComponents {        
+    
+        
+/*
+        let text = Entity::new();
+        commands.spawn_as_entity(text, TextComponents {        
             style: Style {
                 position_type: PositionType::Absolute,
                 position: Rect { bottom:Val::Px(loc.y()), left: Val::Px(loc.x()) , ..Default::default()},
@@ -61,6 +76,9 @@ pub fn dialog_system (
             },
             draw: Draw {is_visible: true, ..Default::default()},
             ..Default::default()
-        }).with_bundle((dialog.clone(),Zoomable,Translation::new(loc.x() as f32 + (window.width/2) as f32+sprite_scaled_size.x(),loc.y() as f32 + (window.height/2) as f32 + (sprite_scaled_size.y() * 0.6),0.)));
-    }    
+        }).with_bundle((dialog.clone(),Zoomable,));*/
+
+//        commands.insert_children(dialog.entity, 0, &[text]);
+        //commands.push_children(   dialog.entity, &[text]);
+        //Translation::new(loc.x() as f32 + (window.width/2) as f32+sprite_scaled_size.x(),loc.y() as f32 + (window.height/2) as f32 + (sprite_scaled_size.y() * 0.6),0.))
 }

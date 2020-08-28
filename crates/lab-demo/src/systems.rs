@@ -70,7 +70,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             {
 
                 if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
-                    return InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), message: Some("You have the key, Unlocked the door!"), ..Default::default()}).into()
+                    return vec![
+                            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), message: Some(""), ..Default::default()}),
+                            InteractionResult::Message("You have the key, Unlocked the door!".to_string())];
                 }
             }
             InteractionResult::Block.into()

@@ -37,8 +37,6 @@ impl Plugin for WorldPlugin {
     }
 }
 
-pub struct StaticText;
-
 #[derive(Clone, Debug)]
 pub struct Dialog {
     pub text : String,

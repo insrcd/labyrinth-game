@@ -1,12 +1,12 @@
 use bevy::{prelude::*, render::camera::Camera};
 use lab_entities::prelude::*;
 
-use lab_entities::{player::Direction as Dir, Named};
+use lab_entities::{player::Direction as Dir};
 
 use lab_sprites::{SpriteInfo, SpriteLibrary, TileAnimation};
 
 use crate::{settings::*, *};
-use lab_core::{Moveable, Zoomable};
+use lab_core::{Moveable, Zoomable, AdventureLog, StaticText};
 
 #[derive(Debug)]
 pub enum Collision {
@@ -76,11 +76,11 @@ pub fn camera_tracking_system(
     mut camera_query: Query<(&Camera, &mut Translation)>,
 ) {
     for (_e, player_translation) in &mut player_moved.iter() {
-        for (_c, mut cam_trans) in &mut camera_query.iter() {
-            //if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
+        for (c, mut cam_trans) in &mut camera_query.iter() {
+            if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
                 *cam_trans.0.x_mut() = player_translation.0.x();
                 *cam_trans.0.y_mut() = player_translation.0.y();
-            //}
+            }
         }
     }
 }
@@ -354,7 +354,7 @@ pub fn zoom_system(
                 movement.2 = Dir::Stationary;                    
             }
             Err(err) => {                    
-                //println!("Setting movement for {:?} {:?}", e.0, err);
+                // this will happen if the entity doesn't have a movement
             }
         }
     }
@@ -447,15 +447,22 @@ pub fn static_text_system(
 
 pub fn update_ui_text_system(
     mut state: Local<UiTextState>,
+    mut adventure_log: ResMut<AdventureLog>,
     my_events: Res<Events<TextChangeEvent>>,
-    mut text_element_query: Query<(&mut Text, &Named)>,
+    mut text_element_query: Query<(&mut Text, &lab_core::Named)>
 ) {
     for event in state.change_events.iter(&my_events) {
-        println!("Got text change event");
-        for (mut t, n) in &mut text_element_query.iter() {
-            if n.0 == event.name {
-                (*t).value = event.text.clone();
+        adventure_log.add_message(event.text.clone());
+        let len = adventure_log.logs.len();
+
+        for (mut line, n) in &mut text_element_query.iter() {
+            if n.0.starts_with("log_line_") {
+               let line_comp_id :usize = n.0.split("_").into_iter().last().unwrap().parse().unwrap();
+               if let Some(log) = adventure_log.get(line_comp_id) {
+                   line.value = log.to_string();
+               }
             }
         }
+    
     }
 }

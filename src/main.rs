@@ -11,7 +11,7 @@ use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
-use lab_world::StaticText;
+use lab_world::TextChangeEvent;
 
 pub mod layers {
     // z indexes of sprites 
@@ -51,6 +51,8 @@ fn main() {
 fn setup (
     mut commands: Commands,
     sprites: ResMut<SpriteLibrary>,
+    mut log: ResMut<AdventureLog>,
+    mut text_change: ResMut<Events<TextChangeEvent>>,
     asset_server: Res<AssetServer>,
     mut assets: ResMut<Assets<Font>>
 ) {
@@ -63,6 +65,15 @@ fn setup (
     let player_sprite = walk_left[0].clone();
 
     let font_handle = asset_server.load_sync(&mut assets, "resources/fonts/FiraSans-Bold.ttf").unwrap();
+
+
+    log
+        .make(&mut commands, font_handle, 4)
+        .add_message("Welcome to Labyrinth".to_string())
+        .add_message("This is a demo at this point".to_string())
+        .add_message("But enjoy testing it out".to_string());
+
+        text_change.send(TextChangeEvent { name: "".to_string(), text: "Get Adventuring!".to_string()} );
 
     commands
     .spawn(UiCameraComponents::default())
@@ -81,24 +92,7 @@ fn setup (
             ..Default::default()
         }).with(player_sprite)
     .spawn( (NonPlayer, Timer::from_seconds(5., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
-    .with_bundle(npc_sprite.to_components(Location(100., 100., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)))
-    .spawn(TextComponents {
-        style: Style {
-            position_type: PositionType::Absolute,
-            position: Rect {bottom:Val::Px(5.), left:Val::Px(0.), ..Default::default()},
-            ..Default::default()
-        },
-        text: Text {
-            value: "Welcome to Labyrinth".to_string(),
-            font: font_handle,
-            style: TextStyle {
-                font_size: 20.0,
-                color: Color::WHITE,
-            },
-        },
-        draw: Draw {is_visible: true, ..Default::default()},
-        ..Default::default()
-    }).with_bundle((Named("main".to_string()), StaticText, Translation::new(60.,0.,0.)));    
+    .with_bundle(npc_sprite.to_components(Location(100., 100., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)));  
     
     /*
     for _n in 0..50 {
