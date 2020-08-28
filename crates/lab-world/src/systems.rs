@@ -445,7 +445,7 @@ pub fn static_text_system(
     }
 }
 
-pub fn update_ui_text_system(
+pub fn add_text_to_adventure_log(
     mut state: Local<UiTextState>,
     mut adventure_log: ResMut<AdventureLog>,
     my_events: Res<Events<TextChangeEvent>>,
@@ -453,12 +453,11 @@ pub fn update_ui_text_system(
 ) {
     for event in state.change_events.iter(&my_events) {
         adventure_log.add_message(event.text.clone());
-        let len = adventure_log.logs.len();
 
         for (mut line, n) in &mut text_element_query.iter() {
             if n.0.starts_with("log_line_") {
                let line_comp_id :usize = n.0.split("_").into_iter().last().unwrap().parse().unwrap();
-               if let Some(log) = adventure_log.get(line_comp_id) {
+               if let Some(log) = adventure_log.last(line_comp_id) {
                    line.value = log.to_string();
                }
             }

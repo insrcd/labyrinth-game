@@ -48,9 +48,9 @@ pub fn track_mouse_movement_system(
     cursor_moved_events: Res<Events<CursorMoved>>,
     mut state: ResMut<State>,
     mut mouse: ResMut<Mouse>,
-    windows: Res<Windows>,
     scroll_state : Res<ScrollState>,
     world : Res<WorldSettings>,
+    windows: Res<Windows>,
     mut camera_query: Query<(&Camera, &Translation)>) {
         let mut camera_offset_x : f32 = 0.;
         let mut camera_offset_y : f32 = 0.;

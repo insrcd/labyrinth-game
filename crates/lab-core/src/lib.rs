@@ -94,7 +94,8 @@ impl AdventureLog {
         self
     }
 
-    pub fn get(&self, i : usize) -> Option<&str> {
+    /// Get a log line from the bottom of the log
+    pub fn last(&self, i : usize) -> Option<&str> {
         if i < self.logs.len() {
             Some(&self.logs[self.logs.len()-1-i][..])
         } else {

@@ -106,19 +106,21 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             // demoooo   
             let item = Item { 
                 id : 1,
-                name: "Test Item".to_string(),
+                name: "Key To Building 2".to_string(),
                 weight: Weight(0.1),
                 item_type: ItemType::Key,
                 item_slot: ItemSlot::LeftHand
             };
-            println!("Interaction with item {:?}", item);
             
             // do domestuff now
             if let Some(inventory) = ctx.inventory {
                 inventory.items.push(item.clone())
             }
             
-            InteractionResult::PickUp(item).into()
+            vec![ 
+                InteractionResult::PickUp(item), 
+                InteractionResult::Message(format!("You picked up an item: {}", item.name.clone()).to_string())
+                ]
         },
             description: "Get Item",}
     }
