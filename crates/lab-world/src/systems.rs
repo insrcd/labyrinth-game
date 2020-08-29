@@ -3,7 +3,7 @@ use bevy::sprite::collide_aabb::*;
 use lab_entities::prelude::*;
 use lab_core::prelude::*;
 use lab_sprites::SpriteInfo;
-use crate::{TextChangeEvent, TileComponents, InteractionState};
+use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, InteractionResult};
 
 pub fn camera_tracking_system(
     mut player_moved: Query<With<Player, (Entity, Mutated<Translation>)>>,
@@ -124,7 +124,6 @@ pub fn interaction_system(
                                 interactable_type: *source_type, 
                                 location: src_move.start.into(),
                                 inventory: inventory,
-                                tile_sprite_info: None,
                                 tile_state: Some(&src_state)
                             },
                             destination: &Interactable { 
@@ -132,7 +131,6 @@ pub fn interaction_system(
                                 interactable_type: *dst_type, 
                                 location: (*dst_trans).into(),
                                 inventory: dst_inventory,
-                                tile_sprite_info: Some(&mut dst_sprite),
                                 tile_state: Some(&dst_state)
                             },
                             world_catalog: Some(&world_catalog)

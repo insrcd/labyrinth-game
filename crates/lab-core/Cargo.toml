@@ -16,3 +16,4 @@ bevy = { git = "https://github.com/insrcd/bevy.git" }
 rand = "0.7.3"
 strum = "0.19.2"
 strum_macros = "0.19.2"
+defaults = "0.2.0"

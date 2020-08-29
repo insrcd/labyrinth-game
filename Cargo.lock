@@ -1506,6 +1506,7 @@ name = "lab-core"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "defaults",
  "log",
  "rand",
  "serde",

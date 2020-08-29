@@ -15,19 +15,3 @@ pub mod prelude {
     };     
 }
 
-#[derive(Clone, Debug, Default)]
-pub struct Inventory {
-    pub items: Vec<ItemHandle>
-}
-
-
-impl Inventory {
-    pub fn new() -> Inventory {
-        Inventory {
-            items: Vec::<ItemHandle>::new()
-        }
-    }
-    pub fn has(&self, predicate: fn (&ItemHandle) -> bool) -> bool {
-        self.items.iter().any(|i| predicate(i))
-    }
-}
