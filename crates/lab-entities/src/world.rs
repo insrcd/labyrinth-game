@@ -9,12 +9,7 @@ pub enum WorldLocation {
 #[derive(Clone, Debug, Copy, PartialEq, Properties)]
 pub struct Location (pub f32, pub f32, pub f32, 
     #[property(ignore)] pub WorldLocation);
-/*
-impl Into<Vec3> for Location {
-    fn into(self) -> Vec3 {
-        Vec3::new(self.0, self.1, self.2)
-    }
-}*/
+
 
 impl Default for Location {
     fn default() -> Self {
@@ -54,14 +49,6 @@ impl From<Translation> for Location {
 }
 #[derive(Clone, PartialEq)]
 pub struct Area(pub f32, pub f32);
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum TileType {
-    Placeable,
-    Breakable(Hardness),
-    Immutable,
-    Floor
-}
 
 #[derive(Copy, Clone, Debug)]
 pub struct Visible;

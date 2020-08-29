@@ -31,8 +31,6 @@ impl Plugin for InputPlugin {
 #[derive(Clone, Properties, Debug)]
 pub struct SelectedTile {
     pub name: String,
-    #[property(ignore)]
-    pub tile_type: TileType,
     pub level : f32,
     pub hardness: f32,
     pub hit_points: u32,
@@ -42,7 +40,7 @@ pub struct SelectedTile {
 
 impl Default for SelectedTile {
     fn default() -> SelectedTile {
-        SelectedTile { tile_type: TileType::Floor , level: 0., name: "Undefined".to_string(), hardness: 0., hit_points: 0, tile: 0, category: "world".to_string()}
+        SelectedTile { level: 0., name: "Undefined".to_string(), hardness: 0., hit_points: 0, tile: 0, category: "world".to_string()}
     }
 }
 

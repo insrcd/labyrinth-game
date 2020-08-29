@@ -6,6 +6,8 @@ pub mod text;
 
 use systems::*;
 use lab_core;
+use lab_entities::prelude::*;
+use lab_sprites::SpriteInfo;
 
 pub mod prelude {
     pub use systems::*;
@@ -46,3 +48,17 @@ pub struct BuilderSettings {
 
 /// Mark a tile as moving (i.e. being dragged)
 pub struct MovingTile;
+
+#[derive(Bundle, Clone, Default, Debug)]
+pub struct MobComponents {
+    pub npc: NonPlayer,
+    pub movement: Movement,
+    pub sprite: SpriteInfo,
+    pub inventory: Inventory,
+    pub attributes: lab_world::TileAttributes,
+    pub interaction: lab_world::Interaction,
+    pub timer : Timer,
+    pub location : Location,
+    pub zoomable : lab_core::Zoomable,
+    pub interactable_type: lab_core::InteractableType
+}

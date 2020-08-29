@@ -1,5 +1,5 @@
 use bevy::{prelude::*};
-use lab_core::{Zoomable, stage, MenuDefinition};
+use lab_core::{Zoomable, stage, MenuDefinition, InteractableType};
 use std::collections::BTreeMap;
 use std::{fmt::Debug, collections::btree_map::{Values, Keys}};
 use lab_sprites::{TileAnimation, SpriteInfo};
@@ -30,7 +30,7 @@ impl Plugin for WorldPlugin {
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::tile_interaction_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system(systems::interaction_system.system())
+            .add_system_to_stage(stage::POST_UPDATE, systems::interaction_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
             .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::camera_tracking_system.system());
@@ -122,6 +122,16 @@ impl Debug for Interaction {
     }
 }
 
+impl Default for Interaction {
+
+    fn default() -> Self {
+        Interaction {
+            description:"Default Interaction",
+            call : |_| InteractionResult::None.into()
+        }
+    }
+}
+
 
 /// Attributes for a tile. These are meant to be changed by the player or interactions.
 
@@ -137,7 +147,6 @@ pub struct TileAttributes {
 #[derive(Bundle, Clone, Debug)]
 pub struct TileComponents {
     pub hardness: Hardness,
-    pub tile_type: TileType,
     pub location: Location,
     pub visible: Visible,
     pub interaction: Interaction,
@@ -148,21 +157,10 @@ pub struct TileComponents {
     pub interactable_type: InteractableType
 }
 
-impl TileComponents {
-    pub fn hardness_from_tile(tile_type: TileType) -> Hardness {
-        match tile_type {
-            TileType::Immutable => Hardness(999.), 
-            TileType::Breakable(h ) =>  h,
-            _ => Hardness(0.),
-        }
-    }
-}
-
 impl Default for TileComponents {
     fn default() -> Self {
         TileComponents {
             hardness: Hardness(0.),
-            tile_type: TileType::Floor,
             location: Location::default(),
             visible: Visible,
             interaction: Interaction { description: "pass interaction", call: |ctx| {
@@ -186,16 +184,6 @@ impl Default for TileComponents {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum InteractableType {
-    Player,
-    Npc,
-    Item,
-    Spell,
-    Weapon,
-    Tile,
-    None
-}
 pub struct InteractionContext <'a> {
     pub inventory: Option<&'a mut crate::player::Inventory>,
     pub source: Entity,
@@ -254,6 +242,8 @@ pub enum InteractionType {
 pub struct InteractionEvent {
     pub source : Entity,
     pub destination : Entity,
+    pub source_location: Translation,
+    pub destination_location: Translation,
     pub interaction_type: InteractionType
 }
 

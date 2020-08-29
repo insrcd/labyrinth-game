@@ -43,7 +43,7 @@ pub struct Despawn;
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;
 /// This defines an entity as zoomable. It will be modified by the zoom system.
-#[derive(Debug, Clone, Copy, Properties)]
+#[derive(Debug, Clone, Copy, Properties, Default)]
 pub struct Zoomable;
 
 pub struct StaticLocation;
@@ -131,5 +131,23 @@ impl AdventureLog {
                     ); 
         }
         self
+    }
+}
+
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum InteractableType {
+    Player,
+    Npc,
+    Item,
+    Spell,
+    Weapon,
+    Tile,
+    None
+}
+
+impl Default for InteractableType {
+    fn default() -> Self {
+        return Self::None
     }
 }

@@ -6,7 +6,7 @@ use lab_entities::{player::Direction as Dir};
 use lab_sprites::{SpriteInfo, SpriteLibrary, TileAnimation};
 
 use crate::{settings::*, *};
-use lab_core::{Moveable, Zoomable, AdventureLog, StaticText};
+use lab_core::{Moveable, Zoomable, AdventureLog, StaticText, InteractableType};
 
 #[derive(Debug)]
 pub enum Collision {
@@ -111,16 +111,20 @@ pub fn tile_interaction_system(
         Entity,
         &Translation,
         &crate::Interaction,
-        &SpriteInfo
+        &SpriteInfo,
+        &InteractableType
     )>,
     mut moveables: Query<(Entity,Mutated<Translation>,&Scale)>)
 {
     for (mov_entity, move_translation, scale) in
         &mut moveables.iter()
     {
-            for (destination_entity, tile_translation, _, tile_sprite) in
+            for (destination_entity, tile_translation, _, tile_sprite, it) in
             &mut wall_query.iter()
         {
+            if *it == InteractableType::None {
+                continue
+            }
             let collision = collide(
                 move_translation.0,
                 Vec2::new(8. * scale.0, 8. * scale.0),
@@ -130,11 +134,14 @@ pub fn tile_interaction_system(
             );
 
             if let Some(collision) = collision {
+                println!("Collision detected");
                 match collision {
                     _ => interaction_event.send(InteractionEvent {
                         source: mov_entity,
                         destination: destination_entity,
-                        interaction_type: InteractionType::Collision,
+                        source_location: move_translation.clone(),
+                        destination_location: tile_translation.clone(),
+                        interaction_type: InteractionType::Collision
                     }),
                 }
             } 
@@ -148,10 +155,9 @@ pub fn interaction_system(
     mut text_update: ResMut<Events<TextChangeEvent>>,
     mut state: ResMut<InteractionState>,
     tile_palette: ResMut<TilePalette>,
-    interactable_type_query: Query<(Entity, &InteractableType)>,
+    interactable_type_query: Query<(Entity, &lab_core::InteractableType)>,
     wall_query: Query<(
         Entity,
-        &mut TileType,
         &mut TileAttributes,
         &mut Translation,
         &crate::Interaction,
@@ -169,6 +175,9 @@ pub fn interaction_system(
     >,
 ) {
     for event in state.interaction_events.iter(&interaction_events) {
+        if event.source == event.destination {
+            return
+        }
         match event.interaction_type {
             InteractionType::Collision => {
                 let source_type = 
@@ -195,8 +204,6 @@ pub fn interaction_system(
                         let mut tile_attributes = wall_query
                             .get_mut::<TileAttributes>(event.destination)
                             .unwrap();
-                        let tile_location =
-                            wall_query.get::<Translation>(event.destination).unwrap();
 
                         for r in (tile_interaction.call)(InteractionContext {
                             inventory: Some(&mut inventory),
@@ -205,7 +212,7 @@ pub fn interaction_system(
                             source_location: Some(src_move.0.into()),
                             destination: event.destination,
                             destination_type: destination_type,
-                            interaction_location: Some(Location::from(*tile_location)),
+                            interaction_location: Some(Location::from(event.destination_location)),
                             tile_attributes: Some(&mut tile_attributes),
                             tile_palette: Some(&*tile_palette),
                             sprite_info: Some(&*tile_sprite),
@@ -296,6 +303,10 @@ pub fn zoom_system(
 
             let translation_before = trans.clone();
 
+            if scale.0 * factor > 6. {
+                return;
+            }
+
             *scale = Scale(scale.0 * factor);
 
             *trans.x_mut() *= factor;
@@ -347,20 +358,21 @@ pub fn npc_move_system(
     mut query: Query<(
         Entity,
         &NonPlayer,
+        &Scale, 
         &mut Timer,
         &mut Translation
     )>,
 ) {
-    for (entity, _np,  mut timer, mut trans) in &mut query.iter() {
+    for (entity, _np,  scale, mut timer, mut trans) in &mut query.iter() {
         timer.tick(time.delta_seconds);
         if timer.finished {
             let old_loc = Location::from(*trans);
             let direction = rand::random::<Dir>();
             match direction {
-                Dir::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE, // replace with npc speed
-                Dir::Up => *trans.0.y_mut() += WORLD_TILE_SIZE,
-                Dir::Down => *trans.0.y_mut() -= WORLD_TILE_SIZE,
-                Dir::Right => *trans.0.x_mut() += WORLD_TILE_SIZE,
+                Dir::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE * scale.0, // replace with npc speed
+                Dir::Up => *trans.0.y_mut() += WORLD_TILE_SIZE* scale.0,
+                Dir::Down => *trans.0.y_mut() -= WORLD_TILE_SIZE* scale.0,
+                Dir::Right => *trans.0.x_mut() += WORLD_TILE_SIZE * scale.0,
                 Dir::Stationary => {}
             }
 

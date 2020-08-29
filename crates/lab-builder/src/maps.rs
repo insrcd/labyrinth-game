@@ -4,7 +4,7 @@ use lab_entities::prelude::*;
 
 use crate::*;
 use lab_world::{TileComponents, TilePalette};
-use std::{rc::Rc};
+use std::{rc::Rc, cell::RefCell};
 
 #[derive(Clone, Debug)]
 pub struct Blueprint {
@@ -32,21 +32,23 @@ impl Blueprint {
 }
 
 pub struct MapBuilder {
-    pub tile_palette : Rc<TilePalette>,
+    pub tile_palette : Rc<RefCell<TilePalette>>,
     pub starting_location : Location,
     pub current_location : Location,
     pub tiles : Vec<TileComponents>,
+    pub mobs : Vec<MobComponents>,
     pub blueprints : Vec<Blueprint>
 }
 
 impl<'a>  MapBuilder {
-    pub fn new(palette: Rc<TilePalette>, starting_location: &Location) -> MapBuilder {
+    pub fn new(palette: Rc<RefCell<TilePalette>>, starting_location: &Location) -> MapBuilder {
         MapBuilder {
             tile_palette : palette.clone(),
             starting_location : starting_location.clone(),
             current_location : starting_location.clone(),
             tiles: Vec::new(),
-            blueprints: Vec::new()
+            blueprints: Vec::new(),
+            mobs: Vec::new()
         }
     }
     pub fn reset_position(&mut self) -> &MapBuilder {
@@ -109,9 +111,9 @@ impl<'a>  MapBuilder {
         self
     }
 
-    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Area, tile_name: String) -> &mut  MapBuilder{
-                         
-        if let Some(comps) = self.tile_palette.components.get(&tile_name){
+    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Area, tile_name: String) -> &mut Self {
+       
+        if let Some(comps) = self.tile_palette.borrow().components.get(&tile_name){
             for x in 0..area.0 as u32 {
                 for y in 0..area.1 as u32 {  
                     let mut comp = comps.clone();
@@ -127,8 +129,8 @@ impl<'a>  MapBuilder {
     
         self
     }
-    pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut MapBuilder {
-        if let Some(comps) = self.tile_palette.components.get(&tile_name){
+    pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut Self {
+        if let Some(comps) = self.tile_palette.borrow().components.get(&tile_name){
             for _ in 0..count {
                 let mut my_comp = comps.clone();
 
@@ -166,6 +168,25 @@ impl<'a>  MapBuilder {
             }
         }
 
+        self
+    }
+
+    pub fn add_mobs(&mut self, mut pos : Location, count : u32, mob_name: String) -> &mut Self {
+        if let Some(comps) = self.tile_palette.borrow().components.get(&mob_name){
+            for instance_num  in 0..count {
+                // modify z index because right now sprites are clipping if z = other_z
+                pos.2 += instance_num as f32;
+
+                self.mobs.push(MobComponents {
+                    interaction: comps.interaction,
+                    sprite: comps.sprite.clone(),
+                    location: pos,
+                    timer : Timer::from_seconds(2.0, false),
+                    interactable_type: lab_core::InteractableType::Npc,
+                    ..Default::default()
+                });
+            }
+        }
         self
     }
 

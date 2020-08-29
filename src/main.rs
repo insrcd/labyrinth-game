@@ -11,7 +11,7 @@ use lab_input::*;
 use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
-use lab_world::{InteractableType, TextChangeEvent};
+use lab_world::{TextChangeEvent};
 
 pub mod layers {
     // z indexes of sprites 

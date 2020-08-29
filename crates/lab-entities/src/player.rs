@@ -11,7 +11,7 @@ use std::time::Duration;
 
 use lab_core::{Zoomable, InputTimer, Named};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Movement(pub Location, pub Location, pub Direction);
 
 impl Default for Movement {
@@ -183,5 +183,5 @@ pub struct Power <'a, T> {
 #[allow(dead_code)]
 pub struct Damage (f32);
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default, Debug)]
 pub struct NonPlayer;

@@ -73,7 +73,7 @@ pub fn add_tiles_to_world_system (
     mouse : ResMut<Mouse>,
     mouse_events : ResMut<Events<MouseClickEvent>>,
     mut mouse_click : ResMut<MouseState>,
-    mut interaction_query: Query<(Entity, &TileType, &SpriteInfo, &mut Translation, &Scale, &Draw)>,
+    mut interaction_query: Query<(Entity, &SpriteInfo, &mut Translation, &Scale, &Draw)>,
     mut moving_tile_query: Query<(Entity, &MovingTile, &mut Translation)>
 ) {    
     for clicks in &mut mouse_click.click_events.iter(&mouse_events) {
@@ -94,7 +94,7 @@ pub fn add_tiles_to_world_system (
                 }
 
                 if settings.move_mode {
-                    for (entity, _tile_type, si, 
+                    for (entity, si, 
                             t, scale, _d) in &mut interaction_query.iter() {
                         let true_location = mouse.position;
                         

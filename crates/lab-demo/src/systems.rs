@@ -2,7 +2,8 @@ use lab_world::*;
 use lab_builder::prelude::*;
 use lab_entities::prelude::*;
 use crate::*;
-use std::rc::Rc;
+use std::{cell::RefCell, rc::Rc};
+use lab_core::InteractableType;
 
 // move to a resources file of some sort.
 mod tiles {
@@ -30,6 +31,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.hardness = Hardness(1.);
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 200;
+        tiles.interaction = lab_world::Interaction { call: |ctx| {            
+            InteractionResult::Block.into()
+        }, description:"Bump" };
     }
     
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK) {
@@ -37,6 +41,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.hardness = Hardness(1.);
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 800;
+        tiles.interaction = lab_world::Interaction { call: |ctx| {            
+            InteractionResult::Block.into()
+        }, description:"Bump" };
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_DOOR) {
         // open doors
@@ -145,7 +152,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     }
     
     let mut mb = MapBuilder::new(
-        Rc::new(palette.clone()), // may have to share the pallete later, so adding resource counting now
+        Rc::new(RefCell::new(palette.clone())), // may have to share the pallete later, so adding resource counting now
         &Location::default()
     );
 
@@ -183,15 +190,20 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         .add_tiles_from_blueprint("basic_house")
         .set_position(Location(16.,0.,3., WorldLocation::World))
         .add_tiles(RelativePosition::Below, 1,  tiles::ITEM.to_string())
-        .set_position(Location(-32.,64.,3., WorldLocation::World))
-        .add_tiles(RelativePosition::Below, 5,  tiles::ENEMY.to_string());
+        .add_mobs(Location(-32.,64.,3., WorldLocation::World), 10,  tiles::ENEMY.to_string());
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
     
 
 
     for comp in mb.iter() {
-        commands.spawn(comp.clone()).with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
+        commands.spawn(comp.clone())
+            .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
+            
+    }
+
+    for mob in mb.mobs.iter() {
+        commands.spawn(mob.clone()).with_bundle(mob.sprite.to_components(mob.location.into(), Scale(1.)));
     }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));
