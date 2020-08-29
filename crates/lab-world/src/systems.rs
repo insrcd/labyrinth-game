@@ -1,75 +1,9 @@
-use bevy::{prelude::*, render::camera::Camera};
+use bevy::sprite::collide_aabb::*;
+
 use lab_entities::prelude::*;
-
-use lab_entities::{player::Direction as Dir};
-
-use lab_sprites::{SpriteInfo, SpriteLibrary, TileAnimation};
-
-use crate::{settings::*, *};
-use lab_core::{Moveable, Zoomable, AdventureLog, StaticText, InteractableType};
-
-#[derive(Debug)]
-pub enum Collision {
-    Left,
-    Right,
-    Top,
-    Bottom,
-    Unknown,
-}
-// resource for current location
-pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2, d: bool) -> Option<Collision> {
-    let a_min = a_pos.truncate() - a_size / 2.0;
-    let a_max = a_pos.truncate() + a_size / 2.0;
-
-    let b_min = b_pos.truncate() - b_size / 2.0;
-    let b_max = b_pos.truncate() + b_size / 2.0;
-
-    if d {
-        println!("a: {} {} b: {} {}", a_min, a_max, b_min, b_max);
-    }
-    // check to see if the two rectangles are intersecting
-    if a_min.x() <= b_max.x()
-        && a_max.x() >= b_min.x()
-        && a_min.y() <= b_max.y()
-        && a_max.y() >= b_min.y()
-    {
-        // check to see if we hit on the left or right side
-        let (x_collision, x_depth) =
-            if a_min.x() < b_min.x() && a_max.x() > b_min.x() && a_max.x() < b_max.x() {
-                (Some(Collision::Left), b_min.x() - a_max.x())
-            } else if a_min.x() > b_min.x() && a_min.x() < b_max.x() && a_max.x() > b_max.x() {
-                (Some(Collision::Right), a_min.x() - b_max.x())
-            } else {
-                (None, 0.0)
-            };
-
-        // check to see if we hit on the top or bottom side
-        let (y_collision, y_depth) =
-            if a_min.y() < b_min.y() && a_max.y() > b_min.y() && a_max.y() < b_max.y() {
-                (Some(Collision::Bottom), b_min.y() - a_max.y())
-            } else if a_min.y() > b_min.y() && a_min.y() < b_max.y() && a_max.y() > b_max.y() {
-                (Some(Collision::Top), a_min.y() - b_max.y())
-            } else {
-                (None, 0.0)
-            };
-
-        // if we had an "x" and a "y" collision, pick the "primary" side using penetration depth
-        match (x_collision, y_collision) {
-            (Some(x_collision), Some(y_collision)) => {
-                if y_depth < x_depth {
-                    Some(y_collision)
-                } else {
-                    Some(x_collision)
-                }
-            }
-            (Some(x_collision), None) => Some(x_collision),
-            (None, Some(y_collision)) => Some(y_collision),
-            (None, None) => Some(Collision::Unknown),
-        }
-    } else {
-        None
-    }
-}
+use lab_core::prelude::*;
+use lab_sprites::SpriteInfo;
+use crate::{TextChangeEvent, TileComponents, InteractionState};
 
 pub fn camera_tracking_system(
     mut player_moved: Query<With<Player, (Entity, Mutated<Translation>)>>,
@@ -84,33 +18,14 @@ pub fn camera_tracking_system(
         }
     }
 }
-//TODO
-#[allow(dead_code,unused_mut, unused_variables)]
-pub fn object_interaction_system(
-    mut commands: Commands,
-    sprites: ResMut<SpriteLibrary>,
-    mut camera_query: Query<(&Camera, &mut Translation)>,
-    mut placeable: Query<(
-        Entity,
-        &Interactable,
-        &mut Translation,
-        &Interaction,
-        &mut TileAnimation,
-    )>,
-    mut moveables: Query<Without<Player, (&Moveable, &mut Translation, Mutated<Movement>)>>,
-    mut player_moved: Query<With<Player, (Entity, &mut Translation, Mutated<Movement>)>>,
-) {
-    // may split out CD and interaction at some point.
-}
-/// Tile Interaction System - system which allows for tiles to change when they are interacted with
+/// object Interaction System - system which allows for tiles to change when they are interacted with
 /// Also includes collision detection.
 ///
-pub fn tile_interaction_system(
+pub fn collision_system(
     mut interaction_event: ResMut<Events<InteractionEvent>>,
     mut wall_query: Query<(
         Entity,
         &Translation,
-        &crate::Interaction,
         &SpriteInfo,
         &InteractableType
     )>,
@@ -119,10 +34,13 @@ pub fn tile_interaction_system(
     for (mov_entity, move_translation, scale) in
         &mut moveables.iter()
     {
-            for (destination_entity, tile_translation, _, tile_sprite, it) in
+            for (destination_entity, tile_translation, tile_sprite, interact_type) in
             &mut wall_query.iter()
         {
-            if *it == InteractableType::None {
+            if *interact_type == InteractableType::None {
+                continue
+            }
+            if mov_entity == destination_entity {
                 continue
             }
             let collision = collide(
@@ -130,7 +48,6 @@ pub fn tile_interaction_system(
                 Vec2::new(8. * scale.0, 8. * scale.0),
                 tile_translation.0,
                 tile_sprite.size() * scale.0,
-                false,
             );
 
             if let Some(collision) = collision {
@@ -139,8 +56,6 @@ pub fn tile_interaction_system(
                     _ => interaction_event.send(InteractionEvent {
                         source: mov_entity,
                         destination: destination_entity,
-                        source_location: move_translation.clone(),
-                        destination_location: tile_translation.clone(),
                         interaction_type: InteractionType::Collision
                     }),
                 }
@@ -151,19 +66,20 @@ pub fn tile_interaction_system(
 
 pub fn interaction_system(
     mut commands: Commands,
+    state: Res<InteractionState>,
     interaction_events: ResMut<Events<InteractionEvent>>,
-    mut text_update: ResMut<Events<TextChangeEvent>>,
-    mut state: ResMut<InteractionState>,
-    tile_palette: ResMut<TilePalette>,
-    interactable_type_query: Query<(Entity, &lab_core::InteractableType)>,
-    wall_query: Query<(
+    mut text_update: ResMut<Events<TextChangeEvent>>,    
+    world_catalog: Res<InteractionCatalog<TileComponents>>,
+    interactable_query: Query<(
         Entity,
-        &mut TileAttributes,
+        &mut ObjectState,
         &mut Translation,
-        &crate::Interaction,
         &mut SpriteInfo,
+        &mut Inventory,
+        &InteractableType,
+        &Named        
     )>,
-    move_query: Query<
+    entity_query: Query<
         (
             Entity,
             &Scale,
@@ -171,65 +87,66 @@ pub fn interaction_system(
             &Movement,
             &mut Inventory,
             &mut SpriteInfo,
+            &mut ObjectState
         ),
     >,
 ) {
-    for event in state.interaction_events.iter(&interaction_events) {
-        if event.source == event.destination {
-            return
-        }
+    for event in state.interaction_events.iter(&interaction_events) {        
         match event.interaction_type {
             InteractionType::Collision => {
-                let source_type = 
-                    if let Ok(it) = interactable_type_query.get::<InteractableType>(event.source) {
-                        Some(*it)
-                    } else {
-                        None
-                    };
-                let destination_type = if let Ok(it) = interactable_type_query.get::<InteractableType>(event.destination) {
-                    Some(*it)
-                } else {
-                    None
-                };
-                if let Ok(src_move) = move_query.get_mut::<Movement>(event.source) {
-                    if let Ok(tile_interaction) =
-                        wall_query.get_mut::<crate::Interaction>(event.destination)
+                if event.source == event.destination {
+                    panic!("A entity collided with itself, this should not happen")
+                }
+                let interaction_name =  interactable_query.get::<Named>(event.source).expect("Entity invovled in an interaction without a name");
+                let source_type = interactable_query.get::<InteractableType>(event.source).expect("Source entity without an interaction type");
+                let dst_type = interactable_query.get::<InteractableType>(event.destination).expect("Destination entity without an interaction type");
+                let src_state = interactable_query.get_mut::<ObjectState>(event.source).expect("Source entity without an state");
+                let dst_state = interactable_query.get_mut::<ObjectState>(event.destination).expect("Destination entity without a state");
+                let src_trans = interactable_query.get::<Translation>(event.source).expect("Source entity without an state");
+                let dst_trans = interactable_query.get::<Translation>(event.destination).expect("Destination entity without a state");
+
+                // collision implies movement
+                if let Ok(src_move) = entity_query.get_mut::<Movement>(event.source) {
+                    if let Some(tile_interaction) =
+                        world_catalog.get_interaction(&interaction_name.0)
                     {
                         let mut inventory =
-                            move_query.get_mut::<Inventory>(event.source).unwrap();
+                            entity_query.get_mut::<Inventory>(event.source).ok();
                         let mut move_translation =
-                            move_query.get_mut::<Translation>(event.source).unwrap();
-                        let mut tile_sprite =
-                            wall_query.get_mut::<SpriteInfo>(event.destination).unwrap();
-                        let mut tile_attributes = wall_query
-                            .get_mut::<TileAttributes>(event.destination)
-                            .unwrap();
+                            entity_query.get_mut::<Translation>(event.source).unwrap();
+                        let mut dst_sprite =
+                            entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
+                        let mut dst_inventory =  entity_query.get_mut::<Inventory>(event.destination).ok();
 
                         for r in (tile_interaction.call)(InteractionContext {
-                            inventory: Some(&mut inventory),
-                            source: event.source,
-                            source_type: source_type,
-                            source_location: Some(src_move.0.into()),
-                            destination: event.destination,
-                            destination_type: destination_type,
-                            interaction_location: Some(Location::from(event.destination_location)),
-                            tile_attributes: Some(&mut tile_attributes),
-                            tile_palette: Some(&*tile_palette),
-                            sprite_info: Some(&*tile_sprite),
+                            source: &Interactable { 
+                                entity: event.source, 
+                                interactable_type: *source_type, 
+                                location: src_move.start.into(),
+                                inventory: inventory,
+                                tile_sprite_info: None,
+                                tile_state: Some(&src_state)
+                            },
+                            destination: &Interactable { 
+                                entity: event.source, 
+                                interactable_type: *dst_type, 
+                                location: (*dst_trans).into(),
+                                inventory: dst_inventory,
+                                tile_sprite_info: Some(&mut dst_sprite),
+                                tile_state: Some(&dst_state)
+                            },
+                            world_catalog: Some(&world_catalog)
                         }) {
                             match r {
                                 InteractionResult::ChangeTile(attr) => {
-
-                                    //TODO: clean this up so a change to spriteinfo will change the tile
-                                    tile_sprite.atlas_sprite = attr.sprite_idx.unwrap();
-
-                                    commands.insert(
-                                        event.destination,
-                                        (
-                                            attr,
-                                            TextureAtlasSprite::new(attr.sprite_idx.unwrap()),
-                                        ),
-                                    );
+                                    if let Some(sprite_idx) = attr.get("sprite_idx".into()).unwrap().into(){                                        
+                                        commands.insert(
+                                            event.destination,
+                                            (
+                                                TextureAtlasSprite::new(sprite_idx),
+                                            ),
+                                        );
+                                    }
                                 }
                                 InteractionResult::Damage(_) => {}
                                 InteractionResult::ChangeSprite(_) => {}
@@ -238,8 +155,8 @@ pub fn interaction_system(
                                     commands.despawn(event.destination);
                                 }
                                 InteractionResult::Block => {
-                                    *move_translation.0.x_mut() = (src_move.0).0;
-                                    *move_translation.0.y_mut() = (src_move.0).1;
+                                    *move_translation.0.x_mut() = src_move.start.0;
+                                    *move_translation.0.y_mut() = src_move.start.1;
                                 }
                                 InteractionResult::None => {}
                                 InteractionResult::Log(_) => {}
@@ -285,8 +202,7 @@ pub fn zoom_system(
     windows: ResMut<Windows>,
     mut scroll: ResMut<lab_input::ScrollState>,
     mut query: Query<(Entity,&mut Scale, &mut Translation, &Zoomable)>,
-    movement_query: Query<(Entity,&mut Movement)>,
-    mut text_query: Query<(Entity, &mut Style, &Zoomable, &mut Transform, &mut Translation, &Dialog, &mut Text)>,
+    movement_query: Query<(Entity,&mut Movement)>
 ) {
     
     let window = windows.iter().last().unwrap();
@@ -323,16 +239,16 @@ pub fn zoom_system(
         match &mut movement_query.get_mut::<Movement>(e.0) {
             Ok(movement) => {
                 //println!("Setting movement for {:?}", e.0);
-                movement.0 = e.1;
-                movement.1 = e.2;
-                movement.2 = Dir::Stationary;                    
+                movement.start = e.1;
+                movement.end = e.2;
+                movement.direction = CardinalDirection::None;                    
             }
             Err(_err) => {                    
                 // this will happen if the entity doesn't have a movement
             }
         }
     }
-
+    /*
     for (mut _entity, _style, mut _zoom, mut _lt, mut trans, dialog, mut text) in &mut text_query.iter() {
         if scroll.y != 0. {            
             
@@ -349,38 +265,7 @@ pub fn zoom_system(
                 (*text).style.font_size = 10. * scroll.current_scale 
             }
         }
-    }
-}
-/// Super Basic right now, Move all NPCs in the scene every n seconds
-pub fn npc_move_system(
-    mut commands : Commands,
-    time: Res<Time>,
-    mut query: Query<(
-        Entity,
-        &NonPlayer,
-        &Scale, 
-        &mut Timer,
-        &mut Translation
-    )>,
-) {
-    for (entity, _np,  scale, mut timer, mut trans) in &mut query.iter() {
-        timer.tick(time.delta_seconds);
-        if timer.finished {
-            let old_loc = Location::from(*trans);
-            let direction = rand::random::<Dir>();
-            match direction {
-                Dir::Left => *trans.0.x_mut() -= WORLD_TILE_SIZE * scale.0, // replace with npc speed
-                Dir::Up => *trans.0.y_mut() += WORLD_TILE_SIZE* scale.0,
-                Dir::Down => *trans.0.y_mut() -= WORLD_TILE_SIZE* scale.0,
-                Dir::Right => *trans.0.x_mut() += WORLD_TILE_SIZE * scale.0,
-                Dir::Stationary => {}
-            }
-
-            commands.insert(entity, (Movement(old_loc, Location::from(*trans), direction),));
-
-            timer.reset();
-        }
-    }
+    }*/
 }
 
 pub fn sprite_despawn_system(
@@ -400,21 +285,17 @@ pub fn sprite_despawn_system(
 }
 
 pub fn static_text_system(
-    mut query: Query<(Entity, &Text, &mut Translation, &StaticText)>,
+    mut query: Query<(Entity, &Text, &mut Translation, &StaticLocation)>,
     mut player_query: Query<(Entity, &Player, &Movement, Changed<Translation>)>,
 ) {
     for (_e, _player, movement, t) in &mut player_query.iter() {
         for (_e, _letter, mut translation, _st) in &mut query.iter() {            
-            let old_loc = movement.0;
-            let new_loc = movement.1;
+            let change : Vec2 = Vec2::from(movement.start) - Vec2::from(movement.end);
 
-            let x_change = old_loc.0 - new_loc.0;
-            let y_change = old_loc.1 - new_loc.1;
-            let t_vec : Vec3 = old_loc.into();
             // make sure there actually was a movement change in translation
-            if Translation::from(t_vec) != *t {
-                *translation.x_mut() -= x_change;
-                *translation.y_mut() -= y_change;
+            if Vec2::new(0.,0.) != change {
+                *translation.x_mut() -= change.x();
+                *translation.y_mut() -= change.y();
             }
         }
     }

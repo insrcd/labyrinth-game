@@ -1,9 +1,9 @@
 use bevy::{input::mouse::*, prelude::*};
 
-mod systems;
-use lab_entities::world::*;
+use lab_core::prelude::*;
 use lab_entities::player;
 
+mod systems;
 mod menu;
 
 pub mod prelude {
@@ -22,9 +22,9 @@ impl Plugin for InputPlugin {
             .init_resource::<MouseState>()
             .add_startup_system(input_timers.system())
             .add_system(systems::player_movement_system.system())
-            .add_system_to_stage(lab_core::stage::PROCESSING, systems::track_mouse_movement_system.system())
-            .add_system_to_stage(lab_core::stage::PROCESSING, systems::mouse_wheel_system.system())
-            .add_system_to_stage(lab_core::stage::PROCESSING, systems::mouse_click_system.system());
+            .add_system_to_stage(stage::EVENT_UPDATE, systems::track_mouse_movement_system.system())
+            .add_system_to_stage(stage::EVENT_UPDATE, systems::mouse_wheel_system.system())
+            .add_system_to_stage(stage::EVENT_UPDATE, systems::mouse_click_system.system());
     }
 }
 
@@ -45,11 +45,6 @@ impl Default for SelectedTile {
 }
 
 pub struct InputPlugin;
-
-#[allow(dead_code)]
-pub mod stage {
-    pub const INPUT: &'static str = "input";
-}
 
 pub struct ScrollTimer(Timer);
 pub struct ScrollState {

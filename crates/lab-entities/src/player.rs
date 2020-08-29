@@ -1,24 +1,10 @@
 
 
 use bevy::{ prelude::* };
-use crate::objs::Item;
-use crate::{world::Location, prelude::Visible};
-
-
-use rand::distributions::{Standard, Distribution};
-use rand::Rng;
+use lab_core::prelude::*;
 use std::time::Duration;
+use crate::{Inventory, prelude::ItemHandle};
 
-use lab_core::{Zoomable, InputTimer, Named};
-
-#[derive(PartialEq, Debug, Copy, Clone)]
-pub struct Movement(pub Location, pub Location, pub Direction);
-
-impl Default for Movement {
-    fn default() -> Movement {
-        Movement(Location::default(), Location::default(), Direction::Stationary)
-    }
-}
 
 #[derive(Clone, Copy, Debug, Properties)]
 pub struct Player { 
@@ -42,9 +28,7 @@ pub struct PlayerComponents {
     abilities : Abilities,
     skills : Skills,
     named : Named,
-    visible: Visible,
     location: Location,
-    input_timer: InputTimer,
     movement: Movement,
     zoomable: Zoomable
 }
@@ -67,31 +51,14 @@ impl Default for PlayerComponents {
             stats : Stats::new(),
             abilities : Abilities::new(),
             skills : Skills::new(),
-            named: Named("Unnamed".to_string()),
-            visible: Visible,
+            named: Named("Unnamed".to_string()),            
             location: Location::default(),
-            input_timer: InputTimer (Timer::new(Duration::from_millis(110), false)),
+            //input_timer: InputTimer (Timer::new(Duration::from_millis(110), false)),
             movement: Movement::default(),
             zoomable: Zoomable
         }
     }
     
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct Inventory {
-    pub items: Vec<Item>
-}
-
-impl Inventory {
-    pub fn new() -> Inventory {
-        Inventory {
-            items: Vec::<Item>::new()
-        }
-    }
-    pub fn has(&self, predicate: fn (&Item) -> bool) -> bool {
-        self.items.iter().any(|i| predicate(i))
-    }
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
@@ -136,29 +103,6 @@ impl Stats {
         Stats { ..Default::default() }
     }
 }
-
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum Direction {
-    Stationary,
-    Up,
-    Down,
-    Left,
-    Right
-}
-
-
-impl Distribution<Direction> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
-        match rng.gen_range(0, 5) {
-            0 => Direction::Up,
-            1 => Direction::Down,
-            2 => Direction::Left,
-            3 => Direction::Right,
-            _ => Direction::Stationary
-        }
-    }
-}
-
 
 #[derive(Debug, PartialEq)]
 #[allow(dead_code)]

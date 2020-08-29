@@ -117,26 +117,29 @@ pub fn mouse_click_system (
 
 pub fn player_movement_system (
     time : Res<Time>,
+    world_settings : Res<WorldSettings>,
     keyboard_input: Res<Input<KeyCode>>, 
-    mut query: Query<(&player::Player, &Scale, &mut Translation, &mut player::Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
+    mut query: Query<(&player::Player, &Scale, &mut Translation, &mut Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
 
-    let mut direction = player::Direction::Stationary;
+    let mut direction = CardinalDirection::None;
 
     if keyboard_input.pressed(KeyCode::W) {
-        direction = player::Direction::Up;
+        direction = CardinalDirection::North;
     }
 
     if keyboard_input.pressed(KeyCode::S) {
-        direction = player::Direction::Down;
+        direction = CardinalDirection::South;
     }
 
     if keyboard_input.pressed(KeyCode::A) {
-        direction = player::Direction::Left;
+        direction = CardinalDirection::West;
     }
     if keyboard_input.pressed(KeyCode::D) {
-        direction = player::Direction::Right;
+        direction = CardinalDirection::East;
     }
+
+    let player_speed = world_settings.base_player_speed;
 
     for (_player, scale, mut loc, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
         timer.0.tick(time.delta_seconds);
@@ -144,33 +147,33 @@ pub fn player_movement_system (
             let old_loc = Location::from(*loc);
 
             let sprite = match direction {
-                player::Direction::Up => {
-                    *loc.0.y_mut() += PLAYER_SPEED * scale.0;
+                CardinalDirection::North => {
+                    *loc.0.y_mut() += player_speed * scale.0;
                     animation.count = (animation.count + 1) % animation.up.len();
                     Some(animation.up[animation.count].clone())
                 },
-                player::Direction::Down => {
-                    *loc.0.y_mut() -= PLAYER_SPEED * scale.0;
+                CardinalDirection::South => {
+                    *loc.0.y_mut() -= player_speed * scale.0;
                     animation.count = (animation.count + 1) % animation.down.len();
                     Some(animation.down[animation.count].clone())
                 },
-                player::Direction::Left => {
-                    *loc.0.x_mut() -= PLAYER_SPEED * scale.0;
+                CardinalDirection::West => {
+                    *loc.0.x_mut() -= player_speed * scale.0;
                     animation.count = (animation.count + 1) % animation.left.len();
                     Some(animation.left[animation.count].clone())
                 },
-                player::Direction::Right => {
-                    *loc.0.x_mut() += PLAYER_SPEED * scale.0;
+                CardinalDirection::East => {
+                    *loc.0.x_mut() += player_speed * scale.0;
                     animation.count = (animation.count + 1) % animation.right.len();
                     Some(animation.right[animation.count].clone())
                 },
-                player::Direction::Stationary => {
+                CardinalDirection::None => {
                     None
                 }
             };
 
-            if direction != player::Direction::Stationary {
-                *movement = player::Movement(old_loc, Location::from(*loc), direction);
+            if direction != CardinalDirection::None {
+                *movement = Movement::new(old_loc, Location::from(*loc), direction);
 
                 if let Some(s) = sprite {
                     *atlas = s.atlas_handle;

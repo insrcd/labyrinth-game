@@ -1,7 +1,23 @@
-use bevy::{prelude::*};
-use Font;
+
+use rand::distributions::{Standard, Distribution};
+use rand::Rng;
 
 mod systems;
+mod interaction;
+mod tiles;
+mod world;
+mod ui;
+
+pub mod prelude {
+    pub use bevy::{prelude::*, render::camera::*};
+    pub use crate::*;
+    pub use crate::interaction::*;
+    pub use crate::tiles::*;
+    pub use crate::world::*;
+    pub use crate::ui::*;
+}
+
+use prelude::*;
 
 pub mod stage {
     /// Stage for initializing resources (used for startup systems)
@@ -12,7 +28,7 @@ pub mod stage {
     /// Default stage
     pub const UPDATE: &'static str = "update";
     /// Stage for processing after an update
-    pub const PROCESSING: &'static str = "processing";
+    pub const VALIDATION: &'static str = "validation";
     /// Stage after update / processing    
     pub const POST_UPDATE: &'static str = "postupdate";
 }
@@ -22,13 +38,14 @@ impl Plugin for CorePlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .init_resource::<WorldSettings>()
-            .init_resource::<AdventureLog>();
+            .init_resource::<AdventureLog>()
+            .init_resource::<InputTimer>();
     }
 }
 
 use serde::Serialize;
 
-#[derive(Properties, Serialize, Debug)]
+#[derive(Properties, Serialize, Debug, Clone)]
 pub struct Named(pub String);
 
 impl Default for Named {
@@ -39,6 +56,11 @@ impl Default for Named {
 
 #[derive(Debug)]
 pub struct InputTimer(pub Timer);
+impl Default for InputTimer {
+    fn default() -> Self {
+        InputTimer(Timer::from_seconds(0.1, false))
+    }
+}
 pub struct Despawn;
 #[derive(Debug, Clone, Copy)]
 pub struct Moveable;
@@ -85,8 +107,6 @@ impl Default for AdventureLog {
     }
 }
 
-pub struct StaticText;
-
 impl AdventureLog {
     pub fn add_message(&mut self, log : String) -> &mut AdventureLog {
 
@@ -107,7 +127,7 @@ impl AdventureLog {
         }
     }
 
-    pub fn make(&mut self, mut commands: &mut Commands, font_handle:  Handle<Font>,  length : u32) -> &mut AdventureLog {
+    pub fn make(&mut self, commands: &mut Commands, font_handle:  Handle<Font>,  length : u32) -> &mut AdventureLog {
         for n in 1..length+1 {
             let e = Entity::new();
             commands.spawn_as_entity(e, TextComponents {
@@ -127,7 +147,7 @@ impl AdventureLog {
                 draw: Draw {is_visible: true, ..Default::default()},
                 ..Default::default()
             }).with_bundle((Named(format!("log_line_{}", length-n).to_string()), 
-                            StaticText, )
+                            StaticLocation, )
                     ); 
         }
         self
@@ -135,19 +155,55 @@ impl AdventureLog {
 }
 
 
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum InteractableType {
-    Player,
-    Npc,
-    Item,
-    Spell,
-    Weapon,
-    Tile,
-    None
+#[derive(PartialEq, Debug, Copy, Clone)]
+pub struct Movement { 
+    pub start: Location, 
+    pub end:  Location, 
+    pub direction: CardinalDirection, 
+    pub legal: Option<bool> 
 }
 
-impl Default for InteractableType {
-    fn default() -> Self {
-        return Self::None
+impl Default for Movement {
+    fn default() -> Movement {
+        Movement {
+            start: Location::default(),
+            end: Location::default(),
+            direction: CardinalDirection::None,
+            legal: None
+        }
     }
 }
+
+impl Movement {
+    pub fn new(start: Location, end: Location, direction: CardinalDirection) -> Self {
+        Movement {
+            start: start,
+            end: end,
+            direction: direction,
+            legal: None
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum CardinalDirection {
+    None,
+    North,
+    South,
+    East,
+    West
+}
+
+
+impl Distribution<CardinalDirection> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> CardinalDirection {
+        match rng.gen_range(0, 5) {
+            0 => CardinalDirection::North,
+            1 => CardinalDirection::South,
+            2 => CardinalDirection::East,
+            3 => CardinalDirection::West,
+            _ => CardinalDirection::None
+        }
+    }
+}
+

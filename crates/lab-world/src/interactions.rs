@@ -1,3 +1,3 @@
-fn locked_door_interaction(attr : Attributes){
+fn locked_door_interaction(ctx : InteractionContext){
     
 }

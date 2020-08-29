@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use defaults::*;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Defaults)]
 #[def = "Misc"]
@@ -25,9 +26,12 @@ pub enum ItemSlot {
     None
 }
 
+pub struct ItemLibrary {
+    items : HashMap<String, ItemDefinition>
+}
 
 #[derive(Clone, Debug, Properties, PartialEq, Default)]
-pub struct Item {
+pub struct ItemDefinition {
     pub id: u64,
     pub name: String,
     pub weight: Weight,
@@ -35,6 +39,12 @@ pub struct Item {
     pub item_type: ItemType,
     #[property(ignore)]
     pub item_slot: ItemSlot
+}
+
+
+#[derive(Clone,Copy,Default,Debug)]
+pub struct ItemHandle {
+    pub item_id : u64
 }
 
 #[derive(Copy, Clone, Debug, Properties, PartialEq, Default)]
@@ -59,7 +69,7 @@ struct Brew {
 }
 
 trait Mixable {
-    fn mix_with(&self, item : &mut Item);
+    fn mix_with(&self, item : &mut ItemHandle);
 }
 
 struct Herb;
@@ -68,23 +78,23 @@ struct Extract;
 struct Fluid;
 
 impl Mixable for Herb {
-    fn mix_with(&self, _item : &mut Item) {
+    fn mix_with(&self, _item : &mut ItemHandle) {
         todo!()
     }
 }
 impl Mixable for Grain {    
-    fn mix_with(&self, _item : &mut Item) {
+    fn mix_with(&self, _item : &mut ItemHandle) {
         todo!()
     } 
 }
 impl Mixable for Extract { 
-    fn mix_with(&self, _item : &mut Item) {
+    fn mix_with(&self, _item : &mut ItemHandle) {
         todo!()
     }
 }
 
 impl Mixable for Fluid { 
-    fn mix_with(&self, _item : &mut Item) {
+    fn mix_with(&self, _item : &mut ItemHandle) {
         todo!()
     }
 }

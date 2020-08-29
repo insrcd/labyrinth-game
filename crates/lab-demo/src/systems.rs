@@ -22,38 +22,35 @@ mod tiles {
 
 /// Adds a simple map using the map builder for the purposes of a demo.
 
-pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
+pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<WorldCatalog>) {
 
     // setup some basic interactions
+    palette.interactions.insert("impassible".into(), lab_world::Interaction { call: |ctx| {            
+        InteractionResult::Block.into()
+    }, description:"Bump" });
+
+    palette.interactions.insert("open_door".into(), lab_world::Interaction { call: |ctx| {            
+        let comps = ctx.world_catalog.expect("World catalog cannot be found").components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
+        
+        InteractionResult::ChangeSprite(comps.sprite.clone()).into()
+
+    }, description:"Open a door." });
 
     if let Some(mut tiles) = palette.components.get_mut(tiles::WALL) {
         // walls are hard
-        tiles.hardness = Hardness(1.);
-        tiles.tile_attributes.hardness = 1.;
-        tiles.tile_attributes.hit_points = 200;
-        tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            InteractionResult::Block.into()
-        }, description:"Bump" };
+        tiles.state.set_int("hardness".into(), 1);
+        tiles.state.set_int("hit_points".into(), 800);       
     }
     
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK) {
         // brick walls are beefier
-        tiles.hardness = Hardness(1.);
-        tiles.tile_attributes.hardness = 1.;
-        tiles.tile_attributes.hit_points = 800;
-        tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            InteractionResult::Block.into()
-        }, description:"Bump" };
+        tiles.state.set_int("hardness".into(), 5);
+        tiles.state.set_int("hit_points".into(), 1000);        
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_DOOR) {
-        // open doors
-        tiles.hardness = Hardness(0.5);
-        tiles.tile_attributes.hardness = 1.;
-        tiles.tile_attributes.hit_points = 1;
-        tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite), ..Default::default()}).into()
-        },
-            description: "Open Door",}
+       
+        tiles.state.set_int("hardness".into(), 1);
+        tiles.state.set_int("hit_points".into(), 100);        
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::ENEMY) {
         // open doors
@@ -75,10 +72,10 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         new_tile.tile_attributes.hardness = 1.;
         new_tile.tile_attributes.hit_points = 1;
         new_tile.interaction = lab_world::Interaction { call: |ctx| {    
-            let palette = ctx.tile_palette.unwrap_or_else(|| panic!("Did not receive a palette in the interaction context."));
+            let palette = ctx.world_catalog.unwrap_or_else(|| panic!("Did not receive a palette in the interaction context."));
 
             // poor state tracking right now TODO Refactor and make safer
-            let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite.atlas_sprite;
+            let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite;
             let current_sprite = ctx.sprite_info.unwrap().atlas_sprite;
 
             if open_sprite == current_sprite {
@@ -90,7 +87,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
                 if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
                     return vec![
-                            InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: Some(open_sprite), message: Some(""), ..Default::default()}),
+                            InteractionResult::ChangeSprite(open_sprite),
                             InteractionResult::Message("You have the key, Unlocked the door!".into())];
                 }
             }
@@ -106,7 +103,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.tile_attributes.hardness = 1.;
         tiles.tile_attributes.hit_points = 1;
         tiles.interaction = lab_world::Interaction { call: |ctx| {  
-            let open_sprite = Some(ctx.tile_palette.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
+            let open_sprite = Some(ctx.world_catalog.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
                  
             // if a non-player hits a window, crash it if not block it 
             if let Some(source_type) = ctx.source_type {

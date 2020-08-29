@@ -6,11 +6,12 @@ use lab_sprites::*;
 use lab_world::*;
 use crate::{BuilderSettings, MovingTile};
 use lab_input::{Mouse, SelectedTile, ScrollState, MouseClickEvent, MouseState};
+use lab_core::prelude::{Location, WorldLocation};
 
 
-pub fn make_tile_palette_system(
+pub fn make_world_catalog_system(
     mut sprite_library: ResMut<SpriteLibrary>,
-    mut palette: ResMut<TilePalette>
+    mut palette: ResMut<WorldCatalog>
 )  {
     for sprite in sprite_library.iter() {
         //println!("Adding sprite {:?}", sprite);
@@ -29,7 +30,7 @@ pub fn make_tile_palette_system(
 }
 pub fn update_tile_system (mouse : ResMut<Mouse>,
     windows: Res<Windows>, 
-    palette: Res<TilePalette>, 
+    palette: Res<WorldCatalog>, 
     scroll_state: Res<ScrollState>, 
     selected_tile: Res<SelectedTile>, 
     mut camera_query: Query<(&Camera, Changed<Translation>)>,
@@ -68,7 +69,7 @@ pub fn add_tiles_to_world_system (
     settings : ResMut<BuilderSettings>,
     selected_tile: Res<SelectedTile>, 
     scroll_state: Res<ScrollState>, 
-    palette: Res<TilePalette>,
+    palette: Res<WorldCatalog>,
     mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
     mouse_events : ResMut<Events<MouseClickEvent>>,
@@ -117,7 +118,7 @@ pub fn add_tiles_to_world_system (
                 let mut clone = components.clone();
                 let sprite: SpriteInfo = clone.sprite.clone();
 
-                clone.location = Location(x, y, st.level,  world::WorldLocation::World);
+                clone.location = Location(x, y, st.level,  WorldLocation::World);
                         
                 commands
                     .spawn(sprite.to_components( Vec3::new(x,y,st.level), Scale(scroll_state.current_scale)))
@@ -147,7 +148,7 @@ pub fn builder_keyboard_system (
     scroll : Res<ScrollState>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
-    mut palette: ResMut<TilePalette>, 
+    mut palette: ResMut<WorldCatalog>, 
     mut camera_query: Query<(&Camera, &Translation)>,
     mut free_tile: Query<(Entity, &FreeTile)>) {
 
@@ -221,7 +222,7 @@ pub fn builder_keyboard_system (
 
 fn change_selected_sprite(commands : &mut Commands, 
     change : i32, 
-    palette: &ResMut<TilePalette>, 
+    palette: &ResMut<WorldCatalog>, 
     free_tile: &mut Query<(Entity, &FreeTile)>,
     category : &str, 
     tile : usize,

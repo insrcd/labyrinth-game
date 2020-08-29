@@ -1,4 +1,4 @@
-use rhai::{Engine, EvalAltResult, Scope};
+/*use rhai::{Engine, EvalAltResult, Scope};
 
 #[derive(Clone)]
 pub struct ScriptResult {
@@ -18,4 +18,4 @@ impl ScriptHost {
 
         engine.eval_with_scope::<ScriptResult>(&mut scope, script)
     }
-}
+}*/

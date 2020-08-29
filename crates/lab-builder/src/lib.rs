@@ -5,8 +5,8 @@ pub mod maps;
 pub mod text;
 
 use systems::*;
-use lab_core;
-use lab_entities::prelude::*;
+use lab_core::prelude::*;
+use lab_entities::{player::NonPlayer, Inventory};
 use lab_sprites::SpriteInfo;
 
 pub mod prelude {
@@ -31,7 +31,7 @@ impl Plugin for BuilderPlugin {
         app
         .init_resource::<BuilderSettings>()
         // system to init the tile palette
-        .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_tile_palette_system.system())
+        .add_startup_system_to_stage(lab_core::stage::POST_INIT, make_world_catalog_system.system())
         // system that will add tiles on click
         .add_system_to_stage(lab_core::stage::PRE_UPDATE, add_tiles_to_world_system.system())
         .add_system(builder_keyboard_system.system())
@@ -55,10 +55,10 @@ pub struct MobComponents {
     pub movement: Movement,
     pub sprite: SpriteInfo,
     pub inventory: Inventory,
-    pub attributes: lab_world::TileAttributes,
+    pub state: ObjectState,
     pub interaction: lab_world::Interaction,
     pub timer : Timer,
     pub location : Location,
-    pub zoomable : lab_core::Zoomable,
-    pub interactable_type: lab_core::InteractableType
+    pub zoomable : Zoomable,
+    pub interactable_type: InteractableType
 }

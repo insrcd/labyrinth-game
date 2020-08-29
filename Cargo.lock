@@ -551,9 +551,9 @@ checksum = "2e8c087f005730276d1096a652e92a8bacee2e2472bcc9715a74d2bec38b5820"
 
 [[package]]
 name = "bytemuck"
-version = "1.3.1"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db7a1029718df60331e557c9e83a55523c955e5dd2a7bfeffad6bbd50b538ae9"
+checksum = "92046dbb6f9332943252123f53623e0a6d513651af14967e2991c371ec20201c"
 
 [[package]]
 name = "byteorder"
@@ -945,9 +945,9 @@ dependencies = [
 
 [[package]]
 name = "fixedbitset"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fc4fcacf5cd3681968f6524ea159383132937739c6c40dabab9e37ed515911b"
+checksum = "4e08c8bc7575d7e091fe0706963bd22e2a4be6a64da995f03b2a5a57d66ad015"
 
 [[package]]
 name = "foreign-types"
@@ -1356,9 +1356,9 @@ dependencies = [
 
 [[package]]
 name = "hexasphere"
-version = "0.1.7"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f527ce7eaea5f0cf47e2126083ad79b52e9be8f191d4f6fa2380370fb55c523"
+checksum = "2da7c080b76d2288c3112e329b5da7f23bc2ff24b00075ad73dc3a77ae7c10c8"
 dependencies = [
  "glam",
  "lazy_static",
@@ -1472,6 +1472,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "lab-ai"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-core",
+ "lab-entities",
+ "lab-input",
+ "lab-sprites",
+ "lab-world",
+ "log",
+ "serde",
+]
+
+[[package]]
 name = "lab-builder"
 version = "0.1.0"
 dependencies = [
@@ -1493,7 +1507,10 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "log",
+ "rand",
  "serde",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -1534,6 +1551,15 @@ dependencies = [
  "lab-core",
  "lab-entities",
  "lab-sprites",
+ "log",
+ "serde",
+]
+
+[[package]]
+name = "lab-market"
+version = "0.1.0"
+dependencies = [
+ "lab-entities",
  "log",
  "serde",
 ]
@@ -2253,9 +2279,9 @@ dependencies = [
 
 [[package]]
 name = "rhai"
-version = "0.18.2"
+version = "0.18.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef9d5d5bfbf8dbd04c2b200879222b1355b749ed2863731e0b0cc758f59d9cad"
+checksum = "ce6b581cc1ca2445d3eb409358dc703f296ac1cc22b0b064c02a15be82d515ad"
 dependencies = [
  "instant",
  "num-traits",
@@ -2706,9 +2732,9 @@ dependencies = [
 
 [[package]]
 name = "wgpu-core"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a5558a9607100816a033b0d06a2d6d06e8bf6fb294803d1dea871e9a479eec0"
+checksum = "0087ab26d366d286f20193a801e10dfb5943c7aecd617944cf88731820a55453"
 dependencies = [
  "arrayvec",
  "bitflags",

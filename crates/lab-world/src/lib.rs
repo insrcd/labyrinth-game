@@ -1,9 +1,9 @@
-use bevy::{prelude::*};
-use lab_core::{Zoomable, stage, MenuDefinition, InteractableType};
+use lab_core::prelude::*;
 use std::collections::BTreeMap;
-use std::{fmt::Debug, collections::btree_map::{Values, Keys}};
-use lab_sprites::{TileAnimation, SpriteInfo};
-use lab_entities::prelude::*;
+use std::{fmt::Debug, collections::btree_map::{Values, Keys}, sync::{Arc, Mutex}};
+use lab_entities::Inventory;
+use lab_sprites::SpriteInfo;
+
 mod systems;
 
 pub mod settings {
@@ -18,79 +18,33 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_resource(TilePalette::default())
+            .add_resource(IntractionCatalog<TileComponents>::default())
             .add_resource(UiTextState::default())
             .add_resource(InteractionState::default())
             .add_event::<TextChangeEvent>()
             .add_event::<InteractionEvent>()
             //.add_system(systems::add_world_sprites_system.system())
-            //.add_system(systems::add_interaction_sprites_system.system())
-            .add_system_to_stage(stage::PRE_UPDATE, systems::npc_move_system.system())
-            .add_system_to_stage(stage::PROCESSING, systems::zoom_system.system())
+            //.add_system(systems::add_interaction_sprites_system.system())    
+            .add_system_to_stage(lab_core::stage::PRE_UPDATE, systems::zoom_system.system())
             .add_system(systems::save_world_system.thread_local_system())
-            .add_system(systems::tile_interaction_system.system())            
+            .add_system(systems::collision_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::interaction_system.system())
+            .add_system_to_stage(lab_core::stage::POST_UPDATE, systems::interaction_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
-            .add_system_to_stage(stage::POST_UPDATE, systems::static_text_system.system())
+            .add_system_to_stage(lab_core::stage::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::camera_tracking_system.system());
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct Dialog {
-    pub text : String,
-    pub entity: Entity
-}
-#[derive(Default, Clone, Debug)]
-pub struct TilePalette {
-    pub components: BTreeMap<String, TileComponents>
-}
-
-impl TilePalette {
-    pub fn get_interaction(&self, name: String) -> Option<Interaction> {
-        match self.components.get(&name) {
-            Some(comps) => Some(comps.interaction),
-            None => None
-        }
+impl CatalogItem for TileComponents {
+    fn category(&self) -> String {
+        self.category.clone()
     }
-
-    pub fn tile_names(&self) -> Keys<'_, String, TileComponents>{
-        self.components.keys()
-    }
-
-    pub fn iter(&self) -> Values<'_, String, TileComponents> {
-        self.components.values()
-    }
-
-    pub fn tile_categories(&self) -> Vec<&str> {
-        let mut categories : Vec<&str> = self.components.values().map(|m| &m.sprite.category[..]).collect();
-        
-        categories.sort();
-        categories.dedup();
-        
-        categories
-    }
-
-    pub fn tiles_in_category(&self, category : &str) -> Vec<&TileComponents> {
-        self.components.values().filter(|p| p.sprite.category == category).collect()        
-    }
-
-    pub fn update( &mut self, comp : &TileComponents) {
-
-        if let Some(tc) = self.components.get_mut(&comp.sprite.name) {
-           *tc = comp.clone();
-        } else {
-            self.components.insert(comp.sprite.name.clone(), comp.clone());
-        }
-
-
+    fn name(&self) -> String {
+        self.named.0
     }
 }
-
-
-pub enum InteractionResult {
-    ChangeTile(TileAttributes),
+pub enum InteractionResult {    
     Damage(u32),
     ChangeSprite(SpriteInfo),
     Move(Location),
@@ -132,119 +86,25 @@ impl Default for Interaction {
     }
 }
 
-
-/// Attributes for a tile. These are meant to be changed by the player or interactions.
-
-#[derive(Default, Clone, Properties, Debug, Copy)]
-pub struct TileAttributes {
-    pub hit_points: u32,
-    pub hardness: f32, 
-    pub sprite_idx: Option<u32>,
-    #[property(ignore)]
-    pub message : Option<&'static str>
-}
-
 #[derive(Bundle, Clone, Debug)]
 pub struct TileComponents {
-    pub hardness: Hardness,
+    pub name: Named,
     pub location: Location,
-    pub visible: Visible,
-    pub interaction: Interaction,
     pub sprite: SpriteInfo,
-    pub animation: TileAnimation,
-    pub tile_attributes: TileAttributes,
-    pub zoomable: Zoomable,
-    pub interactable_type: InteractableType
+    pub state: ObjectState,
+    pub zoomable: Zoomable
 }
 
 impl Default for TileComponents {
     fn default() -> Self {
         TileComponents {
-            hardness: Hardness(0.),
+            name: Named::default(),
             location: Location::default(),
-            visible: Visible,
-            interaction: Interaction { description: "pass interaction", call: |ctx| {
-                match ctx.tile_attributes  { 
-                    Some(tile_attributes) =>{
-                        if tile_attributes.hardness != 0. {
-                            InteractionResult::Block.into()
-                        } else {
-                            InteractionResult::None.into()
-                        }
-                    },
-                    None => InteractionResult::None.into()
-                }                
-            } },
-            tile_attributes: TileAttributes { hit_points: 0, hardness: 0.0, sprite_idx: None, message:None },
             sprite: SpriteInfo::default(),
-            animation: TileAnimation::default(),
             zoomable: Zoomable,
-            interactable_type: InteractableType::Tile
+            state: ObjectState::default()
         }
     }
-}
-
-pub struct InteractionContext <'a> {
-    pub inventory: Option<&'a mut crate::player::Inventory>,
-    pub source: Entity,
-    pub source_type: Option<InteractableType>,
-    pub destination: Entity,
-    pub destination_type: Option<InteractableType>,
-    pub source_location: Option<Location>,
-    pub interaction_location: Option<Location>,
-    pub sprite_info: Option<&'a SpriteInfo>,
-    pub tile_attributes: Option<&'a TileAttributes>,
-    pub tile_palette: Option<&'a TilePalette>
-}
-
-
-#[derive(Copy, Clone, Debug)]
-pub struct Interactable;
-#[derive(Bundle, Copy, Clone, Debug)]
-pub struct InteractableComponents {
-    pub interactable: Interactable,
-    pub location: Location,
-    pub visible: Visible,
-    pub interaction: Interaction
-}
-
-impl InteractableComponents {
-   
-}
-
-impl Default for InteractableComponents {
-    fn default() -> Self {
-        InteractableComponents {
-            location: Location::default(),
-            visible: Visible,
-            interaction: Interaction { description: "pass interaction", call: |ctx| {
-                match ctx.tile_attributes  { 
-                    Some(tile_attributes) =>{
-                        if tile_attributes.hardness != 0. {
-                            InteractionResult::Block.into()
-                        } else {
-                            InteractionResult::None.into()
-                        }
-                    },
-                    None => InteractionResult::None.into()
-                }                
-            } },
-            interactable: Interactable
-        }
-    }
-}
-
-/// Events
-pub enum InteractionType {
-    Collision,
-    Action(String)
-}
-pub struct InteractionEvent {
-    pub source : Entity,
-    pub destination : Entity,
-    pub source_location: Translation,
-    pub destination_location: Translation,
-    pub interaction_type: InteractionType
 }
 
 pub struct TextChangeEvent {

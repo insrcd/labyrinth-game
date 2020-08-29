@@ -1,10 +1,9 @@
 
 use bevy::prelude::*;
-use lab_entities::prelude::*;
-
 use crate::*;
-use lab_world::{TileComponents, TilePalette};
+use lab_world::{TileComponents, WorldCatalog};
 use std::{rc::Rc, cell::RefCell};
+use lab_core::prelude::*;
 
 #[derive(Clone, Debug)]
 pub struct Blueprint {
@@ -32,7 +31,7 @@ impl Blueprint {
 }
 
 pub struct MapBuilder {
-    pub tile_palette : Rc<RefCell<TilePalette>>,
+    pub world_catalog : Rc<RefCell<WorldCatalog>>,
     pub starting_location : Location,
     pub current_location : Location,
     pub tiles : Vec<TileComponents>,
@@ -41,9 +40,9 @@ pub struct MapBuilder {
 }
 
 impl<'a>  MapBuilder {
-    pub fn new(palette: Rc<RefCell<TilePalette>>, starting_location: &Location) -> MapBuilder {
+    pub fn new(palette: Rc<RefCell<WorldCatalog>>, starting_location: &Location) -> MapBuilder {
         MapBuilder {
-            tile_palette : palette.clone(),
+            world_catalog : palette.clone(),
             starting_location : starting_location.clone(),
             current_location : starting_location.clone(),
             tiles: Vec::new(),
@@ -111,11 +110,11 @@ impl<'a>  MapBuilder {
         self
     }
 
-    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Area, tile_name: String) -> &mut Self {
+    pub fn add_tiles_to_area(&mut self, loc : &Location, area: Vec2, tile_name: String) -> &mut Self {
        
-        if let Some(comps) = self.tile_palette.borrow().components.get(&tile_name){
-            for x in 0..area.0 as u32 {
-                for y in 0..area.1 as u32 {  
+        if let Some(comps) = self.world_catalog.borrow().components.get(&tile_name){
+            for x in 0..area.x() as u32 {
+                for y in 0..area.y() as u32 {  
                     let mut comp = comps.clone();
                     
                     comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - (y * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
@@ -130,7 +129,7 @@ impl<'a>  MapBuilder {
         self
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut Self {
-        if let Some(comps) = self.tile_palette.borrow().components.get(&tile_name){
+        if let Some(comps) = self.world_catalog.borrow().components.get(&tile_name){
             for _ in 0..count {
                 let mut my_comp = comps.clone();
 
@@ -143,16 +142,16 @@ impl<'a>  MapBuilder {
 
                 let location = match pos {
                     RelativePosition::LeftOf => {                                    
-                        Location(loc.0 - tile_size_x, loc.1, loc.2, world::WorldLocation::World)
+                        Location(loc.0 - tile_size_x, loc.1, loc.2, WorldLocation::World)
                     }
                     RelativePosition::RightOf => {
-                        Location(loc.0 + tile_size_x, loc.1, loc.2, world::WorldLocation::World)
+                        Location(loc.0 + tile_size_x, loc.1, loc.2, WorldLocation::World)
                     }
                     RelativePosition::Above => {
-                        Location(loc.0, loc.1 + tile_size_y, loc.2, world::WorldLocation::World)
+                        Location(loc.0, loc.1 + tile_size_y, loc.2, WorldLocation::World)
                     }
                     RelativePosition::Below => {
-                        Location(loc.0, loc.1 - tile_size_y, loc.2, world::WorldLocation::World)
+                        Location(loc.0, loc.1 - tile_size_y, loc.2, WorldLocation::World)
                     },
                     _ => self.current_location
                 };
@@ -160,7 +159,6 @@ impl<'a>  MapBuilder {
                 println!("Adding tile at {:?} last location: {:?}", self.current_location, location);
                 
                 my_comp.location = location;
-                println!("Hardness: {:?}", my_comp.hardness);
 
                 self.tiles.push(my_comp);
 
@@ -172,17 +170,16 @@ impl<'a>  MapBuilder {
     }
 
     pub fn add_mobs(&mut self, mut pos : Location, count : u32, mob_name: String) -> &mut Self {
-        if let Some(comps) = self.tile_palette.borrow().components.get(&mob_name){
+        if let Some(comps) = self.world_catalog.borrow().components.get(&mob_name){
             for instance_num  in 0..count {
                 // modify z index because right now sprites are clipping if z = other_z
                 pos.2 += instance_num as f32;
 
                 self.mobs.push(MobComponents {
-                    interaction: comps.interaction,
                     sprite: comps.sprite.clone(),
                     location: pos,
                     timer : Timer::from_seconds(2.0, false),
-                    interactable_type: lab_core::InteractableType::Npc,
+                    interactable_type: InteractableType::Npc,
                     ..Default::default()
                 });
             }

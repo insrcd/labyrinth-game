@@ -10,3 +10,9 @@ log = { version = "0.4", features = ["release_max_level_info"] }
 serde = { version = "1.0", features = ["derive"]}
 
 bevy = { git = "https://github.com/insrcd/bevy.git" }
+
+lab-core = {path = "../lab-core"}
+lab-sprites  = {path = "../lab-sprites"}
+lab-entities = {path = "../lab-entities"}
+lab-input    = {path = "../lab-input"}
+lab-world    = {path = "../lab-world"}
