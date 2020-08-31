@@ -1,7 +1,6 @@
 use lab_core::prelude::*;
 use std::collections::BTreeMap;
 use std::{fmt::Debug, collections::btree_map::{Values, Keys}, sync::{Arc, Mutex}};
-use lab_entities::Inventory;
 use lab_sprites::SpriteInfo;
 
 mod systems;
@@ -18,7 +17,7 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_resource(IntractionCatalog<TileComponents>::default())
+            .add_resource(InteractionCatalog::<TileComponents>::default())
             .add_resource(UiTextState::default())
             .add_resource(InteractionState::default())
             .add_event::<TextChangeEvent>()
@@ -34,14 +33,18 @@ impl Plugin for WorldPlugin {
             .add_system_to_stage(lab_core::stage::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::camera_tracking_system.system());
     }
+
+    fn name(&self) -> &str {
+        std::any::type_name::<Self>()
+    }
 }
 
 impl CatalogItem for TileComponents {
     fn category(&self) -> String {
-        self.category.clone()
+        self.sprite.category.clone()
     }
     fn name(&self) -> String {
-        self.named.0
+        self.sprite.name.clone()
     }
 }
 pub enum InteractionResult {    
@@ -62,13 +65,16 @@ impl From<InteractionResult> for Vec<InteractionResult> {
     }
 }
 
+#[derive(Clone, Default, Debug)]
+struct TileInteractionResult;
+
 #[derive(Copy, Clone)]
-pub struct Interaction {
+pub struct TileInteraction {
     pub description: &'static str,
-    pub call : fn (InteractionContext) -> Vec<InteractionResult>
+    pub call : fn (InteractionContext<Self, TileComponents, TileInteractionResult>) -> Vec<InteractionResult>
 }
 
-impl Debug for Interaction {
+impl Debug for TileInteraction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Interaction")
         .field("description", &self.description)
@@ -76,10 +82,10 @@ impl Debug for Interaction {
     }
 }
 
-impl Default for Interaction {
+impl Default for TileInteraction {
 
     fn default() -> Self {
-        Interaction {
+        TileInteraction {
             description:"Default Interaction",
             call : |_| InteractionResult::None.into()
         }

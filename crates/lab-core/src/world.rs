@@ -1,5 +1,7 @@
 use bevy::prelude::*;
-use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap}};
+use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap}, sync::Mutex, rc::Rc};
+use defaults::*;
+use crate::interaction::*;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
@@ -32,20 +34,23 @@ impl From<Location> for Vec2 {
     }    
 }
 #[derive(Default, Clone, Debug)]
-pub struct InteractionCatalog <'a, T : CatalogItem + Sync + Send + Clone> {
+pub struct InteractionCatalog <I, T : CatalogItem + Sync + Send + Clone, R: Sync + Send + Clone> 
+where I : Interact<T, R> {
+    item : I,
+    data : PhantomData<R>,
     pub components: BTreeMap<String, T>,
-    pub interactions: BTreeMap<String, Interaction>,
-    _pd : Option<&'a PhantomData<T>>
+    pub interactions: BTreeMap<String, Rc<I>>
 }
 
-impl <T : CatalogItem + Sync + Send + Clone> InteractionCatalog<'_, T> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
-    pub fn get_interaction(&self, name: &String) -> Option<&Interaction> {
-        match self.components.get(name) {
-            Some(comps) => self.interactions.get(name),
-            None => None
+impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> InteractionCatalog<I, T, R>
+ where I : Interact <T,R> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
+    pub fn get_interaction(&self, name: &String) -> Option<Rc<I>> {
+        if let Some(interact)  = self.interactions.get(name) {
+            Some(interact.clone())
+        } else {
+            None
         }
     }
-
     pub fn names(&self) -> Keys<'_, String, T>{
         self.components.keys()
     }
@@ -75,10 +80,6 @@ impl <T : CatalogItem + Sync + Send + Clone> InteractionCatalog<'_, T> {    /// 
             self.components.insert(comp.name().clone(), comp.clone());
         }
     }
-}
-pub trait CatalogItem {
-    fn name(&self) -> String;
-    fn category(&self) -> String;
 }
 
 impl Location {

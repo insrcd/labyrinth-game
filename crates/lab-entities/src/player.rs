@@ -3,7 +3,6 @@
 use bevy::{ prelude::* };
 use lab_core::prelude::*;
 use std::time::Duration;
-use crate::{Inventory, prelude::ItemHandle};
 
 
 #[derive(Clone, Copy, Debug, Properties)]
