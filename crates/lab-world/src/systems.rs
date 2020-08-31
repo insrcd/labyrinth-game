@@ -71,6 +71,7 @@ pub fn interaction_system(
     interaction_events: ResMut<Events<InteractionEvent>>,
     mut text_update: ResMut<Events<TextChangeEvent>>,    
     world_catalog: Res<InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>>,
+    item_storage: Res<ItemStorage>,    
     interactable_query: Query<(
         Entity,
         &mut ObjectState,
@@ -124,17 +125,18 @@ pub fn interaction_system(
                                 entity: event.source, 
                                 interactable_type: *source_type, 
                                 location: src_move.start.into(),
-                                inventory: inventory,
+                                inventory: inventory.as_deref(),
                                 tile_state: Some(src_state.clone())
                             },
                             destination: &Interactable { 
                                 entity: event.source, 
                                 interactable_type: *dst_type, 
                                 location: (*dst_trans).into(),
-                                inventory: dst_inventory,
+                                inventory: dst_inventory.as_deref(),
                                 tile_state: Some(dst_state.clone())
                             },
-                            world_catalog:world_catalog.clone()
+                            world_catalog:world_catalog.clone(),
+                            item_storage: &item_storage
                         }).iter() {
                             match r {
                                 TileInteractionResult::ChangeSprite(sprite_info) => {
@@ -146,6 +148,7 @@ pub fn interaction_system(
                                     );
                                 }
                                 TileInteractionResult::Damage(_) => {}
+                                TileInteractionResult::ChangeInventory(_) => {}
                                 TileInteractionResult::ChangeSprite(_) => {}
                                 TileInteractionResult::ChangeState(_) => {
                                     // commit state changes in this comp

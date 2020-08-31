@@ -33,17 +33,18 @@ where Self : Clone + Sized {
 
 pub struct InteractionContext <'a, I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
 where I : Interact<T, R> {
-    pub source: &'a Interactable <'a>,
-    pub destination: &'a Interactable <'a>,
+    pub source: &'a Interactable<'a>,
+    pub destination: &'a Interactable<'a>,
     // resources
-    pub world_catalog: InteractionCatalog<I, T, R>
+    pub world_catalog: InteractionCatalog<I, T, R>,
+    pub item_storage: &'a ItemStorage
 }
 
 
 #[derive(Debug)]
 pub struct Interactable <'a> {
     pub entity: Entity,
-    pub inventory: Option<RefMut<'a, crate::world::Inventory>>,
+    pub inventory: Option<&'a crate::world::Inventory>,
     pub interactable_type: InteractableType,
     pub location: Location,
     pub tile_state: Option<ObjectState>

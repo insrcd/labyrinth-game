@@ -73,7 +73,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             let palette = ctx.world_catalog;
 
             // poor state tracking right now TODO Refactor and make safer
-            let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite;
+            //let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite;
 
             /*if let Some(inventory) = ctx.source.inventory 
             {
@@ -109,7 +109,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     if let Some(mut tiles) = palette.components.get_mut(tiles::ITEM) {
         // break windows
         palette.interactions.insert(
-            tiles::ITEM, 
+            tiles::ITEM.into(), 
             Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
                 // demoooo   
                 let item = ItemDefinition { 
@@ -120,18 +120,18 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                     item_slot: ItemSlot::LeftHand
                 };
                 
+                let name = item.name.clone();
+                let mut inventory = ctx.source.inventory.unwrap().clone();
+                let mut storage = (*ctx.item_storage).clone();
                 // do domestuff now
-                if let Some(inventory) = ctx.inventory {
-                    inventory.items.push(item.clone())
-                }
+                inventory.items.push(storage.forge(item));
 
-                if let Some(source_type) = ctx.source_type {
-                    if source_type == InteractableType::Player {
-                        return vec![ 
-                            TileInteractionResult::Despawn, 
-                            TileInteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
-                            ]
-                    };
+                if ctx.source.interactable_type == InteractableType::Player {
+                    return vec![ 
+                        TileInteractionResult::ChangeInventory(inventory),
+                        TileInteractionResult::Despawn, 
+                        TileInteractionResult::Message(format!("You picked up an item: {}", name).to_string())
+                        ]
                 };
                 
                 TileInteractionResult::None.into()
@@ -149,7 +149,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .add_tiles(RelativePosition::LeftOf, 1, tiles::WALL.to_string())
             .add_tiles(RelativePosition::LeftOf, 2, tiles::WALL.to_string())
             .add_tiles(RelativePosition::Above, 5, tiles::WALL.to_string())
-            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(6., 6.), tiles::FLOOR.to_string())
+            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
             .to_blueprint("basic_house");
 
     mb
@@ -160,11 +160,11 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     .add_tiles(RelativePosition::LeftOf, 1, tiles::BRICK_WINDOW.to_string())
     .add_tiles(RelativePosition::LeftOf, 1, tiles::BRICK.to_string())
     .add_tiles(RelativePosition::Above, 5, tiles::BRICK.to_string())
-    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Area(6., 6.), tiles::FLOOR.to_string())
+    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
     .to_blueprint("brick_house");
 
     mb
-    .add_tiles_to_area(&Location::default(), Area(2., 6.), tiles::FLOOR.to_string())
+    .add_tiles_to_area(&Location::default(), Vec2::new(2., 6.), tiles::FLOOR.to_string())
     .to_blueprint("walkway");
 
 

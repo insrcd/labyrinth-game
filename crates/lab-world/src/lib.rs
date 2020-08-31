@@ -1,6 +1,6 @@
 use lab_core::prelude::*;
 use std::collections::BTreeMap;
-use std::{fmt::Debug, collections::btree_map::{Values, Keys}, sync::{Arc, Mutex}};
+use std::{fmt::Debug, collections::{HashMap, btree_map::{Values, Keys}}, sync::{Arc, Mutex}};
 use lab_sprites::SpriteInfo;
 
 mod systems;
@@ -52,6 +52,7 @@ impl CatalogItem for TileComponents {
 pub enum TileInteractionResult {    
     Damage(u32),
     ChangeSprite(SpriteInfo),
+    ChangeInventory(Inventory),
     ChangeState(ObjectState),
     Move(Location),
     Despawn,

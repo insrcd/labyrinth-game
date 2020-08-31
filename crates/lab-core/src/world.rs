@@ -1,7 +1,9 @@
 use bevy::prelude::*;
-use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap}, sync::{Arc, Mutex}, rc::Rc};
+use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap, HashMap}, sync::{Arc, Mutex}, rc::Rc};
 use defaults::*;
 use crate::interaction::*;
+
+use rand::Rng;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WorldLocation {
@@ -112,7 +114,7 @@ pub struct Visible;
 #[derive(Copy, Clone, Debug)]
 pub struct Solid;
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Inventory {
     pub items: Vec<ItemHandle>
 }
@@ -164,8 +166,29 @@ pub struct ItemDefinition {
     pub item_slot: ItemSlot
 }
 
+#[derive(Clone, Debug)]
+pub struct ItemStorage {
+    pub items : HashMap<u64, ItemDefinition>
+}
 
-#[derive(Clone,Copy,Default,Debug)]
+impl ItemStorage {
+    pub fn forge(&mut self, item : ItemDefinition) -> ItemHandle {
+        let id : u64 = rand::thread_rng().gen();
+
+        self.items.insert(id, item);
+    
+        ItemHandle { item_id: id }
+    }
+
+    pub fn get(&mut self, handle : ItemHandle) -> ItemDefinition {
+        self.items
+            .get(&handle.item_id)
+            .expect("Item not found in storage, this shouldn't happen")
+            .clone()
+    }
+}
+
+#[derive(Clone,Copy,Default,Debug, PartialEq)]
 pub struct ItemHandle {
     pub item_id : u64
 }

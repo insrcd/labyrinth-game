@@ -3,12 +3,10 @@ use bevy::{
     prelude::*
 };
 
-mod dialog;
 mod state;
 
 use lab_entities::prelude::*;
 use lab_input::*;
-use dialog::*;
 use lab_sprites::*;
 use lab_core::{stage,*};
 use lab_world::{TextChangeEvent};
@@ -29,17 +27,16 @@ fn main() {
     .add_default_plugins()    
     .add_startup_stage(stages::INIT)
     .add_startup_stage(stages::POST_INIT)
-    .add_stage_before(stages::UPDATE, stages::PROCESSING)
+    .add_stage_before(stages::UPDATE, stages::VALIDATION)
     .add_stage_after(stages::UPDATE, stages::POST_UPDATE)
     .add_plugin(lab_core::CorePlugin)
     .add_plugin(lab_sprites::SpritesPlugin)
     .add_plugin(lab_input::InputPlugin)
     .add_plugin(lab_world::WorldPlugin)
     .add_plugin(lab_builder::BuilderPlugin)
-    .add_plugin(lab_ai::NpcPlugin)   
+    //.add_plugin(lab_ai::NpcPlugin)   
     .add_startup_system_to_stage(stages::POST_INIT, setup.system())        
-    .add_system(npc_dialog_system.system())
-    .add_system_to_stage(stages::POST_UPDATE, dialog_system.system())
+    //.add_system(npc_dialog_system.system())
     .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
     //.add_system(update_ui_text_system.system())
@@ -92,8 +89,8 @@ fn setup (
             right: walk_right[3..6].to_vec(),
             ..Default::default()
         }, player_sprite, InteractableType::Player))
-    .spawn( (NonPlayer, InteractableType::Npc,  Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement,Moveable))
-        .with_bundle(npc_sprite.to_components(Location(32., -32., layers::PLAYER,world::WorldLocation::World).into(), Scale(1.)));  
+    .spawn( (NonPlayer, InteractableType::Npc,  Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement::default(),Moveable))
+        .with_bundle(npc_sprite.to_components(Location(32., -32., layers::PLAYER,WorldLocation::World).into(), Scale(1.)));  
     
     /*
     for _n in 0..50 {
