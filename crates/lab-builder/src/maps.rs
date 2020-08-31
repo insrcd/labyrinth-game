@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
 use crate::*;
-use lab_world::{TileComponents, WorldCatalog};
+use lab_world::{TileComponents, TilePalette};
 use std::{rc::Rc, cell::RefCell};
 use lab_core::prelude::*;
 
@@ -31,7 +31,7 @@ impl Blueprint {
 }
 
 pub struct MapBuilder {
-    pub world_catalog : Rc<RefCell<WorldCatalog>>,
+    pub world_catalog : TilePalette,
     pub starting_location : Location,
     pub current_location : Location,
     pub tiles : Vec<TileComponents>,
@@ -40,7 +40,7 @@ pub struct MapBuilder {
 }
 
 impl<'a>  MapBuilder {
-    pub fn new(palette: Rc<RefCell<WorldCatalog>>, starting_location: &Location) -> MapBuilder {
+    pub fn new(palette: TilePalette, starting_location: &Location) -> MapBuilder {
         MapBuilder {
             world_catalog : palette.clone(),
             starting_location : starting_location.clone(),
@@ -112,7 +112,7 @@ impl<'a>  MapBuilder {
 
     pub fn add_tiles_to_area(&mut self, loc : &Location, area: Vec2, tile_name: String) -> &mut Self {
        
-        if let Some(comps) = self.world_catalog.borrow().components.get(&tile_name){
+        if let Some(comps) = self.world_catalog.components.get(&tile_name){
             for x in 0..area.x() as u32 {
                 for y in 0..area.y() as u32 {  
                     let mut comp = comps.clone();
@@ -129,7 +129,7 @@ impl<'a>  MapBuilder {
         self
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut Self {
-        if let Some(comps) = self.world_catalog.borrow().components.get(&tile_name){
+        if let Some(comps) = self.world_catalog.components.get(&tile_name){
             for _ in 0..count {
                 let mut my_comp = comps.clone();
 
@@ -170,7 +170,7 @@ impl<'a>  MapBuilder {
     }
 
     pub fn add_mobs(&mut self, mut pos : Location, count : u32, mob_name: String) -> &mut Self {
-        if let Some(comps) = self.world_catalog.borrow().components.get(&mob_name){
+        if let Some(comps) = self.world_catalog.components.get(&mob_name){
             for instance_num  in 0..count {
                 // modify z index because right now sprites are clipping if z = other_z
                 pos.2 += instance_num as f32;

@@ -6,12 +6,12 @@ use lab_sprites::*;
 use lab_world::*;
 use crate::{BuilderSettings, MovingTile};
 use lab_input::{Mouse, SelectedTile, ScrollState, MouseClickEvent, MouseState};
-use lab_core::prelude::{Location, WorldLocation};
+use lab_core::prelude::{Location, WorldLocation, InteractionCatalog};
 
 
 pub fn make_world_catalog_system(
     mut sprite_library: ResMut<SpriteLibrary>,
-    mut palette: ResMut<WorldCatalog>
+    mut palette: ResMut<TilePalette>
 )  {
     for sprite in sprite_library.iter() {
         //println!("Adding sprite {:?}", sprite);
@@ -30,7 +30,7 @@ pub fn make_world_catalog_system(
 }
 pub fn update_tile_system (mouse : ResMut<Mouse>,
     windows: Res<Windows>, 
-    palette: Res<WorldCatalog>, 
+    palette: Res<TilePalette>, 
     scroll_state: Res<ScrollState>, 
     selected_tile: Res<SelectedTile>, 
     mut camera_query: Query<(&Camera, Changed<Translation>)>,
@@ -46,7 +46,7 @@ pub fn update_tile_system (mouse : ResMut<Mouse>,
             let camera_offset_x = t.x();
             let camera_offset_y = t.y();
             for (_ft, mut t, _d) in &mut f_tile_query.iter(){        
-                let mouse_tile = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile];
+                let mouse_tile = palette.items_in_category(&selected_tile.category)[selected_tile.tile];
                 let sprite_width = mouse_tile.sprite.size().x() * scroll_state.current_scale;
                 let sprite_height = mouse_tile.sprite.size().y() * scroll_state.current_scale;
 
@@ -69,7 +69,7 @@ pub fn add_tiles_to_world_system (
     settings : ResMut<BuilderSettings>,
     selected_tile: Res<SelectedTile>, 
     scroll_state: Res<ScrollState>, 
-    palette: Res<WorldCatalog>,
+    palette: Res<TilePalette>,
     mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
     mouse_events : ResMut<Events<MouseClickEvent>>,
@@ -83,7 +83,7 @@ pub fn add_tiles_to_world_system (
                 let x = clicks.world_position.x();
                 let y = clicks.world_position.y();
 
-                let components = palette.tiles_in_category(&selected_tile.category)[selected_tile.tile as usize];
+                let components = palette.items_in_category(&selected_tile.category)[selected_tile.tile as usize];
         
                 let st = selected_tile.clone();                    
 
@@ -148,7 +148,7 @@ pub fn builder_keyboard_system (
     scroll : Res<ScrollState>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut selected_tile: ResMut<SelectedTile>, 
-    mut palette: ResMut<WorldCatalog>, 
+    mut palette: ResMut<TilePalette>, 
     mut camera_query: Query<(&Camera, &Translation)>,
     mut free_tile: Query<(Entity, &FreeTile)>) {
 
@@ -166,25 +166,25 @@ pub fn builder_keyboard_system (
     }
         
     if keyboard_input.just_pressed(KeyCode::Apostrophe) {
-        let categories = palette.tile_categories();
-        let pos = categories.iter().position(|&s| s == selected_tile.category).unwrap();
+        let categories = palette.categories();
+        let pos = categories.iter().position(|s| *s == selected_tile.category).unwrap();
 
         selected_tile.tile = 0;
-        selected_tile.category = palette.tile_categories()[(pos + 1) % categories.len()].to_string();
+        selected_tile.category = palette.categories()[(pos + 1) % categories.len()].to_string();
         println!("Selected category: {}", selected_tile.category);
     }
     
     if keyboard_input.just_pressed(KeyCode::Semicolon) {
-        let categories = palette.tile_categories();
+        let categories = palette.categories();
         
-        let pos = categories.iter().position(|&s| s == selected_tile.category).unwrap();
+        let pos = categories.iter().position(|s| *s == selected_tile.category).unwrap();
         
         selected_tile.tile = 0;
 
         selected_tile.category  = if pos != 0 {
             categories[(pos - 1)].to_string()
         } else {            
-            categories[palette.tile_categories().len() -1].to_string()
+            categories[palette.categories().len() -1].to_string()
         };
 
         println!("Selected category: {}", selected_tile.category);
@@ -222,14 +222,14 @@ pub fn builder_keyboard_system (
 
 fn change_selected_sprite(commands : &mut Commands, 
     change : i32, 
-    palette: &ResMut<WorldCatalog>, 
+    palette: &ResMut<TilePalette>, 
     free_tile: &mut Query<(Entity, &FreeTile)>,
     category : &str, 
     tile : usize,
     current_scale : f32,
     window_size: (f32, f32),
     camera_offset: (f32, f32)) -> usize {
-        let len = palette.tiles_in_category(category).len() as i32;
+        let len = palette.items_in_category(category).len() as i32;
 
         let mut idx = (tile as i32 + change) % len as i32;
 
@@ -237,7 +237,7 @@ fn change_selected_sprite(commands : &mut Commands,
             idx = len + idx;
         }        
 
-        let mouse_tile = palette.tiles_in_category(category)[idx as usize];
+        let mouse_tile = palette.items_in_category(category)[idx as usize];
         
         println!("Changed to tile {:?}", mouse_tile.sprite);
         

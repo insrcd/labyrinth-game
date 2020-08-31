@@ -1,7 +1,6 @@
-use bevy::{input::mouse::*, prelude::*};
-
 use lab_core::prelude::*;
 use lab_entities::player;
+use bevy::input::mouse::{MouseMotion, MouseWheel};
 
 mod systems;
 mod menu;
@@ -22,9 +21,9 @@ impl Plugin for InputPlugin {
             .init_resource::<MouseState>()
             .add_startup_system(input_timers.system())
             .add_system(systems::player_movement_system.system())
-            .add_system_to_stage(stage::EVENT_UPDATE, systems::track_mouse_movement_system.system())
-            .add_system_to_stage(stage::EVENT_UPDATE, systems::mouse_wheel_system.system())
-            .add_system_to_stage(stage::EVENT_UPDATE, systems::mouse_click_system.system());
+            .add_system_to_stage(stages::PRE_UPDATE, systems::track_mouse_movement_system.system())
+            .add_system_to_stage(stages::PRE_UPDATE, systems::mouse_wheel_system.system())
+            .add_system_to_stage(stages::PRE_UPDATE, systems::mouse_click_system.system());
     }
 }
 

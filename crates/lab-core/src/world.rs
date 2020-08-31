@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap}, sync::Mutex, rc::Rc};
+use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap}, sync::{Arc, Mutex}, rc::Rc};
 use defaults::*;
 use crate::interaction::*;
 
@@ -39,12 +39,12 @@ where I : Interact<T, R> {
     item : I,
     data : PhantomData<R>,
     pub components: BTreeMap<String, T>,
-    pub interactions: BTreeMap<String, Rc<I>>
+    pub interactions: BTreeMap<String, Arc<I>>
 }
 
 impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> InteractionCatalog<I, T, R>
  where I : Interact <T,R> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
-    pub fn get_interaction(&self, name: &String) -> Option<Rc<I>> {
+    pub fn get_interaction(&self, name: &String) -> Option<Arc<I>> {
         if let Some(interact)  = self.interactions.get(name) {
             Some(interact.clone())
         } else {

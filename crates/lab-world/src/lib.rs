@@ -17,20 +17,20 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_resource(InteractionCatalog::<TileComponents>::default())
+            .add_resource(InteractionCatalog::<TileInteraction, TileComponents, Vec<TileInteractionResult>>::default())
             .add_resource(UiTextState::default())
             .add_resource(InteractionState::default())
             .add_event::<TextChangeEvent>()
             .add_event::<InteractionEvent>()
             //.add_system(systems::add_world_sprites_system.system())
             //.add_system(systems::add_interaction_sprites_system.system())    
-            .add_system_to_stage(lab_core::stage::PRE_UPDATE, systems::zoom_system.system())
+            .add_system_to_stage(lab_core::stages::PRE_UPDATE, systems::zoom_system.system())
             .add_system(systems::save_world_system.thread_local_system())
             .add_system(systems::collision_system.system())            
             .add_system(systems::sprite_despawn_system.system())
-            .add_system_to_stage(lab_core::stage::POST_UPDATE, systems::interaction_system.system())
+            .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::interaction_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
-            .add_system_to_stage(lab_core::stage::POST_UPDATE, systems::static_text_system.system())
+            .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::static_text_system.system())
             .add_system(systems::camera_tracking_system.system());
     }
 
@@ -47,9 +47,12 @@ impl CatalogItem for TileComponents {
         self.sprite.name.clone()
     }
 }
-pub enum InteractionResult {    
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum TileInteractionResult {    
     Damage(u32),
     ChangeSprite(SpriteInfo),
+    ChangeState(ObjectState),
     Move(Location),
     Despawn,
     Log(String),
@@ -59,19 +62,23 @@ pub enum InteractionResult {
     None
 }
 
-impl From<InteractionResult> for Vec<InteractionResult> {
-    fn from( n : InteractionResult) -> Self {
+impl Default for TileInteractionResult {
+
+    fn default() -> Self {
+        TileInteractionResult::None
+    }
+}
+
+impl From<TileInteractionResult> for Vec<TileInteractionResult> {
+    fn from( n : TileInteractionResult) -> Self {
         vec![n]
     }
 }
 
-#[derive(Clone, Default, Debug)]
-struct TileInteractionResult;
-
 #[derive(Copy, Clone)]
 pub struct TileInteraction {
     pub description: &'static str,
-    pub call : fn (InteractionContext<Self, TileComponents, TileInteractionResult>) -> Vec<InteractionResult>
+    pub caller : fn (InteractionContext<TileInteraction, TileComponents, Vec<TileInteractionResult>>) -> Vec<TileInteractionResult>
 }
 
 impl Debug for TileInteraction {
@@ -82,12 +89,19 @@ impl Debug for TileInteraction {
     }
 }
 
+impl Interact <TileComponents, Vec<TileInteractionResult>> for TileInteraction {
+
+    fn interact(&self, ctx : InteractionContext<Self, TileComponents, Vec<TileInteractionResult>>) -> Vec<TileInteractionResult> {
+        (self.caller)(ctx)
+    }
+}
+
 impl Default for TileInteraction {
 
     fn default() -> Self {
         TileInteraction {
             description:"Default Interaction",
-            call : |_| InteractionResult::None.into()
+            caller : |ctx| TileInteractionResult::None.into()
         }
     }
 }
@@ -127,3 +141,5 @@ pub struct InteractionState {
 }
 pub struct MoveTimer(pub Timer);
 pub struct DialogTimer(pub Timer);
+
+pub type TilePalette = InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>;

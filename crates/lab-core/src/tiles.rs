@@ -2,7 +2,7 @@ use crate::{Zoomable, prelude::*};
 use std::fmt::Debug;
 use std::{sync::{Arc, Mutex}, collections::HashMap};
 
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone, Debug, PartialEq)]
 pub struct ParsableState {
   string_value: Option<String>,
   bool_value: Option<bool>,
@@ -28,39 +28,39 @@ impl Debug for StateParseErr {
 }
 /// Component for tracking tile state
 /// e.g. val true_or_false : bool = tile_state.get("is_open".into()).into()
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ObjectState {
-    pub values : Arc<Mutex<HashMap<String, ParsableState>>>    
+    pub values : HashMap<String, ParsableState> 
 }
 
 impl Default for ObjectState {
     fn default() -> Self {
         ObjectState {
-          values: Arc::new(Mutex::new(HashMap::new()))
+          values: HashMap::new()
         }
     }
 }
 
 impl ObjectState { 
   pub fn set_int(&mut self, key: String, value: i32){
-    self.values.lock().expect("could not get lock").insert(key, ParsableState {int_value: Some(value), ..Default::default()});
+    self.values.insert(key, ParsableState {int_value: Some(value), ..Default::default()});
   } 
   pub fn set_bool(&mut self, key: String, value: bool){
-    self.values.lock().expect("could not get lock").insert(key, ParsableState {bool_value: Some(value), ..Default::default()});
+    self.values.insert(key, ParsableState {bool_value: Some(value), ..Default::default()});
   } 
   pub fn set_string(&mut self, key: String, value: String){
-    self.values.lock().expect("could not get lock").insert(key, ParsableState {string_value: Some(value), ..Default::default()});
+    self.values.insert(key, ParsableState {string_value: Some(value), ..Default::default()});
   } 
   
   pub fn get (&self, key : String) -> Result<ParsableState, StateParseErr> {
-    if let Ok(map) = Arc::clone(&self.values).lock() {
-      match map.get(&key) {
-          Some(state) => { Ok( state.clone() ) }
-          None => Err(StateParseErr::new("Key does not exist in tile state" ))
-      }
-    } else {
-      Err(StateParseErr::new( "Could not get lock on state" ))
+    match self.values.get(&key) {
+      Some(state) => { Ok( state.clone() ) }
+      None => Err(StateParseErr::new("Key does not exist in tile state" ))
     }
+  }
+
+  pub fn merge(&self, other : Self){
+    todo!()
   }
 }
 

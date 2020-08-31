@@ -1,17 +1,11 @@
 
 
 const PLAYER_SPEED : f32  = 8.;
-
-use bevy::{
-    prelude::*,
-    render::{camera::Camera},
-    input::{keyboard::KeyCode, Input },
-};
-
 use lab_sprites::*;
 
 use crate::*;
-use lab_core::WorldSettings;
+use lab_core::prelude::*;
+use bevy::input::mouse::MouseWheel;
 
 /// System to sample mouse wheel events and update athe ScrollState
 /// resource that can be used by other systems.

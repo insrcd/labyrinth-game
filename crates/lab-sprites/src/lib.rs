@@ -3,7 +3,7 @@ use bevy::{prelude::*, ecs::DynamicBundle};
 
 use std::{time::Duration, collections::{hash_map::Values, HashMap}};
 
-use lab_core::stage;
+use lab_core::stages;
 
 
 mod systems;
@@ -14,7 +14,7 @@ impl Plugin for SpritesPlugin {
     fn build(&self, app: &mut AppBuilder) {        
         app
             .add_resource(SpriteLibrary::new())
-            .add_startup_system_to_stage(stage::INIT, crate::systems::load_world_sprites_system.system());
+            .add_startup_system_to_stage(stages::INIT, crate::systems::load_world_sprites_system.system());
     }
 }
 

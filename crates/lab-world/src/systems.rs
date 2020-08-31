@@ -3,7 +3,8 @@ use bevy::sprite::collide_aabb::*;
 use lab_entities::prelude::*;
 use lab_core::prelude::*;
 use lab_sprites::SpriteInfo;
-use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, InteractionResult};
+use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction};
+use std::{rc::Rc, borrow::Cow, sync::Arc};
 
 pub fn camera_tracking_system(
     mut player_moved: Query<With<Player, (Entity, Mutated<Translation>)>>,
@@ -66,10 +67,10 @@ pub fn collision_system(
 
 pub fn interaction_system(
     mut commands: Commands,
-    state: Res<InteractionState>,
+    mut state: ResMut<InteractionState>,
     interaction_events: ResMut<Events<InteractionEvent>>,
     mut text_update: ResMut<Events<TextChangeEvent>>,    
-    world_catalog: Res<InteractionCatalog<TileComponents>>,
+    world_catalog: Res<InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>>,
     interactable_query: Query<(
         Entity,
         &mut ObjectState,
@@ -118,53 +119,54 @@ pub fn interaction_system(
                             entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
                         let mut dst_inventory =  entity_query.get_mut::<Inventory>(event.destination).ok();
 
-                        for r in (tile_interaction.call)(InteractionContext {
+                        for r in tile_interaction.interact(InteractionContext {
                             source: &Interactable { 
                                 entity: event.source, 
                                 interactable_type: *source_type, 
                                 location: src_move.start.into(),
                                 inventory: inventory,
-                                tile_state: Some(&src_state)
+                                tile_state: Some(src_state.clone())
                             },
                             destination: &Interactable { 
                                 entity: event.source, 
                                 interactable_type: *dst_type, 
                                 location: (*dst_trans).into(),
                                 inventory: dst_inventory,
-                                tile_state: Some(&dst_state)
+                                tile_state: Some(dst_state.clone())
                             },
-                            world_catalog: Some(&world_catalog)
-                        }) {
+                            world_catalog:world_catalog.clone()
+                        }).iter() {
                             match r {
-                                InteractionResult::ChangeTile(attr) => {
-                                    if let Some(sprite_idx) = attr.get("sprite_idx".into()).unwrap().into(){                                        
-                                        commands.insert(
-                                            event.destination,
-                                            (
-                                                TextureAtlasSprite::new(sprite_idx),
-                                            ),
-                                        );
-                                    }
+                                TileInteractionResult::ChangeSprite(sprite_info) => {
+                                    commands.insert(
+                                        event.destination,
+                                        (
+                                            TextureAtlasSprite::new(sprite_info.atlas_sprite),
+                                        ),
+                                    );
                                 }
-                                InteractionResult::Damage(_) => {}
-                                InteractionResult::ChangeSprite(_) => {}
-                                InteractionResult::Move(_) => {}
-                                InteractionResult::Despawn => {
+                                TileInteractionResult::Damage(_) => {}
+                                TileInteractionResult::ChangeSprite(_) => {}
+                                TileInteractionResult::ChangeState(_) => {
+                                    // commit state changes in this comp
+                                }
+                                TileInteractionResult::Move(_) => {}
+                                TileInteractionResult::Despawn => {
                                     commands.despawn(event.destination);
                                 }
-                                InteractionResult::Block => {
+                                TileInteractionResult::Block => {
                                     *move_translation.0.x_mut() = src_move.start.0;
                                     *move_translation.0.y_mut() = src_move.start.1;
                                 }
-                                InteractionResult::None => {}
-                                InteractionResult::Log(_) => {}
-                                InteractionResult::Message(message) => {
+                                TileInteractionResult::None => {}
+                                TileInteractionResult::Log(_) => {}
+                                TileInteractionResult::Message(message) => {
                                     text_update.send(TextChangeEvent {
                                         text: message.to_string(),
                                         name: "main".to_string(),
                                     });
                                 }
-                                InteractionResult::Menu(_) => {}
+                                TileInteractionResult::Menu(_) => {}
                             };
                         }
                     }

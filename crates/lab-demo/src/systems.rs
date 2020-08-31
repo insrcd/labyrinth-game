@@ -2,8 +2,8 @@ use lab_world::*;
 use lab_builder::prelude::*;
 use lab_entities::prelude::*;
 use crate::*;
-use std::{cell::RefCell, rc::Rc};
-use lab_core::InteractableType;
+use std::{cell::RefCell, rc::Rc, sync::Arc};
+use lab_core::prelude::*;
 
 // move to a resources file of some sort.
 mod tiles {
@@ -22,19 +22,19 @@ mod tiles {
 
 /// Adds a simple map using the map builder for the purposes of a demo.
 
-pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<WorldCatalog>) {
+pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
 
     // setup some basic interactions
-    palette.interactions.insert("impassible".into(), lab_world::Interaction { call: |ctx| {            
-        InteractionResult::Block.into()
-    }, description:"Bump" });
+    palette.interactions.insert("impassible".into(), Arc::new(TileInteraction { caller: |ctx| {            
+        TileInteractionResult::Block.into()
+    }, description:"Bump" }));
 
-    palette.interactions.insert("open_door".into(), lab_world::Interaction { call: |ctx| {            
-        let comps = ctx.world_catalog.expect("World catalog cannot be found").components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
+    palette.interactions.insert("open_door".into(), Arc::new(TileInteraction { caller: |ctx| {            
+        let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
         
-        InteractionResult::ChangeSprite(comps.sprite.clone()).into()
+        TileInteractionResult::ChangeSprite(comps.sprite.clone()).into()
 
-    }, description:"Open a door." });
+    }, description:"Open a door." }));
 
     if let Some(mut tiles) = palette.components.get_mut(tiles::WALL) {
         // walls are hard
@@ -54,104 +54,92 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Worl
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::ENEMY) {
         // open doors
-        tiles.interaction = lab_world::Interaction { call: |ctx| {            
-            if let Some(source) = ctx.source_type {
+        palette.interactions.insert(tiles::ENEMY.to_string(), Arc::new(TileInteraction { caller: |ctx| {            
+            if let InteractableType::Player = ctx.source.interactable_type {
                 return vec![
-                    InteractionResult::Message("Hello, you are my enemy. Lets fight.".into()).into(),
-                    InteractionResult::Block.into()];
+                    TileInteractionResult::Message("Hello, you are my enemy. Lets fight.".into()).into(),
+                    TileInteractionResult::Block.into()];
             }
-            InteractionResult::Block.into()
+            TileInteractionResult::Block.into()
         },
-            description: "Enemy Interaction",}
+            description: "Enemy Interaction",}));
     }
     if let Some(tiles) = palette.components.get(tiles::BRICK_DOOR) {
         // open doors
         let mut new_tile = tiles.clone();
-
-        new_tile.hardness = Hardness(0.5);
-        new_tile.tile_attributes.hardness = 1.;
-        new_tile.tile_attributes.hit_points = 1;
-        new_tile.interaction = lab_world::Interaction { call: |ctx| {    
-            let palette = ctx.world_catalog.unwrap_or_else(|| panic!("Did not receive a palette in the interaction context."));
+        new_tile.state.set_int("hardness".into(), 1);
+        palette.components.insert("locked_door".into(), new_tile);
+        palette.interactions.insert( "locked_door".into(),Arc::new(TileInteraction { caller: |ctx| {    
+            let palette = ctx.world_catalog;
 
             // poor state tracking right now TODO Refactor and make safer
             let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite;
-            let current_sprite = ctx.sprite_info.unwrap().atlas_sprite;
 
-            if open_sprite == current_sprite {
-                return InteractionResult::None.into()
-            }
-
-            if let Some(inventory) = ctx.inventory 
+            /*if let Some(inventory) = ctx.source.inventory 
             {
 
                 if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
                     return vec![
-                            InteractionResult::ChangeSprite(open_sprite),
-                            InteractionResult::Message("You have the key, Unlocked the door!".into())];
+                            TileInteractionResult::ChangeSprite(open_sprite),
+                            TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
                 }
-            }
-            vec![InteractionResult::Block, InteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
+            }*/
+            vec![TileInteractionResult::Block, TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
         },
-            description: "Open Door",};
-
-        palette.components.insert("locked_door".to_string(), new_tile);
+            description: "Open Door",}));
     }
+    /*
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_WINDOW) {
 
-        tiles.hardness = Hardness(0.5);
-        tiles.tile_attributes.hardness = 1.;
-        tiles.tile_attributes.hit_points = 1;
-        tiles.interaction = lab_world::Interaction { call: |ctx| {  
+        tiles.interaction = TileInteraction { caller: |ctx| {  
             let open_sprite = Some(ctx.world_catalog.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
                  
             // if a non-player hits a window, crash it if not block it 
             if let Some(source_type) = ctx.source_type {
                 return match source_type {
-                    InteractableType::Item |  InteractableType::Npc => InteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
-                    _ => vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
+                    InteractableType::Item |  InteractableType::Npc => TileInteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
+                    _ => vec![TileInteractionResult::Block,TileInteractionResult::Message("The window looks breakable.".to_string())]
                 };
             } else {
-                vec![InteractionResult::Block,InteractionResult::Message("The window looks breakable.".to_string())]
+                vec![TileInteractionResult::Block,TileInteractionResult::Message("The window looks breakable.".to_string())]
             }
         },
             description: "Break Window",}
-    }
+    }*/
     if let Some(mut tiles) = palette.components.get_mut(tiles::ITEM) {
         // break windows
-        tiles.interaction = lab_world::Interaction { call: |ctx| { 
-            // demoooo   
-            let item = Item { 
-                id : 1,
-                name: "Key To Building 2".to_string(),
-                weight: Weight(0.1),
-                item_type: ItemType::Key,
-                item_slot: ItemSlot::LeftHand
-            };
-            
-            // do domestuff now
-            if let Some(inventory) = ctx.inventory {
-                inventory.items.push(item.clone())
-            }
-
-            if let Some(source_type) = ctx.source_type {
-                if source_type == InteractableType::Player {
-                    return vec![ 
-                        InteractionResult::Despawn, 
-                        InteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
-                        ]
+        palette.interactions.insert(
+            tiles::ITEM, 
+            Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
+                // demoooo   
+                let item = ItemDefinition { 
+                    id : 1,
+                    name: "Key To Building 2".to_string(),
+                    weight: Weight(0.1),
+                    item_type: ItemType::Key,
+                    item_slot: ItemSlot::LeftHand
                 };
-            };
-            
-            InteractionResult::None.into()
-        },
-            description: "Get Item",}
+                
+                // do domestuff now
+                if let Some(inventory) = ctx.inventory {
+                    inventory.items.push(item.clone())
+                }
+
+                if let Some(source_type) = ctx.source_type {
+                    if source_type == InteractableType::Player {
+                        return vec![ 
+                            TileInteractionResult::Despawn, 
+                            TileInteractionResult::Message(format!("You picked up an item: {}", item.name).to_string())
+                            ]
+                    };
+                };
+                
+                TileInteractionResult::None.into()
+            }
+        }));
     }
     
-    let mut mb = MapBuilder::new(
-        Rc::new(RefCell::new(palette.clone())), // may have to share the pallete later, so adding resource counting now
-        &Location::default()
-    );
+    let mut mb = MapBuilder::new(palette.clone(), &Location::default());
 
     &mut mb
             .add_tiles(RelativePosition::RightOf, 5, tiles::WALL.to_string())

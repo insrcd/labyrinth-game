@@ -1,4 +1,11 @@
 
+pub use bevy::{prelude::*, render::camera::*, input::mouse::MouseButtonInput};
+
+pub use crate::interaction::*;
+pub use crate::tiles::*;
+pub use crate::world::*;
+pub use crate::ui::*;
+
 use rand::distributions::{Standard, Distribution};
 use rand::Rng;
 
@@ -9,17 +16,10 @@ mod world;
 mod ui;
 
 pub mod prelude {
-    pub use bevy::{prelude::*, render::camera::*};
     pub use crate::*;
-    pub use crate::interaction::*;
-    pub use crate::tiles::*;
-    pub use crate::world::*;
-    pub use crate::ui::*;
 }
 
-use prelude::*;
-
-pub mod stage {
+pub mod stages {
     /// Stage for initializing resources (used for startup systems)
     pub const INIT: &'static str = "init";
     /// Stage after initializing resources (used for startup systems)
@@ -70,9 +70,12 @@ pub struct Zoomable;
 
 pub struct StaticLocation;
 
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct MenuItem {
     pub name: String
 }
+
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct MenuDefinition {
     pub items : Vec<MenuItem>
 }
