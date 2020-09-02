@@ -47,6 +47,7 @@ where I : Interact<T, R> {
 impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> InteractionCatalog<I, T, R>
  where I : Interact <T,R> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
     pub fn get_interaction(&self, name: &String) -> Option<Arc<I>> {
+        println!("looking for interaction for {}", name);
         if let Some(interact)  = self.interactions.get(name) {
             Some(interact.clone())
         } else {

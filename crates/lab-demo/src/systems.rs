@@ -24,10 +24,13 @@ mod tiles {
 
 pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
 
-    // setup some basic interactions
-    palette.interactions.insert("impassible".into(), Arc::new(TileInteraction { caller: |ctx| {            
+    let bump = Arc::new(TileInteraction { caller: |ctx| {            
         TileInteractionResult::Block.into()
-    }, description:"Bump" }));
+    }, description:"Bump" });
+
+    // setup some basic interactions
+    palette.interactions.insert(tiles::WALL.into(), bump.clone());
+    palette.interactions.insert(tiles::BRICK.into(), bump.clone());
 
     palette.interactions.insert("open_door".into(), 
         Arc::new(
@@ -126,8 +129,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                     item_slot: ItemSlot::LeftHand
                 };
                 
+                let mut inventory =  ctx.source.inventory.clone();
                 let name = item.name.clone();
-                let mut inventory = ctx.source.inventory.unwrap().clone();
                 let mut storage = (*ctx.item_storage).clone();
                 // do domestuff now
                 inventory.items.push(storage.forge(item));
@@ -189,9 +192,11 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
     for comp in mb.iter() {
         commands.spawn(comp.clone())
+            .with(InteractableType::Tile)
             .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
+        println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
-    }
+    } 
 
     for mob in mb.mobs.iter() {
         commands.spawn(mob.clone()).with_bundle(mob.sprite.to_components(mob.location.into(), Scale(1.)));

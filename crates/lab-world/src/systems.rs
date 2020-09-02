@@ -35,6 +35,7 @@ pub fn collision_system(
     for (mov_entity, move_translation, scale) in
         &mut moveables.iter()
     {
+            //println!("checking colision move: {:?}", *move_translation);
             for (destination_entity, tile_translation, tile_sprite, interact_type) in
             &mut wall_query.iter()
         {
@@ -44,6 +45,9 @@ pub fn collision_system(
             if mov_entity == destination_entity {
                 continue
             }
+            
+            
+            //println!("checking colision tile: {:?}", tile_translation);
             let collision = collide(
                 move_translation.0,
                 Vec2::new(8. * scale.0, 8. * scale.0),
@@ -52,7 +56,7 @@ pub fn collision_system(
             );
 
             if let Some(collision) = collision {
-                println!("Collision detected");
+                //println!("Collision detected");
                 match collision {
                     _ => interaction_event.send(InteractionEvent {
                         source: mov_entity,
@@ -72,14 +76,13 @@ pub fn interaction_system(
     mut text_update: ResMut<Events<TextChangeEvent>>,    
     world_catalog: Res<InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>>,
     item_storage: Res<ItemStorage>,    
+    inventory_query: Query<(Entity, &Inventory)>,
+    state_query: Query<(Entity, &mut ObjectState)>,
     interactable_query: Query<(
         Entity,
-        &mut ObjectState,
-        &mut Translation,
-        &mut SpriteInfo,
-        &mut Inventory,
         &InteractableType,
-        &Named        
+        &Named,
+        &Translation       
     )>,
     entity_query: Query<
         (
@@ -88,8 +91,7 @@ pub fn interaction_system(
             &mut Translation,
             &Movement,
             &mut Inventory,
-            &mut SpriteInfo,
-            &mut ObjectState
+            &mut SpriteInfo
         ),
     >,
 ) {
@@ -99,41 +101,46 @@ pub fn interaction_system(
                 if event.source == event.destination {
                     panic!("A entity collided with itself, this should not happen")
                 }
-                let interaction_name =  interactable_query.get::<Named>(event.source).expect("Entity invovled in an interaction without a name");
+               
+
+                let interaction_name =  interactable_query.get::<Named>(event.destination).expect("Entity invovled in an interaction without a name");
+                let d_interaction_name =  interactable_query.get::<Named>(event.destination).expect("Entity invovled in an interaction without a name");
                 let source_type = interactable_query.get::<InteractableType>(event.source).expect("Source entity without an interaction type");
                 let dst_type = interactable_query.get::<InteractableType>(event.destination).expect("Destination entity without an interaction type");
-                let src_state = interactable_query.get_mut::<ObjectState>(event.source).expect("Source entity without an state");
-                let dst_state = interactable_query.get_mut::<ObjectState>(event.destination).expect("Destination entity without a state");
-                let src_trans = interactable_query.get::<Translation>(event.source).expect("Source entity without an state");
+                let src_state = state_query.get_mut::<ObjectState>(event.source).ok();
+                let dst_state = state_query.get_mut::<ObjectState>(event.destination).ok();
+                //let src_trans = interactable_query.get::<Translation>(event.source).expect("Source entity without an state");
                 let dst_trans = interactable_query.get::<Translation>(event.destination).expect("Destination entity without a state");
+                
+                println!("source: {:?}, dst: {:?} name: {:?} name_dst: {:?}", event.source, event.destination, interaction_name,d_interaction_name);
 
                 // collision implies movement
                 if let Ok(src_move) = entity_query.get_mut::<Movement>(event.source) {
                     if let Some(tile_interaction) =
                         world_catalog.get_interaction(&interaction_name.0)
                     {
-                        let mut inventory =
-                            entity_query.get_mut::<Inventory>(event.source).ok();
+                        let inventory =
+                            inventory_query.get::<Inventory>(event.source).unwrap();
                         let mut move_translation =
                             entity_query.get_mut::<Translation>(event.source).unwrap();
-                        let mut dst_sprite =
-                            entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
-                        let mut dst_inventory =  entity_query.get_mut::<Inventory>(event.destination).ok();
+                        //let mut dst_sprite =
+                          //  entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
+                        let dst_inventory =  inventory_query.get::<Inventory>(event.destination).ok();
 
                         for r in tile_interaction.interact(InteractionContext {
-                            source: &Interactable { 
+                            source: Interactable { 
                                 entity: event.source, 
                                 interactable_type: *source_type, 
                                 location: src_move.start.into(),
-                                inventory: inventory.as_deref(),
-                                tile_state: Some(src_state.clone())
+                                inventory: (*inventory).clone(),
+                                tile_state: if let Some (state) = src_state { Some((*state).clone()) } else { None }
                             },
-                            destination: &Interactable { 
+                            destination: Interactable { 
                                 entity: event.source, 
                                 interactable_type: *dst_type, 
                                 location: (*dst_trans).into(),
-                                inventory: dst_inventory.as_deref(),
-                                tile_state: Some(dst_state.clone())
+                                inventory:if let Some (inventory) = dst_inventory { (*inventory).clone() } else { Inventory::default() },
+                                tile_state: if let Some (state) = dst_state { Some((*state).clone()) } else { None }
                             },
                             world_catalog:world_catalog.clone(),
                             item_storage: &item_storage

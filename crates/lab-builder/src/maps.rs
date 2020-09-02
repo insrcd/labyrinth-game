@@ -117,6 +117,7 @@ impl<'a>  MapBuilder {
                 for y in 0..area.y() as u32 {  
                     let mut comp = comps.clone();
                     
+                    comp.name = Named(tile_name.to_string());
                     comp.location = Location(loc.0 + (x * comp.sprite.width) as f32, loc.1 - (y * comp.sprite.height) as f32 , loc.2,  comp.location.3);       
                     println!("Location: {:?}", comp.location);
                     self.tiles.push(comp);            
@@ -132,6 +133,7 @@ impl<'a>  MapBuilder {
         if let Some(comps) = self.world_catalog.components.get(&tile_name){
             for _ in 0..count {
                 let mut my_comp = comps.clone();
+                my_comp.name = Named(tile_name.to_string());
 
                 let loc = self.current_location;
                 
