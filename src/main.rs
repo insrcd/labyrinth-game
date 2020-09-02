@@ -81,6 +81,7 @@ fn setup (
     .spawn( (Mouse::default(),) )
     .spawn( 
         PlayerComponents::new("Adam"))
+        .with(InputTimer::default())
         .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
         .with_bundle(( MoveAnimation {
             up: walk_right[3..6].to_vec(), 

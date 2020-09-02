@@ -39,6 +39,7 @@ impl Plugin for CorePlugin {
         app
             .init_resource::<WorldSettings>()
             .init_resource::<AdventureLog>()
+            .init_resource::<ItemStorage>()
             .init_resource::<InputTimer>();
     }
 }

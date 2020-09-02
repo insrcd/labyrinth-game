@@ -52,6 +52,7 @@ pub struct MovingTile;
 #[derive(Bundle, Clone, Default, Debug)]
 pub struct MobComponents {
     pub npc: NonPlayer,
+    pub named: Named,
     pub movement: Movement,
     pub sprite: SpriteInfo,
     pub inventory: Inventory,
@@ -60,4 +61,13 @@ pub struct MobComponents {
     pub location : Location,
     pub zoomable : Zoomable,
     pub interactable_type: InteractableType
+}
+
+impl MobComponents {
+    fn new(name : String) -> Self {
+        MobComponents {
+            named: Named(name),
+            ..Default::default()
+        }
+    }
 }

@@ -166,7 +166,7 @@ pub struct ItemDefinition {
     pub item_slot: ItemSlot
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ItemStorage {
     pub items : HashMap<u64, ItemDefinition>
 }
