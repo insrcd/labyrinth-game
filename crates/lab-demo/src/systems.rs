@@ -29,7 +29,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         TileInteractionResult::Block.into()
     }, description:"Bump" }));
 
-    palette.interactions.insert("open_door".into(), Arc::new(TileInteraction { caller: |ctx| {            
+    palette.interactions.insert("open_door".into(), 
+        Arc::new(
+            TileInteraction { caller: |ctx| {            
         let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
         
         TileInteractionResult::ChangeSprite(comps.sprite.clone()).into()
@@ -39,7 +41,11 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     if let Some(mut tiles) = palette.components.get_mut(tiles::WALL) {
         // walls are hard
         tiles.state.set_int("hardness".into(), 1);
-        tiles.state.set_int("hit_points".into(), 800);       
+        tiles.state.set_int("hit_points".into(), 800);     
+        
+        palette.interactions.insert("solid".into(), Arc::new(TileInteraction { caller: |ctx| {            
+            TileInteractionResult::Block.into()
+        }, description:"Bump" }));
     }
     
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK) {
