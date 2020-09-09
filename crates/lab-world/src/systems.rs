@@ -75,8 +75,8 @@ pub fn interaction_system(
     interaction_events: ResMut<Events<InteractionEvent>>,
     mut text_update: ResMut<Events<TextChangeEvent>>,    
     world_catalog: Res<InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>>,
-    item_storage: Res<ItemStorage>,    
-    inventory_query: Query<(Entity, &Inventory)>,
+    mut item_storage: ResMut<ItemStorage>,    
+    inventory_query: Query<(Entity, &mut Inventory)>,
     state_query: Query<(Entity, &mut ObjectState)>,
     interactable_query: Query<(
         Entity,
@@ -112,22 +112,21 @@ pub fn interaction_system(
                 //let src_trans = interactable_query.get::<Translation>(event.source).expect("Source entity without an state");
                 let dst_trans = interactable_query.get::<Translation>(event.destination).expect("Destination entity without a state");
                 
-                println!("source: {:?}, dst: {:?} name: {:?} name_dst: {:?}", event.source, event.destination, interaction_name,d_interaction_name);
+                //println!("source: {:?}, dst: {:?} name: {:?} name_dst: {:?}", event.source, event.destination, interaction_name,d_interaction_name);
 
                 // collision implies movement
                 if let Ok(src_move) = entity_query.get_mut::<Movement>(event.source) {
                     if let Some(tile_interaction) =
                         world_catalog.get_interaction(&interaction_name.0)
                     {
-                        let inventory =
-                            inventory_query.get::<Inventory>(event.source).unwrap();
+                        let mut inventory =
+                            inventory_query.get_mut::<Inventory>(event.source).unwrap();
                         let mut move_translation =
                             entity_query.get_mut::<Translation>(event.source).unwrap();
                         //let mut dst_sprite =
                           //  entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
                         let dst_inventory =  inventory_query.get::<Inventory>(event.destination).ok();
-
-                        for r in tile_interaction.interact(InteractionContext {
+                        let ctx = InteractionContext {
                             source: Interactable { 
                                 entity: event.source, 
                                 interactable_type: *source_type, 
@@ -143,9 +142,15 @@ pub fn interaction_system(
                                 tile_state: if let Some (state) = dst_state { Some((*state).clone()) } else { None }
                             },
                             world_catalog:world_catalog.clone(),
-                            item_storage: &item_storage
-                        }).iter() {
+                            item_storage: (*item_storage).clone()
+                        };
+
+                        println!("Inventory {:?}", inventory);
+                        for r in tile_interaction.interact(ctx).iter() {
                             match r {
+                                TileInteractionResult::ChangeStorage(storage) => {
+                                    item_storage.items = storage.items.clone();
+                                }
                                 TileInteractionResult::ChangeSprite(sprite_info) => {
                                     commands.insert(
                                         event.destination,
@@ -155,8 +160,9 @@ pub fn interaction_system(
                                     );
                                 }
                                 TileInteractionResult::Damage(_) => {}
-                                TileInteractionResult::ChangeInventory(_) => {}
-                                TileInteractionResult::ChangeSprite(_) => {}
+                                TileInteractionResult::ChangeInventory(inv) => {
+                                    inventory.items = inv.items.clone();
+                                }
                                 TileInteractionResult::ChangeState(_) => {
                                     // commit state changes in this comp
                                 }

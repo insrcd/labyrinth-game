@@ -32,7 +32,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     palette.interactions.insert(tiles::WALL.into(), bump.clone());
     palette.interactions.insert(tiles::BRICK.into(), bump.clone());
 
-    palette.interactions.insert("open_door".into(), 
+    palette.interactions.insert(tiles::BRICK_DOOR.into(), 
         Arc::new(
             TileInteraction { caller: |ctx| {            
         let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
@@ -79,20 +79,15 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         new_tile.state.set_int("hardness".into(), 1);
         palette.components.insert("locked_door".into(), new_tile);
         palette.interactions.insert( "locked_door".into(),Arc::new(TileInteraction { caller: |ctx| {    
-            let palette = ctx.world_catalog;
+            
+            let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
+            //println!("{:?}", ctx.item_storage.items);
+            if ctx.source.inventory.has(|i| ctx.item_storage.items.get(&i.item_id).unwrap().name == "Key To Building 2"){
+                return vec![
+                        TileInteractionResult::ChangeSprite(comps.sprite.clone()),
+                        TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
+            }
 
-            // poor state tracking right now TODO Refactor and make safer
-            //let open_sprite = palette.components.get(tiles::BRICK_DOOR_OPEN).unwrap().sprite;
-
-            /*if let Some(inventory) = ctx.source.inventory 
-            {
-
-                if inventory.has(|i| i.item_type == ItemType::Key && i.id == 1){
-                    return vec![
-                            TileInteractionResult::ChangeSprite(open_sprite),
-                            TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
-                }
-            }*/
             vec![TileInteractionResult::Block, TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
         },
             description: "Open Door",}));
@@ -121,6 +116,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             tiles::ITEM.into(), 
             Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
                 // demoooo   
+                let mut storage = ctx.item_storage;
                 let item = ItemDefinition { 
                     id : 1,
                     name: "Key To Building 2".to_string(),
@@ -131,12 +127,12 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 
                 let mut inventory =  ctx.source.inventory.clone();
                 let name = item.name.clone();
-                let mut storage = (*ctx.item_storage).clone();
                 // do domestuff now
                 inventory.items.push(storage.forge(item));
 
                 if ctx.source.interactable_type == InteractableType::Player {
                     return vec![ 
+                        TileInteractionResult::ChangeStorage(storage),
                         TileInteractionResult::ChangeInventory(inventory),
                         TileInteractionResult::Despawn, 
                         TileInteractionResult::Message(format!("You picked up an item: {}", name).to_string())
@@ -194,7 +190,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         commands.spawn(comp.clone())
             .with(InteractableType::Tile)
             .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
-        println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
+        //println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
     } 
 

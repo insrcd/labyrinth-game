@@ -2,7 +2,8 @@
 /// 
 /// 
 use crate::prelude::*;
-use std::{rc::Rc, borrow::Cow, sync::Arc};
+
+use bevy::ecs::ResMut;
 
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -31,13 +32,13 @@ where Self : Clone + Sized {
     fn interact(&self, ctx : InteractionContext<Self, T, R>) -> R;
 } 
 
-pub struct InteractionContext <'a, I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
+pub struct InteractionContext <I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
 where I : Interact<T, R> {
     pub source: Interactable,
     pub destination: Interactable,
     // resources
     pub world_catalog: InteractionCatalog<I, T, R>,
-    pub item_storage: &'a ItemStorage
+    pub item_storage: ItemStorage
 }
 
 

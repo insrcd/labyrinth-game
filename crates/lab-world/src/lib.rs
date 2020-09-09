@@ -50,6 +50,7 @@ impl CatalogItem for TileComponents {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TileInteractionResult {    
+    ChangeStorage(ItemStorage),
     Damage(u32),
     ChangeSprite(SpriteInfo),
     ChangeInventory(Inventory),

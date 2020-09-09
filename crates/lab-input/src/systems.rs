@@ -167,7 +167,6 @@ pub fn player_movement_system (
             };
 
             if direction != CardinalDirection::None {
-                println!("Moving");
                 *movement = Movement::new(old_loc, Location::from(*loc), direction);
 
                 if let Some(s) = sprite {
