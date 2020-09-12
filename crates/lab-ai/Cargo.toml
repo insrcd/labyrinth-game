@@ -11,6 +11,8 @@ serde = { version = "1.0", features = ["derive"]}
 
 bevy = { git = "https://github.com/insrcd/bevy.git" }
 
+rand = "0.7.3"
+
 lab-core = {path = "../lab-core"}
 lab-sprites  = {path = "../lab-sprites"}
 lab-entities = {path = "../lab-entities"}

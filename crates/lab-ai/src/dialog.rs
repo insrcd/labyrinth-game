@@ -1,3 +1,4 @@
+use lab_world::TextChangeEvent;
 use lab_core::prelude::*;
 use lab_entities::prelude::*;
 
@@ -11,7 +12,7 @@ pub struct DialogEvent {
     pub entity: Entity
 }
 
-
+/*
 pub fn dialog_system (
   mut text: ResMut<Events<TextChangeEvent>>,
   windows: Res<Windows>,
@@ -37,5 +38,5 @@ pub fn dialog_system (
           }
 
       }
-  }       
-}
+  }  
+}*/

@@ -34,13 +34,10 @@ fn main() {
     .add_plugin(lab_input::InputPlugin)
     .add_plugin(lab_world::WorldPlugin)
     .add_plugin(lab_builder::BuilderPlugin)
-    //.add_plugin(lab_ai::NpcPlugin)   
-    .add_startup_system_to_stage(stages::POST_INIT, setup.system())        
-    //.add_system(npc_dialog_system.system())
+    .add_plugin(lab_ai::AiPlugin)
+    .add_startup_system_to_stage(stages::POST_INIT, setup.system())     
     .add_plugin(lab_demo::DemoPlugin)
     .add_system(state::state_transition.system())
-    //.add_system(update_ui_text_system.system())
-    //.add_system(test.system())
     .run();
 }
 
@@ -54,8 +51,6 @@ fn setup (
     asset_server: Res<AssetServer>,
     mut assets: ResMut<Assets<Font>>
 ) {
-    
-    let npc_sprite = sprites.get("mob_0").unwrap_or_else(|| panic!("Cannot find NPC sprite")).clone();   
     
     let walk_left = sprites.sprites_in_category("walk_left");        
     let walk_right = sprites.sprites_in_category("walk_right");
@@ -82,12 +77,12 @@ fn setup (
     .spawn( 
         PlayerComponents::new("Adam"))
         .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
-        .with(( MoveAnimation {
+        .with(MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),
             left: walk_left[0..4].to_vec(),
             right: walk_right[3..6].to_vec(),
-            ..Default::default()}));
+            ..Default::default()});
     
     /*
     for _n in 0..50 {

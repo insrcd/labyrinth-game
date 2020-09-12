@@ -1611,6 +1611,7 @@ dependencies = [
  "lab-sprites",
  "lab-world",
  "log",
+ "rand",
  "serde",
 ]
 
@@ -1725,6 +1726,7 @@ name = "labrynth-game"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "lab-ai",
  "lab-builder",
  "lab-core",
  "lab-demo",
