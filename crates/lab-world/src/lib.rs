@@ -30,10 +30,10 @@ impl Plugin for WorldPlugin {
             .add_system(systems::collision_system.system())            
             .add_system(systems::sprite_despawn_system.system())
             .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::interaction_system.system())
+            .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::process_interaction_result_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
             .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::static_text_system.system())
-            .add_system(systems::camera_tracking_system.system())
-            .add_system(systems::process_interaction_result_system.system());
+            .add_system(systems::camera_tracking_system.system());
     }
 
     fn name(&self) -> &str {

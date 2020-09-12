@@ -95,7 +95,7 @@ pub fn interaction_system(
                 let interaction_name =  interactable_query.get::<Named>(event.destination)
                     .expect("Entity invovled in an interaction without a name");
                     
-                println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
+                //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
                 
                 if let Some(tile_interaction) =
                         world_catalog.get_interaction(&interaction_name.0)

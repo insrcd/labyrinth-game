@@ -72,7 +72,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                     TileInteractionResult::Block(ctx.source)];
                 }
             }
-            TileInteractionResult::Block(ctx.source).into()
+            //TileInteractionResult::Block(ctx.source).into()
+            TileInteractionResult::None.into()
         },
             description: "Enemy Interaction",}));
     }
@@ -103,21 +104,22 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_WINDOW) {
 
-        palette.interactions.insert(tiles::BRICK_WINDOW, TileInteraction { caller: |ctx| {  
-            let comps = ctx.world_catalog.components.get(tiles::BRICK_WINDOW_OPEN).expect("Open brick door tile cannot be found");        
-            let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
-            
-            // if a non-player hits a window, crash it if not block it 
-            if let Some(source_type) = itype {
-                return match *source_type {
-                    InteractableType::Item |  InteractableType::Npc => TileInteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
-                    _ => vec![TileInteractionResult::Block,TileInteractionResult::Message("The window looks breakable.".to_string())]
-                };
-            } else {
-                vec![TileInteractionResult::Block(ctx.source),TileInteractionResult::Message("The window looks breakable.".to_string())]
-            }
-        },
-            description: "Break Window",}));
+        palette.interactions.insert(tiles::BRICK_WINDOW.into(), Arc::new(TileInteraction { 
+            caller: |ctx| {  
+                let comps = ctx.world_catalog.components.get(tiles::BRICK_WINDOW_OPEN).expect("Open brick door tile cannot be found");        
+                let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
+                
+                println!("{:?} interacted with {:?} for window", ctx.source, ctx.destination);
+                // if a non-player hits a window, crash it if not block it 
+                if let Some(source_type) = itype {
+                    return match *source_type {
+                        InteractableType::Item |  InteractableType::Npc => TileInteractionResult::ChangeSprite(ctx.destination,comps.sprite.clone()).into(),
+                        _ => vec![TileInteractionResult::Block(ctx.source),TileInteractionResult::Message("The window looks breakable.".to_string())]
+                    };
+                } else {
+                    vec![TileInteractionResult::Block(ctx.source),TileInteractionResult::Message("The window looks breakable.".to_string())]
+                }
+            }, description: "Break Window" }));
     }
     if let Some(mut tiles) = palette.components.get_mut(tiles::ITEM) {
         // break windows
@@ -132,7 +134,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                     item_slot: ItemSlot::LeftHand,
                     handle: ItemHandle { item_id : 1}
                 };
-                
+                println!("{:?} interacted with {:?} for key", ctx.source, ctx.destination);
                 let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
             
                 if let Some(t) = itype {

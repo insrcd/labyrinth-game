@@ -77,6 +77,7 @@ fn setup (
     .spawn( 
         PlayerComponents::new("Adam"))
         .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
+        .with_bundle(Interactable::new(InteractableType::Player))
         .with(MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),

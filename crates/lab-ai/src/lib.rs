@@ -17,7 +17,7 @@ impl Plugin for AiPlugin {
         .init_resource::<DialogState>()
         .init_resource::<NpcState>()
         .add_event::<NpcEvent>()
-        .add_system(npc_move_system.system());
+        .add_system_to_stage(stage::PRE_UPDATE, npc_move_system.system());
   }
 }
 
