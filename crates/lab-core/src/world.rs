@@ -115,30 +115,6 @@ pub struct Visible;
 #[derive(Copy, Clone, Debug)]
 pub struct Solid;
 
-#[derive(Clone, Debug, Default, PartialEq)]
-pub struct Inventory {
-    pub items: Vec<ItemHandle>
-}
-
-
-impl Inventory {
-    pub fn new() -> Inventory {
-        Inventory {
-            items: Vec::<ItemHandle>::new()
-        }
-    }
-    pub fn has<F>(&self, predicate: F ) -> bool where F :  Fn(&ItemHandle) -> bool  {
-        for item in self.items.iter() {
-             if predicate(item) == true {
-                 return true;
-             }
-        };
-
-        false
-    }
-}
-
-
 #[derive(Clone, Debug, PartialEq, Defaults)]
 #[def = "Misc"]
 pub enum ItemType {
@@ -162,43 +138,31 @@ pub enum ItemSlot {
     Magic,
     None
 }
-#[derive(Clone, Debug, Properties, PartialEq, Default)]
-pub struct ItemDefinition {
-    pub id: u64,
-    pub name: String,
+#[derive(Clone, Debug, Properties, PartialEq, Default, Bundle)]
+pub struct ItemComponents {
+    pub name: crate::Named,
     pub weight: Weight,
+    pub handle: ItemHandle,
     #[property(ignore)]
     pub item_type: ItemType,
     #[property(ignore)]
     pub item_slot: ItemSlot
 }
 
-#[derive(Clone, Debug, Default, PartialEq)]
-pub struct ItemStorage {
-    pub items : HashMap<u64, ItemDefinition>
-}
-
-impl ItemStorage {
-    pub fn forge(&mut self, item : ItemDefinition) -> ItemHandle {
-        let id : u64 = rand::thread_rng().gen();
-
-        self.items.insert(id, item);
-    
-        ItemHandle { item_id: id }
-    }
-
-    pub fn get(&mut self, handle : ItemHandle) -> ItemDefinition {
-        self.items
-            .get(&handle.item_id)
-            .expect("Item not found in storage, this shouldn't happen")
-            .clone()
-    }
-}
-
-#[derive(Clone,Copy,Default,Debug, PartialEq)]
+#[derive(Clone,Copy,Default,Debug, PartialEq, Properties)]
 pub struct ItemHandle {
     pub item_id : u64
 }
 
 #[derive(Copy, Clone, Debug, Properties, PartialEq, Default)]
 pub struct Weight (pub f32);
+
+
+#[derive(Clone,Default,Debug, PartialEq)]
+pub struct Inventory(pub Vec<Entity>);
+
+
+pub struct ItemData {
+    name: String,
+    description: String
+}

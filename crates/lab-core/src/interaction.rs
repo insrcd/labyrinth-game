@@ -32,23 +32,40 @@ where Self : Clone + Sized {
     fn interact(&self, ctx : InteractionContext<Self, T, R>) -> R;
 } 
 
-pub struct InteractionContext <I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
+pub struct InteractionContext <'a, I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
 where I : Interact<T, R> {
-    pub source: Interactable,
-    pub destination: Interactable,
+    pub source: Entity,
+    pub destination: Entity,
     // resources
     pub world_catalog: InteractionCatalog<I, T, R>,
-    pub item_storage: ItemStorage
+    pub interaction_query: &'a Query<'a, (
+        Entity,
+        &'a InteractableType,
+        &'a Named,
+        &'a ObjectState,
+        &'a Inventory
+    )>,
+    pub item_query: &'a Query<'a, (
+        Entity,
+        &'a ItemType,
+        &'a Named,
+    )>
 }
 
-
-#[derive(Debug)]
+#[derive(Debug, Bundle, Default)]
 pub struct Interactable {
-    pub entity: Entity,
-    pub inventory: crate::world::Inventory,
+    pub inventory: Inventory,
     pub interactable_type: InteractableType,
-    pub location: Location,
-    pub tile_state: Option<ObjectState>
+    pub state: ObjectState
+}
+
+impl Interactable {
+    pub fn new(interact_type: InteractableType) -> Interactable {
+        Interactable {
+            interactable_type: interact_type,
+            ..Default::default()
+        }
+    }
 }
 
 /// Events

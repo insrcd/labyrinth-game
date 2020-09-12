@@ -39,14 +39,13 @@ impl Plugin for CorePlugin {
         app
             .init_resource::<WorldSettings>()
             .init_resource::<AdventureLog>()
-            .init_resource::<ItemStorage>()
             .init_resource::<InputTimer>();
     }
 }
 
 use serde::Serialize;
 
-#[derive(Properties, Serialize, Debug, Clone)]
+#[derive(Properties, Serialize, Debug, Clone, PartialEq)]
 pub struct Named(pub String);
 
 impl Default for Named {

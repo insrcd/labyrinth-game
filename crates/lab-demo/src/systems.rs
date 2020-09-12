@@ -25,7 +25,7 @@ mod tiles {
 pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
 
     let bump = Arc::new(TileInteraction { caller: |ctx| {            
-        TileInteractionResult::Block.into()
+        TileInteractionResult::Block(ctx.source).into()
     }, description:"Bump" });
 
     // setup some basic interactions
@@ -37,7 +37,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             TileInteraction { caller: |ctx| {            
         let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
         
-        TileInteractionResult::ChangeSprite(comps.sprite.clone()).into()
+        TileInteractionResult::ChangeSprite(ctx.destination, comps.sprite.clone()).into()
 
     }, description:"Open a door." }));
 
@@ -47,7 +47,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.state.set_int("hit_points".into(), 800);     
         
         palette.interactions.insert("solid".into(), Arc::new(TileInteraction { caller: |ctx| {            
-            TileInteractionResult::Block.into()
+            TileInteractionResult::Block(ctx.source).into()
         }, description:"Bump" }));
     }
     
@@ -64,12 +64,15 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     if let Some(mut tiles) = palette.components.get_mut(tiles::ENEMY) {
         // open doors
         palette.interactions.insert(tiles::ENEMY.to_string(), Arc::new(TileInteraction { caller: |ctx| {            
-            if let InteractableType::Player = ctx.source.interactable_type {
-                return vec![
-                    TileInteractionResult::Message("Hello, you are my enemy. Lets fight.".into()).into(),
-                    TileInteractionResult::Block.into()];
+            let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
+            
+            if let Some(t) = itype {
+                if let InteractableType::Player = *t {
+                    return vec![TileInteractionResult::Message("Hello, you are my enemy. Lets fight.".into()),
+                    TileInteractionResult::Block(ctx.source)];
+                }
             }
-            TileInteractionResult::Block.into()
+            TileInteractionResult::Block(ctx.source).into()
         },
             description: "Enemy Interaction",}));
     }
@@ -81,14 +84,19 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         palette.interactions.insert( "locked_door".into(),Arc::new(TileInteraction { caller: |ctx| {    
             
             let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
-            //println!("{:?}", ctx.item_storage.items);
-            if ctx.source.inventory.has(|i| ctx.item_storage.items.get(&i.item_id).unwrap().name == "Key To Building 2"){
-                return vec![
-                        TileInteractionResult::ChangeSprite(comps.sprite.clone()),
+            
+            let inventory = ctx.interaction_query.get::<Inventory>(ctx.source).unwrap();
+            
+            for e in (*inventory).0.iter() {
+                let item = ctx.item_query.get::<Named>(*e).unwrap();
+                if item.0 == "Key To Building 2" {
+                    return vec![
+                        TileInteractionResult::ChangeSprite(ctx.destination, comps.sprite.clone()),
                         TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
+                }
             }
 
-            vec![TileInteractionResult::Block, TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
+            vec![TileInteractionResult::Block(ctx.source), TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
         },
             description: "Open Door",}));
     }
@@ -116,28 +124,25 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             tiles::ITEM.into(), 
             Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
                 // demoooo   
-                let mut storage = ctx.item_storage;
-                let item = ItemDefinition { 
-                    id : 1,
-                    name: "Key To Building 2".to_string(),
+                let item = ItemComponents { 
+                    name: Named("Key To Building 2".into()),
                     weight: Weight(0.1),
                     item_type: ItemType::Key,
-                    item_slot: ItemSlot::LeftHand
+                    item_slot: ItemSlot::LeftHand,
+                    handle: ItemHandle { item_id : 1}
                 };
                 
-                let mut inventory =  ctx.source.inventory.clone();
-                let name = item.name.clone();
-                // do domestuff now
-                inventory.items.push(storage.forge(item));
-
-                if ctx.source.interactable_type == InteractableType::Player {
+                let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
+            
+                if let Some(t) = itype {
+                    if let InteractableType::Player = *t {
                     return vec![ 
-                        TileInteractionResult::ChangeStorage(storage),
-                        TileInteractionResult::ChangeInventory(inventory),
+                        TileInteractionResult::AddItem(ctx.source, item),
                         TileInteractionResult::Despawn, 
-                        TileInteractionResult::Message(format!("You picked up an item: {}", name).to_string())
+                        TileInteractionResult::Message(format!("You picked up the key").into())
                         ]
-                };
+                    };
+                }
                 
                 TileInteractionResult::None.into()
             }
@@ -188,14 +193,16 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
     for comp in mb.iter() {
         commands.spawn(comp.clone())
-            .with(InteractableType::Tile)
-            .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)));
+            .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)))
+            .with_bundle(Interactable::new(InteractableType::Tile));
         //println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
     } 
 
     for mob in mb.mobs.iter() {
-        commands.spawn(mob.clone()).with_bundle(mob.sprite.to_components(mob.location.into(), Scale(1.)));
+        commands.spawn(mob.clone())
+            .with_bundle(mob.sprite.to_components(mob.location.into(), Scale(1.)))
+            .with_bundle(Interactable::new(InteractableType::Npc));
     }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));

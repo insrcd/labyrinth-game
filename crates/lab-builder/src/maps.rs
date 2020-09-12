@@ -178,6 +178,7 @@ impl<'a>  MapBuilder {
                 pos.2 += instance_num as f32;
 
                 self.mobs.push(MobComponents {
+                    named: Named(mob_name.clone().into()),
                     sprite: comps.sprite.clone(),
                     location: pos,
                     timer : Timer::from_seconds(2.0, false),

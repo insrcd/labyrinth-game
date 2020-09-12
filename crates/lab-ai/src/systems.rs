@@ -2,13 +2,6 @@ use lab_core::prelude::*;
 use lab_entities::prelude::*;
 use crate::dialog::*;
 
-pub fn npc_dialog_system (  
-    mut commands : Commands,      
-    mut m_query: Query<(Entity, &NonPlayer, &Translation, &Timer)>,
-    mut d_query: Query<(Entity, &Dialog)>)
-{
-    
-}
 
 /// Super Basic right now, Move all NPCs in the scene every n seconds
 pub fn npc_move_system(

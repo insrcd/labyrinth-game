@@ -81,17 +81,13 @@ fn setup (
     .spawn( (Mouse::default(),) )
     .spawn( 
         PlayerComponents::new("Adam"))
-        .with(InputTimer::default())
         .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
-        .with_bundle(( MoveAnimation {
+        .with(( MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),
             left: walk_left[0..4].to_vec(),
             right: walk_right[3..6].to_vec(),
-            ..Default::default()
-        }, player_sprite, InteractableType::Player))
-    .spawn( (NonPlayer, InteractableType::Npc,  Timer::from_seconds(1., false), Inventory::new() , Named("mob".to_string()), npc_sprite.clone(), Zoomable, Movement::default(),Moveable))
-        .with_bundle(npc_sprite.to_components(Location(32., -32., layers::PLAYER,WorldLocation::World).into(), Scale(1.)));  
+            ..Default::default()}));
     
     /*
     for _n in 0..50 {

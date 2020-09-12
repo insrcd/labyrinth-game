@@ -22,6 +22,7 @@ impl Plugin for WorldPlugin {
             .add_resource(InteractionState::default())
             .add_event::<TextChangeEvent>()
             .add_event::<InteractionEvent>()
+            .add_event::<TileInteractionResultEvent>()
             //.add_system(systems::add_world_sprites_system.system())
             //.add_system(systems::add_interaction_sprites_system.system())    
             .add_system_to_stage(lab_core::stages::PRE_UPDATE, systems::zoom_system.system())
@@ -31,7 +32,8 @@ impl Plugin for WorldPlugin {
             .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::interaction_system.system())
             .add_system(systems::add_text_to_adventure_log.system())
             .add_system_to_stage(lab_core::stages::POST_UPDATE, systems::static_text_system.system())
-            .add_system(systems::camera_tracking_system.system());
+            .add_system(systems::camera_tracking_system.system())
+            .add_system(systems::process_interaction_result_system.system());
     }
 
     fn name(&self) -> &str {
@@ -48,19 +50,24 @@ impl CatalogItem for TileComponents {
     }
 }
 
+pub struct TileInteractionResultEvent{
+    source: Entity,
+    destination: Entity,
+    result: TileInteractionResult
+}
 #[derive(Clone, Debug, PartialEq)]
 pub enum TileInteractionResult {    
-    ChangeStorage(ItemStorage),
     Damage(u32),
-    ChangeSprite(SpriteInfo),
-    ChangeInventory(Inventory),
-    ChangeState(ObjectState),
-    Move(Location),
+    ChangeSprite(Entity, SpriteInfo),
+    ChangeInventory(Entity,Inventory),
+    AddItem(Entity, ItemComponents),
+    ChangeState(Entity, ObjectState),
+    Move(Entity, Location),
     Despawn,
     Log(String),
     Message(String),
     Menu(MenuDefinition),
-    Block,
+    Block(Entity),
     None
 }
 
@@ -90,6 +97,7 @@ impl Debug for TileInteraction {
         .finish()
     }
 }
+
 
 impl Interact <TileComponents, Vec<TileInteractionResult>> for TileInteraction {
 
@@ -140,6 +148,7 @@ pub struct UiTextState {
 #[derive(Default)]
 pub struct InteractionState {
     pub interaction_events: EventReader<InteractionEvent>, 
+    pub interaction_results: EventReader<TileInteractionResultEvent>
 }
 pub struct MoveTimer(pub Timer);
 pub struct DialogTimer(pub Timer);

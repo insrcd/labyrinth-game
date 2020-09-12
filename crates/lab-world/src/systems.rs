@@ -3,7 +3,7 @@ use bevy::sprite::collide_aabb::*;
 use lab_entities::prelude::*;
 use lab_core::prelude::*;
 use lab_sprites::SpriteInfo;
-use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction};
+use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction, TileInteractionResultEvent};
 use std::{rc::Rc, borrow::Cow, sync::Arc};
 
 pub fn camera_tracking_system(
@@ -71,29 +71,18 @@ pub fn collision_system(
 
 pub fn interaction_system(
     mut commands: Commands,
+    mut result_events : ResMut<Events<TileInteractionResultEvent>>,
     mut state: ResMut<InteractionState>,
     interaction_events: ResMut<Events<InteractionEvent>>,
-    mut text_update: ResMut<Events<TextChangeEvent>>,    
     world_catalog: Res<InteractionCatalog<TileInteraction, TileComponents, Vec<TileInteractionResult>>>,
-    mut item_storage: ResMut<ItemStorage>,    
-    inventory_query: Query<(Entity, &mut Inventory)>,
-    state_query: Query<(Entity, &mut ObjectState)>,
+    item_query: Query<(Entity, &ItemType, &Named)>,
     interactable_query: Query<(
         Entity,
         &InteractableType,
         &Named,
-        &Translation       
-    )>,
-    entity_query: Query<
-        (
-            Entity,
-            &Scale,
-            &mut Translation,
-            &Movement,
-            &mut Inventory,
-            &mut SpriteInfo
-        ),
-    >,
+        &ObjectState,
+        &Inventory
+    )>
 ) {
     for event in state.interaction_events.iter(&interaction_events) {        
         match event.interaction_type {
@@ -103,93 +92,109 @@ pub fn interaction_system(
                 }
                
 
-                let interaction_name =  interactable_query.get::<Named>(event.destination).expect("Entity invovled in an interaction without a name");
-                let d_interaction_name =  interactable_query.get::<Named>(event.destination).expect("Entity invovled in an interaction without a name");
-                let source_type = interactable_query.get::<InteractableType>(event.source).expect("Source entity without an interaction type");
-                let dst_type = interactable_query.get::<InteractableType>(event.destination).expect("Destination entity without an interaction type");
-                let src_state = state_query.get_mut::<ObjectState>(event.source).ok();
-                let dst_state = state_query.get_mut::<ObjectState>(event.destination).ok();
-                //let src_trans = interactable_query.get::<Translation>(event.source).expect("Source entity without an state");
-                let dst_trans = interactable_query.get::<Translation>(event.destination).expect("Destination entity without a state");
+                let interaction_name =  interactable_query.get::<Named>(event.destination)
+                    .expect("Entity invovled in an interaction without a name");
+                    
+                println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
                 
-                //println!("source: {:?}, dst: {:?} name: {:?} name_dst: {:?}", event.source, event.destination, interaction_name,d_interaction_name);
-
-                // collision implies movement
-                if let Ok(src_move) = entity_query.get_mut::<Movement>(event.source) {
-                    if let Some(tile_interaction) =
+                if let Some(tile_interaction) =
                         world_catalog.get_interaction(&interaction_name.0)
-                    {
-                        let mut inventory =
-                            inventory_query.get_mut::<Inventory>(event.source).unwrap();
-                        let mut move_translation =
-                            entity_query.get_mut::<Translation>(event.source).unwrap();
-                        //let mut dst_sprite =
-                          //  entity_query.get_mut::<SpriteInfo>(event.destination).unwrap();
-                        let dst_inventory =  inventory_query.get::<Inventory>(event.destination).ok();
-                        let ctx = InteractionContext {
-                            source: Interactable { 
-                                entity: event.source, 
-                                interactable_type: *source_type, 
-                                location: src_move.start.into(),
-                                inventory: (*inventory).clone(),
-                                tile_state: if let Some (state) = src_state { Some((*state).clone()) } else { None }
-                            },
-                            destination: Interactable { 
-                                entity: event.source, 
-                                interactable_type: *dst_type, 
-                                location: (*dst_trans).into(),
-                                inventory:if let Some (inventory) = dst_inventory { (*inventory).clone() } else { Inventory::default() },
-                                tile_state: if let Some (state) = dst_state { Some((*state).clone()) } else { None }
-                            },
-                            world_catalog:world_catalog.clone(),
-                            item_storage: (*item_storage).clone()
-                        };
-
-                        println!("Inventory {:?}", inventory);
-                        for r in tile_interaction.interact(ctx).iter() {
-                            match r {
-                                TileInteractionResult::ChangeStorage(storage) => {
-                                    item_storage.items = storage.items.clone();
-                                }
-                                TileInteractionResult::ChangeSprite(sprite_info) => {
-                                    commands.insert(
-                                        event.destination,
-                                        (
-                                            TextureAtlasSprite::new(sprite_info.atlas_sprite),
-                                        ),
-                                    );
-                                }
-                                TileInteractionResult::Damage(_) => {}
-                                TileInteractionResult::ChangeInventory(inv) => {
-                                    inventory.items = inv.items.clone();
-                                }
-                                TileInteractionResult::ChangeState(_) => {
-                                    // commit state changes in this comp
-                                }
-                                TileInteractionResult::Move(_) => {}
-                                TileInteractionResult::Despawn => {
-                                    commands.despawn(event.destination);
-                                }
-                                TileInteractionResult::Block => {
-                                    *move_translation.0.x_mut() = src_move.start.0;
-                                    *move_translation.0.y_mut() = src_move.start.1;
-                                }
-                                TileInteractionResult::None => {}
-                                TileInteractionResult::Log(_) => {}
-                                TileInteractionResult::Message(message) => {
-                                    text_update.send(TextChangeEvent {
-                                        text: message.to_string(),
-                                        name: "main".to_string(),
-                                    });
-                                }
-                                TileInteractionResult::Menu(_) => {}
-                            };
-                        }
+                {   
+                    let ctx = InteractionContext {
+                        source: event.source,
+                        destination: event.destination,
+                        world_catalog:world_catalog.clone(),
+                        interaction_query: &interactable_query,
+                        item_query: &item_query
+                    };
+                    for r in tile_interaction.interact(ctx).iter() {
+                        result_events.send(TileInteractionResultEvent { 
+                            source: event.source, 
+                            destination: event.destination, 
+                            result: r.clone() 
+                        })
                     }
                 }
             }
             _ => {}
         }
+    }
+}
+
+pub fn process_interaction_result_system (
+    mut commands : Commands,
+    interaction_events : ResMut<Events<TileInteractionResultEvent>>,
+    mut state: ResMut<InteractionState>,
+    mut text_update: ResMut<Events<TextChangeEvent>>,
+    entity_query: Query<
+        (
+            Entity,
+            &Scale,
+            &mut Translation,
+            &mut Movement,
+            &mut Inventory
+        ),
+    >){
+    for event in state.interaction_results.iter(&interaction_events) {  
+        match event.result.clone() {
+            TileInteractionResult::ChangeSprite(entity, sprite_info) => {
+                commands.insert(
+                    entity,
+                    (
+                        TextureAtlasSprite::new(sprite_info.atlas_sprite),
+                    ),
+                );
+            }
+            TileInteractionResult::Damage(_) => {}
+            TileInteractionResult::ChangeInventory(entity, inv) => {
+                if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(entity) {
+                    inventory.0 = inv.0.clone();
+                }
+            },
+            TileInteractionResult::ChangeState(entity, state) => {
+                // commit state changes in this 
+                if let Ok(mut dstate) = entity_query.get_mut::<ObjectState>(entity) {
+                    dstate.values = state.values;
+                }
+            }
+            TileInteractionResult::Move(entity, location) => {
+                if let Ok(mut new_location) = entity_query.get_mut::<Translation>(entity) {
+                    *new_location.x_mut() = location.0;
+                    *new_location.y_mut() = location.1;
+                }
+            }
+            TileInteractionResult::Despawn => {
+                commands.despawn(event.destination);
+            }
+            TileInteractionResult::Block(entity) => {
+                println!("Got block");
+                if let Ok(mut translation) = entity_query.get_mut::<Translation>(entity) {
+                    if let Ok(src_move) = entity_query.get::<Movement>(entity) {
+                        *translation.x_mut() = src_move.start.0;
+                        *translation.y_mut() = src_move.start.1;
+                    }
+                }
+            }
+            TileInteractionResult::None => {}
+            TileInteractionResult::Log(_) => {}
+            TileInteractionResult::Message(message) => {
+                text_update.send(TextChangeEvent {
+                    text: message.to_string(),
+                    name: "main".to_string(),
+                });
+            }
+            TileInteractionResult::Menu(_) => {},
+            
+            TileInteractionResult::AddItem(dst, item) => {
+                let entity = Entity::new();
+                
+                commands.spawn_as_entity(entity, item);
+
+                if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(dst) {
+                    inventory.0.push(entity);
+                }
+            }
+        };
     }
 }
 

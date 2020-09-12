@@ -29,7 +29,8 @@ pub struct PlayerComponents {
     named : Named,
     location: Location,
     movement: Movement,
-    zoomable: Zoomable
+    zoomable: Zoomable,
+    input_timer: InputTimer
 }
 
 impl PlayerComponents {
@@ -46,13 +47,13 @@ impl Default for PlayerComponents {
         PlayerComponents {
             player : Player { god_mode: false },
             job : Job::Undecided,
-            inventory : Inventory::new(),
+            inventory : Inventory(Vec::new()),
             stats : Stats::new(),
             abilities : Abilities::new(),
             skills : Skills::new(),
             named: Named("Unnamed".to_string()),            
             location: Location::default(),
-            //input_timer: InputTimer (Timer::new(Duration::from_millis(110), false)),
+            input_timer: InputTimer(Timer::new(Duration::from_millis(100), false)),
             movement: Movement::default(),
             zoomable: Zoomable
         }
