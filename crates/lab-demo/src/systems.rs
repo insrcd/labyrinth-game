@@ -100,24 +100,25 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         },
             description: "Open Door",}));
     }
-    /*
+    
     if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_WINDOW) {
 
-        tiles.interaction = TileInteraction { caller: |ctx| {  
-            let open_sprite = Some(ctx.world_catalog.unwrap().components.get(tiles::BRICK_WINDOW_OPEN).unwrap().sprite.atlas_sprite);
-                 
+        palette.interactions.insert(tiles::BRICK_WINDOW, TileInteraction { caller: |ctx| {  
+            let comps = ctx.world_catalog.components.get(tiles::BRICK_WINDOW_OPEN).expect("Open brick door tile cannot be found");        
+            let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
+            
             // if a non-player hits a window, crash it if not block it 
-            if let Some(source_type) = ctx.source_type {
-                return match source_type {
+            if let Some(source_type) = itype {
+                return match *source_type {
                     InteractableType::Item |  InteractableType::Npc => TileInteractionResult::ChangeTile(TileAttributes { hardness: 0.0, sprite_idx: open_sprite, ..Default::default()}).into(),
                     _ => vec![TileInteractionResult::Block,TileInteractionResult::Message("The window looks breakable.".to_string())]
                 };
             } else {
-                vec![TileInteractionResult::Block,TileInteractionResult::Message("The window looks breakable.".to_string())]
+                vec![TileInteractionResult::Block(ctx.source),TileInteractionResult::Message("The window looks breakable.".to_string())]
             }
         },
-            description: "Break Window",}
-    }*/
+            description: "Break Window",}));
+    }
     if let Some(mut tiles) = palette.components.get_mut(tiles::ITEM) {
         // break windows
         palette.interactions.insert(
