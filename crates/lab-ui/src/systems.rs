@@ -76,6 +76,7 @@ impl InventoryUi {
     parent.spawn(NodeComponents {
       style: Style {
           align_self: AlignSelf::FlexEnd,
+          justify_content: JustifyContent::SpaceEvenly,
           size: Size::new(Val::Percent(100.0), Val::Percent(50.0)),
           align_items: AlignItems::Stretch,
           flex_wrap: FlexWrap::WrapReverse,
