@@ -30,7 +30,8 @@ pub struct PlayerComponents {
     location: Location,
     movement: Movement,
     zoomable: Zoomable,
-    input_timer: InputTimer
+    input_timer: InputTimer,
+    tile_handle: WorldHandle<Tile>
 }
 
 impl PlayerComponents {
@@ -55,7 +56,8 @@ impl Default for PlayerComponents {
             location: Location::default(),
             input_timer: InputTimer(Timer::new(Duration::from_millis(100), false)),
             movement: Movement::default(),
-            zoomable: Zoomable
+            zoomable: Zoomable,
+            tile_handle: WorldHandle::default()
         }
     }
     

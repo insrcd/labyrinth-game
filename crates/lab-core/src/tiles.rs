@@ -93,6 +93,16 @@ impl Into<Option<i32>> for ParsableState {
     }
   }
 }
+
+impl Into<i32> for ParsableState {
+  fn into(self) -> i32 {
+    if let Some(value) = self.int_value {
+      value
+    } else {
+      0
+    }
+  }
+}
 impl Into<Option<u32>> for ParsableState {
   fn into(self) -> Option<u32> {
     if let Some(value) = self.int_value {

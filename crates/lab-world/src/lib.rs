@@ -57,7 +57,7 @@ pub struct TileInteractionResultEvent{
 }
 #[derive(Clone, Debug, PartialEq)]
 pub enum TileInteractionResult {    
-    Damage(u32),
+    Damage(Entity, Entity, f32),
     ChangeSprite(Entity, SpriteInfo),
     ChangeInventory(Entity,Inventory),
     AddItem(Entity, ItemComponents),
@@ -116,15 +116,27 @@ impl Default for TileInteraction {
     }
 }
 
-#[derive(Bundle, Clone, Debug)]
+#[derive(Bundle, Debug)]
 pub struct TileComponents {
     pub name: Named,
     pub location: Location,
     pub sprite: SpriteInfo,
     pub state: ObjectState,
-    pub zoomable: Zoomable
+    pub zoomable: Zoomable,
+    pub handle: WorldHandle<Tile>
 }
-
+impl Clone for TileComponents {
+    fn clone(&self) -> Self {
+        TileComponents {
+            name: self.name.clone(),
+            location: self.location.clone(),
+            sprite: self.sprite.clone(),
+            state: self.state.clone(),
+            zoomable: self.zoomable.clone(),
+            handle: WorldHandle::default()
+        }
+    }
+}
 impl Default for TileComponents {
     fn default() -> Self {
         TileComponents {
@@ -132,7 +144,8 @@ impl Default for TileComponents {
             location: Location::default(),
             sprite: SpriteInfo::default(),
             zoomable: Zoomable,
-            state: ObjectState::default()
+            state: ObjectState::default(),
+            handle: WorldHandle::default()
         }
     }
 }

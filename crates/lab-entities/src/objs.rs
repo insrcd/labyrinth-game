@@ -1,7 +1,7 @@
+use lab_core::{WorldHandle, Item};
 use bevy::prelude::*;
 use defaults::*;
 use std::collections::HashMap;
-use lab_core::prelude::ItemHandle;
 
 #[allow(dead_code)]
 pub enum WeaponSpecialPowers {
@@ -23,7 +23,7 @@ struct Brew {
 }
 
 trait Mixable {
-    fn mix_with(&self, item : &mut ItemHandle);
+    fn mix_with(&self, item : &mut WorldHandle<Item>);
 }
 
 struct Herb;
@@ -32,23 +32,23 @@ struct Extract;
 struct Fluid;
 
 impl Mixable for Herb {
-    fn mix_with(&self, _item : &mut ItemHandle) {
+    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
         todo!()
     }
 }
 impl Mixable for Grain {    
-    fn mix_with(&self, _item : &mut ItemHandle) {
+    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
         todo!()
     } 
 }
 impl Mixable for Extract { 
-    fn mix_with(&self, _item : &mut ItemHandle) {
+    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
         todo!()
     }
 }
 
 impl Mixable for Fluid { 
-    fn mix_with(&self, _item : &mut ItemHandle) {
+    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
         todo!()
     }
 }

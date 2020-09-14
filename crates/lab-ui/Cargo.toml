@@ -1,10 +1,8 @@
 [package]
-name = "lab-core"
+name = "lab-ui"
 version = "0.1.0"
 authors = ["Adam Shaw <discourse@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
@@ -14,8 +12,9 @@ serde = { version = "1.0", features = ["derive"]}
 bevy = { git = "https://github.com/insrcd/bevy.git" }
 
 rand = "0.7.3"
-strum = "0.19.2"
-strum_macros = "0.19.2"
-defaults = "0.2.0"
 
-uuid = { version = "0.8", features = ["v4", "serde"] }
+lab-core = {path = "../lab-core"}
+lab-sprites  = {path = "../lab-sprites"}
+lab-entities = {path = "../lab-entities"}
+lab-input    = {path = "../lab-input"}
+lab-world    = {path = "../lab-world"}

@@ -3,7 +3,7 @@ use bevy::sprite::collide_aabb::*;
 use lab_entities::prelude::*;
 use lab_core::prelude::*;
 use lab_sprites::SpriteInfo;
-use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction, TileInteractionResultEvent};
+use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction, TileInteractionResultEvent, TilePalette};
 use std::{rc::Rc, borrow::Cow, sync::Arc};
 
 pub fn camera_tracking_system(
@@ -81,6 +81,7 @@ pub fn interaction_system(
         &InteractableType,
         &Named,
         &ObjectState,
+        &WorldHandle<Tile>,
         &Inventory
     )>
 ) {
@@ -126,13 +127,20 @@ pub fn process_interaction_result_system (
     interaction_events : ResMut<Events<TileInteractionResultEvent>>,
     mut state: ResMut<InteractionState>,
     mut text_update: ResMut<Events<TextChangeEvent>>,
+    tile_query: Query<
+        (
+            Entity,
+            &Draw
+        ),
+    >,
     entity_query: Query<
         (
             Entity,
             &Scale,
             &mut Translation,
             &mut Movement,
-            &mut Inventory
+            &mut Inventory,
+            &mut Draw
         ),
     >){
     for event in state.interaction_results.iter(&interaction_events) {  
@@ -145,7 +153,14 @@ pub fn process_interaction_result_system (
                     ),
                 );
             }
-            TileInteractionResult::Damage(_) => {}
+            TileInteractionResult::Damage(_src, dst, amount) => {
+                if let Ok(mut state) = entity_query.get_mut::<ObjectState>(dst) {
+
+                    let hp : i32 = state.get("hitpoints".into()).unwrap().into();
+
+                    state.set_int("hitpoints".into(), hp - amount as i32);
+                }
+            }
             TileInteractionResult::ChangeInventory(entity, inv) => {
                 if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(entity) {
                     inventory.0 = inv.0.clone();
@@ -164,7 +179,9 @@ pub fn process_interaction_result_system (
                 }
             }
             TileInteractionResult::Despawn => {
-                commands.despawn(event.destination);
+                commands.remove_one::<Draw>(event.destination);
+                commands.remove_one::<Translation>(event.destination);
+                
             }
             TileInteractionResult::Block(entity) => {
                 println!("Got block");
@@ -186,12 +203,13 @@ pub fn process_interaction_result_system (
             TileInteractionResult::Menu(_) => {},
             
             TileInteractionResult::AddItem(dst, item) => {
-                let entity = Entity::new();
-                
-                commands.spawn_as_entity(entity, item);
+            
 
                 if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(dst) {
-                    inventory.0.push(entity);
+                    inventory.0.push(item.handle.clone());
+                    
+                    commands
+                        .spawn_as_entity(item.handle.entity, item);
                 }
             }
         };

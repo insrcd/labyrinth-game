@@ -43,6 +43,7 @@ where I : Interact<T, R> {
         &'a InteractableType,
         &'a Named,
         &'a ObjectState,
+        &'a WorldHandle<Tile>,
         &'a Inventory
     )>,
     pub item_query: &'a Query<'a, (

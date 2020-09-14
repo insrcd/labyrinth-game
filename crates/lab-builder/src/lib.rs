@@ -49,7 +49,7 @@ pub struct BuilderSettings {
 /// Mark a tile as moving (i.e. being dragged)
 pub struct MovingTile;
 
-#[derive(Bundle, Clone, Default, Debug)]
+#[derive(Bundle, Default, Debug)]
 pub struct MobComponents {
     pub npc: NonPlayer,
     pub named: Named,
@@ -60,7 +60,26 @@ pub struct MobComponents {
     pub timer : Timer,
     pub location : Location,
     pub zoomable : Zoomable,
-    pub interactable_type: InteractableType
+    pub interactable_type: InteractableType,
+    pub handle: WorldHandle<Tile>
+}
+
+impl Clone for MobComponents {
+    fn clone(&self) -> Self {
+        MobComponents {
+            npc: self.npc.clone(),
+            named: self.named.clone(),
+            movement: self.movement.clone(),
+            sprite: self.sprite.clone(),
+            inventory: self.inventory.clone(),
+            state: self.state.clone(),
+            timer : self.timer.clone(),
+            location : self.location.clone(),
+            zoomable : self.zoomable.clone(),
+            interactable_type: self.interactable_type.clone(),
+            handle: WorldHandle::default()
+        }
+    }
 }
 
 impl MobComponents {

@@ -16,6 +16,7 @@ mod tiles {
     pub const BRICK_WINDOW_OPEN : &'static str = "brick_window_broken";    
     //pub const NPC : &'static str = "npc_0";   
     pub const ITEM : &'static str = "item_50";   
+    pub const ITEM2 : &'static str = "item_15";   
     pub const LOCKED_DOOR : &'static str = "locked_door";   
     pub const ENEMY : &'static str = "mob_19";
 }
@@ -68,8 +69,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             
             if let Some(t) = itype {
                 if let InteractableType::Player = *t {
-                    return vec![TileInteractionResult::Message("Hello, you are my enemy. Lets fight.".into()),
-                    TileInteractionResult::Block(ctx.source)];
+                    return vec![
+                        TileInteractionResult::Message("Hello, you are my enemy. Lets fight.".into()),
+                        TileInteractionResult::Block(ctx.source)];
                 }
             }
             //TileInteractionResult::Block(ctx.source).into()
@@ -89,7 +91,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             let inventory = ctx.interaction_query.get::<Inventory>(ctx.source).unwrap();
             
             for e in (*inventory).0.iter() {
-                let item = ctx.item_query.get::<Named>(*e).unwrap();
+                let item = ctx.item_query.get::<Named>(e.entity).unwrap();
                 if item.0 == "Key To Building 2" {
                     return vec![
                         TileInteractionResult::ChangeSprite(ctx.destination, comps.sprite.clone()),
@@ -109,7 +111,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 let comps = ctx.world_catalog.components.get(tiles::BRICK_WINDOW_OPEN).expect("Open brick door tile cannot be found");        
                 let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
                 
-                println!("{:?} interacted with {:?} for window", ctx.source, ctx.destination);
+                println!("{:?} interacted with {:?} for key", ctx.source, ctx.destination);
                 // if a non-player hits a window, crash it if not block it 
                 if let Some(source_type) = itype {
                     return match *source_type {
@@ -127,14 +129,17 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             tiles::ITEM.into(), 
             Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
                 // demoooo   
+                
+                let tilehandle = ctx.interaction_query.get::<WorldHandle<Tile>>(ctx.destination).ok();
                 let item = ItemComponents { 
                     name: Named("Key To Building 2".into()),
                     weight: Weight(0.1),
                     item_type: ItemType::Key,
                     item_slot: ItemSlot::LeftHand,
-                    handle: ItemHandle { item_id : 1}
+                    handle: WorldHandle::default(),
+                    tile_handle: (*tilehandle.unwrap()).clone()
                 };
-                println!("{:?} interacted with {:?} for key", ctx.source, ctx.destination);
+                println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle.entity);
                 let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
             
                 if let Some(t) = itype {
@@ -143,6 +148,36 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                         TileInteractionResult::AddItem(ctx.source, item),
                         TileInteractionResult::Despawn, 
                         TileInteractionResult::Message(format!("You picked up the key").into())
+                        ]
+                    };
+                }
+                
+                TileInteractionResult::None.into()
+            }
+        }));
+        palette.interactions.insert(
+            tiles::ITEM2.into(), 
+            Arc::new( TileInteraction { description: "Get Item", caller: |ctx| { 
+                // demoooo   
+                
+                let tilehandle = ctx.interaction_query.get::<WorldHandle<Tile>>(ctx.destination).ok();
+                let item = ItemComponents { 
+                    name: Named("OtherItem".into()),
+                    weight: Weight(0.1),
+                    item_type: ItemType::Misc,
+                    item_slot: ItemSlot::LeftHand,
+                    handle: WorldHandle::default(),
+                    tile_handle: (*tilehandle.unwrap()).clone()
+                };
+                println!("{:?} interacted with {:?} for item ({:?})", ctx.source, ctx.destination, item.tile_handle.entity);
+                let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
+            
+                if let Some(t) = itype {
+                    if let InteractableType::Player = *t {
+                    return vec![ 
+                        TileInteractionResult::AddItem(ctx.source, item),
+                        TileInteractionResult::Despawn, 
+                        TileInteractionResult::Message(format!("You picked up an item").into())
                         ]
                     };
                 }
@@ -186,24 +221,27 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         .add_tiles_from_blueprint("brick_house")
         .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
-        .set_position(Location(16.,0.,3., WorldLocation::World))
+        .set_position(Location(-32.,0.,3., WorldLocation::World))
         .add_tiles(RelativePosition::Below, 1,  tiles::ITEM.to_string())
-        .add_mobs(Location(-32.,64.,3., WorldLocation::World), 10,  tiles::ENEMY.to_string());
+        .add_tiles(RelativePosition::Below, 40,  tiles::ITEM2.to_string());
+        //.add_mobs(Location(-32.,64.,3., WorldLocation::World), 10,  tiles::ENEMY.to_string());
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
     
 
 
     for comp in mb.iter() {
-        commands.spawn(comp.clone())
+        let c = comp.clone();
+        commands
+            .spawn_as_entity(c.handle.entity, c)
             .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)))
             .with_bundle(Interactable::new(InteractableType::Tile));
-        //println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
+        println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
     } 
 
-    for mob in mb.mobs.iter() {
-        commands.spawn(mob.clone())
+    for mob in mb.mobs.iter().cloned() {
+        commands.spawn_as_entity(mob.handle.entity, mob.clone())
             .with_bundle(mob.sprite.to_components(mob.location.into(), Scale(1.)))
             .with_bundle(Interactable::new(InteractableType::Npc));
     }

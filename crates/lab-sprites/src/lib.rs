@@ -226,6 +226,15 @@ impl SpriteInfo {
             ..Default::default()
         }
     }
+    pub fn to_node_components(&self) -> SpriteSheetComponents {
+        SpriteSheetComponents {
+            scale: Scale(4.),
+            draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
+            sprite: TextureAtlasSprite::new(self.atlas_sprite),
+            texture_atlas: self.atlas_handle.clone(),
+            ..Default::default()
+        }
+    }
 }
 
 pub struct MoveAnimation {

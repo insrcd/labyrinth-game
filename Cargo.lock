@@ -1642,6 +1642,7 @@ dependencies = [
  "serde",
  "strum",
  "strum_macros",
+ "uuid",
 ]
 
 [[package]]
@@ -1706,6 +1707,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "lab-ui"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "lab-core",
+ "lab-entities",
+ "lab-input",
+ "lab-sprites",
+ "lab-world",
+ "log",
+ "rand",
+ "serde",
+]
+
+[[package]]
 name = "lab-world"
 version = "0.1.0"
 dependencies = [
@@ -1733,6 +1749,7 @@ dependencies = [
  "lab-entities",
  "lab-input",
  "lab-sprites",
+ "lab-ui",
  "lab-world",
  "log",
  "rand",

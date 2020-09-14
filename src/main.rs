@@ -34,6 +34,7 @@ fn main() {
     .add_plugin(lab_input::InputPlugin)
     .add_plugin(lab_world::WorldPlugin)
     .add_plugin(lab_builder::BuilderPlugin)
+    .add_plugin(lab_ui::UiPlugin)
     .add_plugin(lab_ai::AiPlugin)
     .add_startup_system_to_stage(stages::POST_INIT, setup.system())     
     .add_plugin(lab_demo::DemoPlugin)

@@ -1,8 +1,9 @@
+use uuid::Uuid;
 use bevy::prelude::*;
-use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap, HashMap}, sync::{Arc, Mutex}, rc::Rc};
+use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap, HashMap}, sync::{Arc, Mutex}, rc::Rc, hash::Hasher, hash::Hash, fmt::Debug};
 use defaults::*;
 use crate::interaction::*;
-
+use serde::{Serialize, Deserialize};
 use rand::Rng;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -138,31 +139,101 @@ pub enum ItemSlot {
     Magic,
     None
 }
-#[derive(Clone, Debug, Properties, PartialEq, Default, Bundle)]
+
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
+pub struct Tile;
+
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
+pub struct Item;
+
+#[derive(Clone, Debug, PartialEq, Default, Bundle)]
 pub struct ItemComponents {
     pub name: crate::Named,
     pub weight: Weight,
-    pub handle: ItemHandle,
-    #[property(ignore)]
+    pub handle: WorldHandle<Item>,
     pub item_type: ItemType,
-    #[property(ignore)]
-    pub item_slot: ItemSlot
+    pub item_slot: ItemSlot,
+    pub tile_handle: WorldHandle<Tile> 
 }
 
-#[derive(Clone,Copy,Default,Debug, PartialEq, Properties)]
-pub struct ItemHandle {
-    pub item_id : u64
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize, Property)]
+pub struct HandleId (pub Uuid);
+
+impl HandleId {
+    pub fn new() -> HandleId {
+        HandleId(Uuid::new_v4())
+    }
 }
+
+#[derive(Properties)]
+pub struct WorldHandle<T>
+where
+    T: 'static,
+{
+    pub id: HandleId,
+    pub entity: Entity,
+    #[property(ignore)]
+    marker: PhantomData<T>,
+}
+impl<T> Hash for WorldHandle<T> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
+}
+
+impl<T> PartialEq for WorldHandle<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+
+impl<T> Eq for WorldHandle<T> {}
+
+impl<T> Debug for WorldHandle<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        let name = std::any::type_name::<T>().split("::").last().unwrap();
+        write!(f, "WorldHandle<{}>({:?})", name, self.id.0)
+    }
+}
+
+impl<T> Default for WorldHandle<T> {
+    fn default() -> Self {
+        WorldHandle {
+            id: HandleId::new(),
+            marker: PhantomData,
+            entity: Entity::new()
+        }
+    }
+}
+
+impl<T> Clone for WorldHandle<T> {
+    fn clone(&self) -> Self {
+        WorldHandle {
+            id: self.id,
+            marker: PhantomData,
+            entity: self.entity
+        }
+    }
+}
+impl<T> Copy for WorldHandle<T> {}
+
+// SAFE: T is phantom data and Handle::id is an integer
+unsafe impl<T> Send for WorldHandle<T> {}
+unsafe impl<T> Sync for WorldHandle<T> {}
+
 
 #[derive(Copy, Clone, Debug, Properties, PartialEq, Default)]
 pub struct Weight (pub f32);
 
 
 #[derive(Clone,Default,Debug, PartialEq)]
-pub struct Inventory(pub Vec<Entity>);
+pub struct Inventory(pub Vec<WorldHandle<Item>>);
 
-
+#[derive(Clone,Default,Debug, PartialEq)]
 pub struct ItemData {
+    handle: WorldHandle<ItemData>,
     name: String,
     description: String
 }
