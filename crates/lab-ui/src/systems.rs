@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use lab_input::ScrollState;
 use lab_sprites::SpriteInfo;
 use lab_core::prelude::*;
@@ -59,34 +61,103 @@ pub fn button_system(
 }
 
 pub struct InventoryUi;
+pub struct UiHelper {
+  button_material: Handle<ColorMaterial>,
+  material: Handle<ColorMaterial>,
+  font_handle: Handle<Font>
+}
 
-impl InventoryUi {
-  fn get_main(materials : Handle<ColorMaterial>) -> NodeComponents {
+impl UiHelper {
+  pub fn container(&mut self, size: Size<Val>) -> NodeComponents {
     NodeComponents {
       style: Style {
-          size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-
+          size: size,
+          align_self: AlignSelf::FlexStart,
           ..Default::default()
       },
-      material: materials,
+      material: self.material,
       ..Default::default()
     }
   }
-  fn get_item_box (parent : &mut ChildBuilder, materials : Handle<ColorMaterial>,  f: impl FnMut(&mut ChildBuilder)) {
-    parent.spawn(NodeComponents {
+  pub fn flex_container(&mut self, size: Size<Val>, material: Handle<ColorMaterial>) -> NodeComponents {
+    NodeComponents {
       style: Style {
-          align_self: AlignSelf::FlexEnd,
-          justify_content: JustifyContent::SpaceEvenly,
-          size: Size::new(Val::Percent(100.0), Val::Percent(50.0)),
-          align_items: AlignItems::Stretch,
+          size: size,
+          align_self: AlignSelf::FlexStart,
+          align_content: AlignContent::FlexStart,
+          justify_content: JustifyContent::FlexStart,
           flex_wrap: FlexWrap::WrapReverse,
-          direction: Direction::LTR,
           ..Default::default()
       },
-      material: materials,
+      material: material,
       ..Default::default()
-    }).with_children(f);
+    }
   }
+
+  pub fn vert_container(&mut self, size: Size<Val>, material: Handle<ColorMaterial>) -> NodeComponents {
+    NodeComponents {
+      style: Style {
+          size: size,
+          flex_direction: FlexDirection::ColumnReverse,
+          align_content: AlignContent::FlexStart,
+          justify_content: JustifyContent::FlexStart,
+          align_items: AlignItems::Center,
+          ..Default::default()
+      },
+      material: material,
+      ..Default::default()
+    }
+  }
+  pub fn button(&mut self, builder: &mut ChildBuilder, text: &str){
+      builder.spawn(ButtonComponents {
+        style: Style {
+            align_self:AlignSelf::Center,
+            size: Size::new(Val::Percent(80.0), Val::Px(50.0)),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            margin: Rect {
+              top: Val::Px(20.0),
+              ..Default::default()
+            },
+            ..Default::default()
+        },
+        material: self.button_material,
+        ..Default::default()
+      }).with_children(|p2| {
+        p2.spawn(TextComponents {
+            text: Text {
+                value: text.into(),
+                font: self.font_handle,
+                style: TextStyle {
+                    font_size: 40.0,
+                    color: Color::rgb(0.8, 0.8, 0.8),
+                },
+            },
+            ..Default::default()
+        });
+      });
+  }
+  pub fn text(&mut self, text: &str) -> TextComponents {
+    TextComponents {
+      style: Style {
+        ..Default::default()
+      },
+      text: Text {
+          value: text.into(),
+          font: self.font_handle,
+          style: TextStyle {
+              font_size: 40.0,
+              color: Color::WHITE,
+          },
+      },
+      draw: Draw {is_visible: true, is_transparent: true, ..Default::default()},
+      ..Default::default()
+    }
+  }
+}
+
+impl <'a> InventoryUi {
+      
   fn make_item(parent : &mut ChildBuilder, sprite: &SpriteInfo, 
        text: String, 
        font_handle: Handle<Font>,
@@ -96,7 +167,7 @@ impl InventoryUi {
           size: Size::new(Val::Px(100.0), Val::Px(100.0)),
           justify_content: JustifyContent::Center,
           align_content: AlignContent::Center,
-          margin: Rect::all(Val::Px(10.0)),
+          margin: Rect::all(Val::Px(5.0)),
           ..Default::default()
       },
       material: material,
@@ -106,10 +177,9 @@ impl InventoryUi {
         style: Style {
           position_type: PositionType::Absolute,
           position: Rect { 
-            top: Val::Px(0.0),
+            top: Val::Px(40.0),
             ..Default::default()
           },
-          size: Size::new(Val::Px(100.0), Val::Px(80.0)),
           ..Default::default()
         },
         ..Default::default()
@@ -157,28 +227,47 @@ pub fn inventory_ui_system (
   for (_entity, state_change) in &mut state_query.iter() {
     for  (_e, _player, inv)  in &mut inventory_query.iter(){
       if let UiState::Inventory = *state_change {
-        commands
-        .spawn(InventoryUi::get_main(button_materials.normal))
-        .with_children(|parent| {
-          InventoryUi::get_item_box(parent, materials.add(Color::rgb(0.2, 0.2, 1.0).into()), 
-          |p2| {
-            for item in inv.0.iter(){
-              // all items have a tile
-              let tile_handle = item_query.get::<WorldHandle<Tile>>((*item).entity).unwrap();
-              // and are named
-              let name = item_query.get::<Named>((*item).entity).unwrap();
-              // all tiles have sprites
-              let sprite = tile_query.get::<SpriteInfo>((*tile_handle).entity).unwrap();
+        let mut ui = UiHelper { 
+          button_material: button_materials.normal,
+          material: materials.add(Color::rgb(0.0, 0.0, 0.0).into()), 
+          font_handle: font_handle
+        };
+        let whole_size = Size::new(Val::Percent(100.0), Val::Percent(100.0));
+        let button_column = Size::new(Val::Percent(20.0), Val::Percent(100.0));
+        let inventory_column = Size::new(Val::Percent(80.0), Val::Percent(100.0));
 
-              InventoryUi::make_item(p2, 
-                &*sprite, 
-                name.0.clone(), 
-                font_handle, 
-                materials.add(Color::rgb(0.08, 0.08, 1.0).into()));     
-              }
-          });
-        })
-        .with(InventoryUi);
+        let grey = materials.add(Color::rgb(0.3, 0.3, 0.3).into());
+        let grey2 = materials.add(Color::rgb(0.1, 0.1, 0.1).into());
+        let blue1 = materials.add(Color::rgb(0.1, 0.1, 1.0).into());
+        let blue2 = materials.add(Color::rgb(0.3, 0.1, 1.0).into());
+
+        commands
+          .spawn(ui.container(whole_size))
+          .with(InventoryUi)
+          .with_children(|c| {
+            c.spawn(ui.vert_container(button_column, blue1))
+              .with_children(|c| {
+                c.spawn(ui.text("Inventory"));
+                ui.button(c, "Items");
+              });
+            c.spawn(ui.flex_container(inventory_column, grey))
+            .with_children(|parent| {
+              for item in inv.0.iter(){
+                // all items have a tile
+                let tile_handle = item_query.get::<WorldHandle<Tile>>((*item).entity).unwrap();
+                // and are named
+                let name = item_query.get::<Named>((*item).entity).unwrap();
+                // all tiles have sprites
+                let sprite = tile_query.get::<SpriteInfo>((*tile_handle).entity).unwrap();
+    
+                InventoryUi::make_item(parent, 
+                  &*sprite, 
+                  name.0.clone(), 
+                  font_handle, 
+                  grey2);  
+              };
+            });
+        });
       } else {
         for (e, _i) in &mut ui_query.iter(){
             println!("Invetory shown, removing it");

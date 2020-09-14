@@ -236,7 +236,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .spawn_as_entity(c.handle.entity, c)
             .with_bundle(comp.sprite.to_components(comp.location.into(), Scale(1.)))
             .with_bundle(Interactable::new(InteractableType::Tile));
-        println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
+      //  println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
     } 
 
