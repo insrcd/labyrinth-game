@@ -210,6 +210,31 @@ impl <'a> InventoryUi {
   }
 }
 
+type HColor = Handle<ColorMaterial>;
+pub struct UiColors {
+  grey : HColor,
+  grey2 : HColor,
+  blue : HColor,
+  blue2 : HColor,
+  blue3 :HColor,
+  black :HColor,
+  white :HColor
+}
+
+impl UiColors{
+  fn new( materials: ResMut<Assets<ColorMaterial>>) -> Self {
+    UiColors {
+      grey : materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+      grey2 : materials.add(Color::rgb(0.3, 0.3, 0.3).into()),
+      blue : materials.add(Color::rgb(0.1, 0.1, 1.0).into()),
+      blue2 : materials.add(Color::rgb(0.3, 0.3, 1.0).into()),
+      blue3 :materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
+      black :materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+      white :materials.add(Color::rgb(1.0, 1.0, 1.0).into())
+    }
+  }
+}
+
 pub fn inventory_ui_system (
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -223,34 +248,29 @@ pub fn inventory_ui_system (
     mut inventory_query: Query<(Entity, &Player, &mut Inventory)>
 ) {
   let font_handle = asset_server.load_sync(&mut assets, "resources/fonts/FiraSans-Bold.ttf").unwrap();
-
+  let colors = UiColors::new(materials);
   for (_entity, state_change) in &mut state_query.iter() {
     for  (_e, _player, inv)  in &mut inventory_query.iter(){
       if let UiState::Inventory = *state_change {
         let mut ui = UiHelper { 
           button_material: button_materials.normal,
-          material: materials.add(Color::rgb(0.0, 0.0, 0.0).into()), 
+          material: colors.white, 
           font_handle: font_handle
         };
         let whole_size = Size::new(Val::Percent(100.0), Val::Percent(100.0));
         let button_column = Size::new(Val::Percent(20.0), Val::Percent(100.0));
         let inventory_column = Size::new(Val::Percent(80.0), Val::Percent(100.0));
 
-        let grey = materials.add(Color::rgb(0.3, 0.3, 0.3).into());
-        let grey2 = materials.add(Color::rgb(0.1, 0.1, 0.1).into());
-        let blue1 = materials.add(Color::rgb(0.1, 0.1, 1.0).into());
-        let blue2 = materials.add(Color::rgb(0.3, 0.1, 1.0).into());
-
         commands
           .spawn(ui.container(whole_size))
           .with(InventoryUi)
           .with_children(|c| {
-            c.spawn(ui.vert_container(button_column, blue1))
+            c.spawn(ui.vert_container(button_column, colors.blue))
               .with_children(|c| {
                 c.spawn(ui.text("Inventory"));
                 ui.button(c, "Items");
               });
-            c.spawn(ui.flex_container(inventory_column, grey))
+            c.spawn(ui.flex_container(inventory_column, colors.grey))
             .with_children(|parent| {
               for item in inv.0.iter(){
                 // all items have a tile
@@ -264,7 +284,7 @@ pub fn inventory_ui_system (
                   &*sprite, 
                   name.0.clone(), 
                   font_handle, 
-                  grey2);  
+                  colors.grey2);  
               };
             });
         });
