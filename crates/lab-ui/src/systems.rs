@@ -222,7 +222,7 @@ pub struct UiColors {
 }
 
 impl UiColors{
-  fn new( materials: ResMut<Assets<ColorMaterial>>) -> Self {
+  fn new( mut materials: ResMut<Assets<ColorMaterial>>) -> Self {
     UiColors {
       grey : materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
       grey2 : materials.add(Color::rgb(0.3, 0.3, 0.3).into()),
