@@ -108,7 +108,7 @@ impl UiHelper {
       ..Default::default()
     }
   }
-  pub fn button(&mut self, builder: &mut ChildBuilder, text: &str){
+  pub fn build_button(&mut self, builder: &mut ChildBuilder, text: &str){
       builder.spawn(ButtonComponents {
         style: Style {
             align_self:AlignSelf::Center,
@@ -154,20 +154,17 @@ impl UiHelper {
       ..Default::default()
     }
   }
-}
-
-impl <'a> InventoryUi {
-      
-  fn make_item(parent : &mut ChildBuilder, sprite: &SpriteInfo, 
-       text: String, 
-       font_handle: Handle<Font>,
-       material: Handle<ColorMaterial>) {
+  fn build_item(&self, parent : &mut ChildBuilder, sprite: &SpriteInfo, 
+    text: String, 
+    font_handle: Handle<Font>,
+    material: Handle<ColorMaterial>) 
+  {
     parent.spawn(NodeComponents {
       style: Style {
           size: Size::new(Val::Px(100.0), Val::Px(100.0)),
           justify_content: JustifyContent::Center,
           align_content: AlignContent::Center,
-          margin: Rect::all(Val::Px(5.0)),
+          margin: Rect::all(Val::Px(2.0)),
           ..Default::default()
       },
       material: material,
@@ -210,6 +207,7 @@ impl <'a> InventoryUi {
   }
 }
 
+
 type HColor = Handle<ColorMaterial>;
 pub struct UiColors {
   grey : HColor,
@@ -238,7 +236,7 @@ impl UiColors{
 pub fn inventory_ui_system (
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    materials: ResMut<Assets<ColorMaterial>>,
     mut assets: ResMut<Assets<Font>>,
     button_materials: Res<ButtonMaterials>,
     mut state_query: Query<(Entity, Changed<UiState>)>,
@@ -268,9 +266,9 @@ pub fn inventory_ui_system (
             c.spawn(ui.vert_container(button_column, colors.blue))
               .with_children(|c| {
                 c.spawn(ui.text("Inventory"));
-                ui.button(c, "Items");
+                ui.build_button(c, "Items");
               });
-            c.spawn(ui.flex_container(inventory_column, colors.grey))
+            c.spawn(ui.flex_container(inventory_column, colors.grey2))
             .with_children(|parent| {
               for item in inv.0.iter(){
                 // all items have a tile
@@ -280,11 +278,11 @@ pub fn inventory_ui_system (
                 // all tiles have sprites
                 let sprite = tile_query.get::<SpriteInfo>((*tile_handle).entity).unwrap();
     
-                InventoryUi::make_item(parent, 
+                ui.build_item(parent, 
                   &*sprite, 
                   name.0.clone(), 
                   font_handle, 
-                  colors.grey2);  
+                  colors.grey);  
               };
             });
         });
