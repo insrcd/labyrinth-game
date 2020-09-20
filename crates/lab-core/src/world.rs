@@ -42,14 +42,14 @@ where I : Interact<T, R> {
     item : I,
     data : PhantomData<R>,
     pub components: BTreeMap<String, T>,
-    pub interactions: BTreeMap<String, Arc<I>>
+    pub interactions: BTreeMap<WorldHandle<I>, Arc<I>>
 }
 
 impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> InteractionCatalog<I, T, R>
  where I : Interact <T,R> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
-    pub fn get_interaction(&self, name: &String) -> Option<Arc<I>> {
+    pub fn get_interaction(&self, handle: WorldHandle<I>) -> Option<Arc<I>> {
         //println!("looking for interaction for {}", name);
-        if let Some(interact)  = self.interactions.get(name) {
+        if let Some(interact)  = self.interactions.get(handle) {
             Some(interact.clone())
         } else {
             None

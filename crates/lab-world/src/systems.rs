@@ -19,9 +19,8 @@ pub fn camera_tracking_system(
         }
     }
 }
-/// object Interaction System - system which allows for tiles to change when they are interacted with
-/// Also includes collision detection.
-///
+/// Collision System
+/// This system sends an event whenever two Interactables touch.
 pub fn collision_system(
     mut interaction_event: ResMut<Events<InteractionEvent>>,
     mut wall_query: Query<(
@@ -69,6 +68,11 @@ pub fn collision_system(
     }
 }
 
+/// Interaction System
+/// This sytem will try and see if there is a registered Interaction handler for a 
+/// object that has experienced a collision. If there is, it is ran
+/// and the result is sent as an event to be processed.
+
 pub fn interaction_system(
     mut commands: Commands,
     mut result_events : ResMut<Events<TileInteractionResultEvent>>,
@@ -81,6 +85,7 @@ pub fn interaction_system(
         &InteractableType,
         &Named,
         &ObjectState,
+        &WorldHandle<Interaction>,
         &WorldHandle<Tile>,
         &Inventory
     )>
@@ -92,14 +97,14 @@ pub fn interaction_system(
                     panic!("A entity collided with itself, this should not happen")
                 }
                
-
-                let interaction_name =  interactable_query.get::<Named>(event.destination)
+                // TODO Move to a handle system
+                let tile_handle =  interactable_query.get::<WorldHandle<TileInteraction>>(event.destination)
                     .expect("Entity invovled in an interaction without a name");
                     
                 //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
                 
                 if let Some(tile_interaction) =
-                        world_catalog.get_interaction(&interaction_name.0)
+                        world_catalog.get_interaction(tile_handle)
                 {   
                     let ctx = InteractionContext {
                         source: event.source,
