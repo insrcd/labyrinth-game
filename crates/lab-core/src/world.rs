@@ -73,9 +73,7 @@ impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> Interac
 
         handle.clone()
     }
-    pub fn bind_interaction(&self, commands : &mut Commands, object_handle: WorldHandle<T>, handle: WorldHandle<I>)  {
-
-    }
+    
     pub fn names(&self) -> Keys<'_, String, T>{
         self.components.keys()
     }
