@@ -85,7 +85,7 @@ pub fn interaction_system(
         &InteractableType,
         &Named,
         &ObjectState,
-        &WorldHandle<Interaction>,
+        &WorldHandle<TileInteraction>,
         &WorldHandle<Tile>,
         &Inventory
     )>
@@ -101,7 +101,7 @@ pub fn interaction_system(
 
                 if let Some(tile_handle) = tile_handle_r.ok() {
                     
-                    println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
+                    println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, tile_handle);
                     
                     if let Some(tile_interaction) =
                             world_catalog.get_interaction(*tile_handle)
@@ -179,8 +179,8 @@ pub fn process_interaction_result_system (
             }
             TileInteractionResult::Move(entity, location) => {
                 if let Ok(mut new_location) = entity_query.get_mut::<Transform>(entity) {
-                    *new_location.translation().x_mut() = location.0;
-                    *new_location.translation().y_mut() = location.1;
+                    *new_location.translation_mut().x_mut() = location.0;
+                    *new_location.translation_mut().y_mut() = location.1;
                 }
             }
             TileInteractionResult::Despawn => {
@@ -192,8 +192,8 @@ pub fn process_interaction_result_system (
                 println!("Got block");
                 if let Ok(mut translation) = entity_query.get_mut::<Transform>(entity) {
                     if let Ok(src_move) = entity_query.get::<Movement>(entity) {
-                        *translation.translation().x_mut() = src_move.start.0;
-                        *translation.translation().y_mut() = src_move.start.1;
+                        *translation.translation_mut().x_mut() = src_move.start.0;
+                        *translation.translation_mut().y_mut() = src_move.start.1;
                     }
                 }
             }
@@ -344,8 +344,8 @@ pub fn static_text_system(
 
             // make sure there actually was a movement change in translation
             if Vec2::new(0.,0.) != change {
-                *translation.translation().x_mut() -= change.x();
-                *translation.translation().y_mut() -= change.y();
+                *translation.translation_mut().x_mut() -= change.x();
+                *translation.translation_mut().y_mut() -= change.y();
             }
         }
     }

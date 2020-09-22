@@ -43,7 +43,7 @@ where I : Interact<T, R> + 'static {
         &'a InteractableType,
         &'a Named,
         &'a ObjectState,
-        &'a WorldHandle<Interaction>,
+        &'a WorldHandle<I>,
         &'a WorldHandle<Tile>,
         &'a Inventory
     )>,
