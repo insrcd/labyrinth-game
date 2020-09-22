@@ -9,6 +9,6 @@ edition = "2018"
 log = { version = "0.4", features = ["release_max_level_info"] }
 serde = { version = "1.0", features = ["derive"]}
 
-bevy = { version = "0.2.0" }
+bevy = { git = "https://github.com/insrcd/bevy" }
 
 lab-core = { path = "../lab-core" }
