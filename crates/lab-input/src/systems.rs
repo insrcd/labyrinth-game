@@ -142,22 +142,22 @@ pub fn player_movement_system (
 
             let sprite = match direction {
                 CardinalDirection::North => {
-                    *transform.translation().y_mut() += player_speed * transform.scale().y();
+                    *transform.translation_mut().y_mut() += player_speed * transform.scale().y();
                     animation.count = (animation.count + 1) % animation.up.len();
                     Some(animation.up[animation.count].clone())
                 },
                 CardinalDirection::South => {
-                    *transform.translation().y_mut() -= player_speed * transform.scale().y();
+                    *transform.translation_mut().y_mut() -= player_speed * transform.scale().y();
                     animation.count = (animation.count + 1) % animation.down.len();
                     Some(animation.down[animation.count].clone())
                 },
                 CardinalDirection::West => {
-                    *transform.translation().x_mut() -= player_speed * transform.scale().x();
+                    *transform.translation_mut().x_mut() -= player_speed * transform.scale().x();
                     animation.count = (animation.count + 1) % animation.left.len();
                     Some(animation.left[animation.count].clone())
                 },
                 CardinalDirection::East => {
-                    *transform.translation().x_mut() += player_speed * transform.scale().x();
+                    *transform.translation_mut().x_mut() += player_speed * transform.scale().x();
                     animation.count = (animation.count + 1) % animation.right.len();
                     Some(animation.right[animation.count].clone())
                 },

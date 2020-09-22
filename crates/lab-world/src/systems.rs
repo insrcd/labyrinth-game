@@ -97,27 +97,29 @@ pub fn interaction_system(
                     panic!("A entity collided with itself, this should not happen")
                 }
                
-                let tile_handle =  interactable_query.get::<WorldHandle<TileInteraction>>(event.destination)
-                    .expect("Entity invovled in an interaction without a name");
+                let tile_handle_r =  interactable_query.get::<WorldHandle<TileInteraction>>(event.destination);
+
+                if let Some(tile_handle) = tile_handle_r.ok() {
                     
-                //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
-                
-                if let Some(tile_interaction) =
-                        world_catalog.get_interaction(*tile_handle)
-                {   
-                    let ctx = InteractionContext {
-                        source: event.source,
-                        destination: event.destination,
-                        world_catalog:world_catalog.clone(),
-                        interaction_query: &interactable_query,
-                        item_query: &item_query
-                    };
-                    for r in tile_interaction.interact(ctx).iter() {
-                        result_events.send(TileInteractionResultEvent { 
-                            source: event.source, 
-                            destination: event.destination, 
-                            result: r.clone() 
-                        })
+                    //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
+                    
+                    if let Some(tile_interaction) =
+                            world_catalog.get_interaction(*tile_handle)
+                    {   
+                        let ctx = InteractionContext {
+                            source: event.source,
+                            destination: event.destination,
+                            world_catalog:world_catalog.clone(),
+                            interaction_query: &interactable_query,
+                            item_query: &item_query
+                        };
+                        for r in tile_interaction.interact(ctx).iter() {
+                            result_events.send(TileInteractionResultEvent { 
+                                source: event.source, 
+                                destination: event.destination, 
+                                result: r.clone() 
+                            })
+                        }
                     }
                 }
             }
@@ -265,20 +267,20 @@ pub fn zoom_system(
 
             let translation_before = trans.clone();
 
-            if trans.scale().y() * factor > 6. {
+            if trans.scale().x() * factor > 6. {
                 return;
             }
 
-            let y_scale = trans.scale().y();
+            let y_scale = trans.scale().x();
 
             trans.set_scale(y_scale * factor);
 
-            *trans.translation().x_mut() *= factor;
-            *trans.translation().y_mut() *= factor;
+            *trans.translation_mut().x_mut() *= factor;
+            *trans.translation_mut().y_mut() *= factor;
 
             entities_changed.push((entity, translation_before.into(), (*trans).into()));
 
-            scroll.current_scale = trans.scale().y();
+            scroll.current_scale = trans.scale().x();
         }
     }
 
