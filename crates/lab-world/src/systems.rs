@@ -7,14 +7,14 @@ use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, Tile
 use std::{rc::Rc, borrow::Cow, sync::Arc};
 
 pub fn camera_tracking_system(
-    mut player_moved: Query<With<Player, (Entity, Mutated<Translation>)>>,
-    mut camera_query: Query<(&Camera, &mut Translation)>,
+    mut player_moved: Query<With<Player, (Entity, Mutated<Transform>)>>,
+    mut camera_query: Query<(&Camera, &mut Transform)>,
 ) {
     for (_e, player_translation) in &mut player_moved.iter() {
         for (c, mut cam_trans) in &mut camera_query.iter() {
             if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
-                *cam_trans.0.x_mut() = player_translation.0.x();
-                *cam_trans.0.y_mut() = player_translation.0.y();
+                *cam_trans.translation().x_mut() = player_translation.translation().x();
+                *cam_trans.translation().y_mut() = player_translation.translation().y();
             }
         }
     }
@@ -25,13 +25,13 @@ pub fn collision_system(
     mut interaction_event: ResMut<Events<InteractionEvent>>,
     mut wall_query: Query<(
         Entity,
-        &Translation,
+        &Transform,
         &SpriteInfo,
         &InteractableType
     )>,
-    mut moveables: Query<(Entity,Mutated<Translation>,&Scale)>)
+    mut moveables: Query<(Entity,Mutated<Transform>)>)
 {
-    for (mov_entity, move_translation, scale) in
+    for (mov_entity, move_translation) in
         &mut moveables.iter()
     {
             //println!("checking colision move: {:?}", *move_translation);
@@ -48,10 +48,10 @@ pub fn collision_system(
             
             //println!("checking colision tile: {:?}", tile_translation);
             let collision = collide(
-                move_translation.0,
-                Vec2::new(8. * scale.0, 8. * scale.0),
-                tile_translation.0,
-                tile_sprite.size() * scale.0,
+                move_translation.translation(),
+                Vec2::new(8., 8.) * move_translation.scale().truncate(),
+                tile_translation.translation(),
+                tile_sprite.size() * tile_translation.scale().truncate(),
             );
 
             if let Some(collision) = collision {
@@ -97,14 +97,13 @@ pub fn interaction_system(
                     panic!("A entity collided with itself, this should not happen")
                 }
                
-                // TODO Move to a handle system
                 let tile_handle =  interactable_query.get::<WorldHandle<TileInteraction>>(event.destination)
                     .expect("Entity invovled in an interaction without a name");
                     
                 //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, interaction_name.0);
                 
                 if let Some(tile_interaction) =
-                        world_catalog.get_interaction(tile_handle)
+                        world_catalog.get_interaction(*tile_handle)
                 {   
                     let ctx = InteractionContext {
                         source: event.source,
@@ -140,9 +139,8 @@ pub fn process_interaction_result_system (
     >,
     entity_query: Query<
         (
-            Entity,
-            &Scale,
-            &mut Translation,
+            Entity,         
+            &mut Transform,
             &mut Movement,
             &mut Inventory,
             &mut Draw
@@ -178,22 +176,22 @@ pub fn process_interaction_result_system (
                 }
             }
             TileInteractionResult::Move(entity, location) => {
-                if let Ok(mut new_location) = entity_query.get_mut::<Translation>(entity) {
-                    *new_location.x_mut() = location.0;
-                    *new_location.y_mut() = location.1;
+                if let Ok(mut new_location) = entity_query.get_mut::<Transform>(entity) {
+                    *new_location.translation().x_mut() = location.0;
+                    *new_location.translation().y_mut() = location.1;
                 }
             }
             TileInteractionResult::Despawn => {
                 commands.remove_one::<Draw>(event.destination);
-                commands.remove_one::<Translation>(event.destination);
+                commands.remove_one::<Transform>(event.destination);
                 
             }
             TileInteractionResult::Block(entity) => {
                 println!("Got block");
-                if let Ok(mut translation) = entity_query.get_mut::<Translation>(entity) {
+                if let Ok(mut translation) = entity_query.get_mut::<Transform>(entity) {
                     if let Ok(src_move) = entity_query.get::<Movement>(entity) {
-                        *translation.x_mut() = src_move.start.0;
-                        *translation.y_mut() = src_move.start.1;
+                        *translation.translation().x_mut() = src_move.start.0;
+                        *translation.translation().y_mut() = src_move.start.1;
                     }
                 }
             }
@@ -207,14 +205,18 @@ pub fn process_interaction_result_system (
             }
             TileInteractionResult::Menu(_) => {},
             
-            TileInteractionResult::AddItem(dst, item) => {
+            TileInteractionResult::AddItem(dst, mut item) => {
             
 
                 if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(dst) {
                     inventory.0.push(item.handle.clone());
                     
+                    let mut handle = item.handle;
+                    
                     commands
-                        .spawn_as_entity(item.handle.entity, item);
+                        .spawn(( item, ));
+                    
+                    handle.entity = commands.current_entity().expect("No current entity found after spawning., it").clone();
                 }
             }
         };
@@ -245,7 +247,7 @@ pub fn save_world_system(_world: &mut World, _resources: &mut Resources) {
 pub fn zoom_system(
     windows: ResMut<Windows>,
     mut scroll: ResMut<lab_input::ScrollState>,
-    mut query: Query<(Entity,&mut Scale, &mut Translation, &Zoomable)>,
+    mut query: Query<(Entity,&mut Transform, &Zoomable)>,
     movement_query: Query<(Entity,&mut Movement)>
 ) {
     
@@ -253,7 +255,7 @@ pub fn zoom_system(
 
     let mut entities_changed : Vec<(Entity, Location, Location)> = Vec::new();
     
-    for (entity, mut scale, mut trans, _tt) in &mut query.iter() {
+    for (entity, mut trans, _tt) in &mut query.iter() {
         if scroll.y != 0. {
             
             // ease in the zoom by about .25 of the scroll intensity
@@ -263,18 +265,20 @@ pub fn zoom_system(
 
             let translation_before = trans.clone();
 
-            if scale.0 * factor > 6. {
+            if trans.scale().y() * factor > 6. {
                 return;
             }
 
-            *scale = Scale(scale.0 * factor);
+            let y_scale = trans.scale().y();
 
-            *trans.x_mut() *= factor;
-            *trans.y_mut() *= factor;
+            trans.set_scale(y_scale * factor);
+
+            *trans.translation().x_mut() *= factor;
+            *trans.translation().y_mut() *= factor;
 
             entities_changed.push((entity, translation_before.into(), (*trans).into()));
 
-            scroll.current_scale = scale.0;
+            scroll.current_scale = trans.scale().y();
         }
     }
 
@@ -296,7 +300,7 @@ pub fn zoom_system(
     for (mut _entity, _style, mut _zoom, mut _lt, mut trans, dialog, mut text) in &mut text_query.iter() {
         if scroll.y != 0. {            
             
-            if let Ok(tl) = query.get::<Translation>(dialog.entity) {                
+            if let Ok(tl) = query.get::<Transform>(dialog.entity) {                
                 let sprite_info = query.get::<SpriteInfo>(dialog.entity).unwrap();
                 
                 let sprite_scaled_size = sprite_info.scaled_size(scroll.current_scale);        
@@ -318,7 +322,7 @@ pub fn sprite_despawn_system(
         Entity,
         &lab_core::Despawn,
         &Timer,
-        &mut Translation,
+        &mut Transform,
     )>,
 ) {
     for (e, _, timer, _translation) in &mut query.iter() {
@@ -329,8 +333,8 @@ pub fn sprite_despawn_system(
 }
 
 pub fn static_text_system(
-    mut query: Query<(Entity, &Text, &mut Translation, &StaticLocation)>,
-    mut player_query: Query<(Entity, &Player, &Movement, Changed<Translation>)>,
+    mut query: Query<(Entity, &Text, &mut Transform, &StaticLocation)>,
+    mut player_query: Query<(Entity, &Player, &Movement, Changed<Transform>)>,
 ) {
     for (_e, _player, movement, t) in &mut player_query.iter() {
         for (_e, _letter, mut translation, _st) in &mut query.iter() {            
@@ -338,8 +342,8 @@ pub fn static_text_system(
 
             // make sure there actually was a movement change in translation
             if Vec2::new(0.,0.) != change {
-                *translation.x_mut() -= change.x();
-                *translation.y_mut() -= change.y();
+                *translation.translation().x_mut() -= change.x();
+                *translation.translation().y_mut() -= change.y();
             }
         }
     }

@@ -132,8 +132,7 @@ impl AdventureLog {
 
     pub fn make(&mut self, commands: &mut Commands, font_handle:  Handle<Font>,  length : u32) -> &mut AdventureLog {
         for n in 1..length+1 {
-            let e = Entity::new();
-            commands.spawn_as_entity(e, TextComponents {
+            commands.spawn(TextComponents {
                 style: Style {
                     position_type: PositionType::Absolute,
                     position: Rect {bottom:Val::Px(20. + (length-n) as f32 * 25.), left:Val::Px(5.), ..Default::default()},

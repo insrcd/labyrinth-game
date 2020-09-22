@@ -172,7 +172,7 @@ impl SpriteLibrary {
         location : Vec3){
 
         for c in self.make_string(st, location).into_iter() {     
-            commands.spawn(c.1.to_components(c.0, Scale(1.)))
+            commands.spawn(c.1.to_components(c.0, 1.))
                 .with(c.1)
                 .with_bundle((StationaryLetter,lab_core::Despawn,Timer::new(duration, false)));
         };
@@ -184,14 +184,14 @@ impl SpriteLibrary {
     {
        
         self.make_string(st, location).into_iter().map(move |c| {            
-            commands.spawn(c.1.to_components(c.0, Scale(1.))).current_entity().unwrap()
+            commands.spawn(c.1.to_components(c.0, 1.)).current_entity().unwrap()
         }).collect()
         
     }
     pub fn place_despawning_sprite(&self,  
         commands :&mut Commands,
         name : String, 
-        scale : Scale, 
+        scale : f32, 
         duration : Duration, 
         location : Vec3,
         bundle : impl DynamicBundle + Send + Sync + 'static) -> Entity {
@@ -216,10 +216,13 @@ impl SpriteInfo {
          }
     }
 
-    pub fn to_components(&self, loc : Vec3, scale: Scale) -> SpriteSheetComponents {
+    pub fn to_components(&self, loc : Vec3, scale: f32) -> SpriteSheetComponents {
+        let mut transform =  Transform::new(Mat4::default());
+        transform.set_translation(loc.into());
+        transform.set_scale(scale);
+
         SpriteSheetComponents {
-            translation: Translation::new(loc.x(), loc.y(), loc.z()),
-            scale: scale,
+            transform: transform,
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(self.atlas_sprite),
             texture_atlas: self.atlas_handle.clone(),
@@ -228,7 +231,7 @@ impl SpriteInfo {
     }
     pub fn to_node_components(&self) -> SpriteSheetComponents {
         SpriteSheetComponents {
-            scale: Scale(4.),
+            transform: Transform::new(Mat4::default()),
             draw: Draw { is_visible: true, is_transparent: true, ..Default::default() },
             sprite: TextureAtlasSprite::new(self.atlas_sprite),
             texture_atlas: self.atlas_handle.clone(),

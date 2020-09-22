@@ -10,7 +10,7 @@ members = [
 ]
 
 [dependencies]
-bevy = { git = "https://github.com/insrcd/bevy.git" }
+bevy = { version = "0.2.0" }
 rhai = "0.18.1" 
 log = { version = "0.4.8", features = ["serde"] }
 serde = "1.0.115"   

@@ -77,7 +77,7 @@ fn setup (
     .spawn( (Mouse::default(),) )
     .spawn( 
         PlayerComponents::new("Adam"))
-        .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), Scale(1.)))
+        .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), 1.))
         .with_bundle(Interactable::new(InteractableType::Player))
         .with(MoveAnimation {
             up: walk_right[3..6].to_vec(), 

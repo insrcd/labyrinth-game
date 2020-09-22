@@ -12,21 +12,21 @@ pub fn npc_move_system(
     mut query: Query<(
         Entity,
         &NonPlayer,
-        &Scale, 
         &mut Timer,
-        &mut Translation
+        &mut Transform
     )>,
 ) {
-    for (entity, _np,  scale, mut timer, mut trans) in &mut query.iter() {
+    for (entity, _np,  mut timer, trans) in &mut query.iter() {
         timer.tick(time.delta_seconds);
         if timer.finished {
             let old_loc = Location::from(*trans);
             let direction = rand::random::<CardinalDirection>();
+            let scale = trans.scale().x();
             match direction {
-                CardinalDirection::West => *trans.0.x_mut() -= settings.base_npc_speed * scale.0, // replace with npc speed
-                CardinalDirection::North => *trans.0.y_mut() += settings.base_npc_speed * scale.0,
-                CardinalDirection::South => *trans.0.y_mut() -= settings.base_npc_speed * scale.0,
-                CardinalDirection::East => *trans.0.x_mut() += settings.base_npc_speed * scale.0,
+                CardinalDirection::West => *trans.translation().x_mut() -= settings.base_npc_speed * scale, // replace with npc speed
+                CardinalDirection::North => *trans.translation().y_mut() += settings.base_npc_speed * scale,
+                CardinalDirection::South => *trans.translation().y_mut() -= settings.base_npc_speed * scale,
+                CardinalDirection::East => *trans.translation().x_mut() += settings.base_npc_speed * scale,
                 CardinalDirection::None => {}
             }
 

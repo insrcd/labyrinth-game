@@ -123,7 +123,8 @@ pub struct TileComponents {
     pub sprite: SpriteInfo,
     pub state: ObjectState,
     pub zoomable: Zoomable,
-    pub handle: WorldHandle<Tile>
+    pub handle: WorldHandle<Tile>,
+    pub interaction: WorldHandle<TileInteraction>
 }
 impl Clone for TileComponents {
     fn clone(&self) -> Self {
@@ -133,7 +134,8 @@ impl Clone for TileComponents {
             sprite: self.sprite.clone(),
             state: self.state.clone(),
             zoomable: self.zoomable.clone(),
-            handle: WorldHandle::default()
+            handle: WorldHandle::default(),
+            interaction: self.interaction.clone()
         }
     }
 }
@@ -145,7 +147,8 @@ impl Default for TileComponents {
             sprite: SpriteInfo::default(),
             zoomable: Zoomable,
             state: ObjectState::default(),
-            handle: WorldHandle::default()
+            handle: WorldHandle::default(),
+            interaction: WorldHandle::default()
         }
     }
 }

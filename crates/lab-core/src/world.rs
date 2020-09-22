@@ -1,6 +1,6 @@
 use uuid::Uuid;
 use bevy::prelude::*;
-use std::{marker::PhantomData, collections::{btree_map::{Keys, Values}, BTreeMap, HashMap}, sync::{Arc, Mutex}, rc::Rc, hash::Hasher, hash::Hash, fmt::Debug};
+use std::{marker::PhantomData, collections::{hash_map::{Keys, Values}, HashMap}, sync::{Arc, Mutex}, rc::Rc, hash::Hasher, hash::Hash, fmt::Debug};
 use defaults::*;
 use crate::interaction::*;
 use serde::{Serialize, Deserialize};
@@ -18,6 +18,11 @@ pub enum WorldLocation {
 pub struct Location (pub f32, pub f32, pub f32, 
     #[property(ignore)] pub WorldLocation);
 
+impl Location {
+    pub fn new(xform : Transform, loc: WorldLocation) -> Location {
+        Location (xform.translation().x(), xform.translation().y(),xform.translation().z(), loc)
+    }
+}
 
 impl Default for Location {
     fn default() -> Self {
@@ -25,6 +30,7 @@ impl Default for Location {
     }
     
 }
+
 impl From<Location> for Vec3 {
     fn from(x: Location) -> Self {
         Vec3::new(x.0, x.1, x.2)
@@ -38,22 +44,37 @@ impl From<Location> for Vec2 {
 }
 #[derive(Default, Clone, Debug)]
 pub struct InteractionCatalog <I, T : CatalogItem + Sync + Send + Clone, R: Sync + Send + Clone> 
-where I : Interact<T, R> {
+where I : 'static + Interact<T, R> {
     item : I,
     data : PhantomData<R>,
-    pub components: BTreeMap<String, T>,
-    pub interactions: BTreeMap<WorldHandle<I>, Arc<I>>
+    pub cur_id : u32,
+    pub components: HashMap<String, T>,
+    pub interactions: HashMap<WorldHandle<I>, Arc<I>>
 }
 
 impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> InteractionCatalog<I, T, R>
- where I : Interact <T,R> {    /// if there's a tile named and an interaction for tha tile, return it, if not None
+ where I : Interact <T,R> { 
     pub fn get_interaction(&self, handle: WorldHandle<I>) -> Option<Arc<I>> {
         //println!("looking for interaction for {}", name);
-        if let Some(interact)  = self.interactions.get(handle) {
+        if let Some(interact)  = self.interactions.get(&handle) {
             Some(interact.clone())
         } else {
             None
         }
+    }
+    pub fn add_interaction(&mut self, interaction : I) -> WorldHandle<I> {        
+        let handle = WorldHandle::<I> {
+            id:  HandleId::new(),
+            entity: Entity::new(0),
+            ..Default::default() 
+        };
+
+        self.interactions.insert(handle,  Arc::new(interaction));
+
+        handle.clone()
+    }
+    pub fn bind_interaction(&self, commands : &mut Commands, object_handle: WorldHandle<T>, handle: WorldHandle<I>)  {
+
     }
     pub fn names(&self) -> Keys<'_, String, T>{
         self.components.keys()
@@ -88,11 +109,11 @@ impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> Interac
 
 impl Location {
     pub fn normalize( window: &Window, 
-            cam_transition: &Translation,  
+            cam_transition: &Transform,  
             position : &Vec2) -> Vec2 {
 
-        let camera_offset_x : f32 = cam_transition.x();
-        let camera_offset_y : f32 = cam_transition.y() ;
+        let camera_offset_x : f32 = cam_transition.translation().x();
+        let camera_offset_y : f32 = cam_transition.translation().y();
     
         let x_window_offset = window.width;
         let y_window_offset = window.height;
@@ -104,9 +125,9 @@ impl Location {
     }
 }
 
-impl From<Translation> for Location {
-    fn from(t : Translation) -> Self {
-        Location (t.0.x(), t.0.y(), t.0.z(), WorldLocation::World)
+impl From<Transform> for Location {
+    fn from(t : Transform) -> Self {
+        Location::new(t, WorldLocation::World)
     }
 }
 
@@ -203,7 +224,7 @@ impl<T> Default for WorldHandle<T> {
         WorldHandle {
             id: HandleId::new(),
             marker: PhantomData,
-            entity: Entity::new()
+            entity: Entity::new(1)
         }
     }
 }

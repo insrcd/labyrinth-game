@@ -71,7 +71,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -142,7 +142,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -258,7 +258,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -385,7 +385,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -512,7 +512,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -639,7 +639,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -766,7 +766,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -893,7 +893,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1020,7 +1020,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1147,7 +1147,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1274,7 +1274,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1401,7 +1401,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1528,7 +1528,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1655,7 +1655,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1782,7 +1782,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -1909,7 +1909,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2036,7 +2036,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2163,7 +2163,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2290,7 +2290,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2417,7 +2417,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2544,7 +2544,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2671,7 +2671,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2798,7 +2798,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -2925,7 +2925,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3052,7 +3052,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3179,7 +3179,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3306,7 +3306,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3433,7 +3433,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3560,7 +3560,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3687,7 +3687,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3814,7 +3814,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -3941,7 +3941,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4068,7 +4068,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4195,7 +4195,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4322,7 +4322,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4449,7 +4449,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4576,7 +4576,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4703,7 +4703,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4830,7 +4830,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -4957,7 +4957,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5084,7 +5084,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5211,7 +5211,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5338,7 +5338,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5465,7 +5465,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5592,7 +5592,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5719,7 +5719,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5846,7 +5846,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -5973,7 +5973,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",
@@ -6100,7 +6100,7 @@
         },
       },
       {
-        "type": "Translation",
+        "type": "Transform",
         "map": {
           "0": {
             "type": "Vec3",

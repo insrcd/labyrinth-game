@@ -45,14 +45,14 @@ pub fn track_mouse_movement_system(
     scroll_state : Res<ScrollState>,
     world : Res<WorldSettings>,
     windows: Res<Windows>,
-    mut camera_query: Query<(&Camera, &Translation)>) {
+    mut camera_query: Query<(&Camera, &Transform)>) {
         let mut camera_offset_x : f32 = 0.;
         let mut camera_offset_y : f32 = 0.;
         
         for (c, t) in &mut camera_query.iter(){
             if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
-                camera_offset_x = t.x();
-                camera_offset_y = t.y() ;
+                camera_offset_x = t.translation().x();
+                camera_offset_y = t.translation().y() ;
             }
         }
 
@@ -113,7 +113,7 @@ pub fn player_movement_system (
     time : Res<Time>,
     world_settings : Res<WorldSettings>,
     keyboard_input: Res<Input<KeyCode>>, 
-    mut query: Query<(&player::Player, &Scale, &mut Translation, &mut Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
+    mut query: Query<(&player::Player, &mut Transform, &mut Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
 
     let mut direction = CardinalDirection::None;
@@ -135,29 +135,29 @@ pub fn player_movement_system (
 
     let player_speed = world_settings.base_player_speed;
 
-    for (_player, scale, mut loc, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
+    for (_player, mut transform, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
         timer.0.tick(time.delta_seconds);
         if  timer.0.finished {
-            let old_loc = Location::from(*loc);
+            let old_loc = Location::new(*transform, WorldLocation::World);
 
             let sprite = match direction {
                 CardinalDirection::North => {
-                    *loc.0.y_mut() += player_speed * scale.0;
+                    *transform.translation().y_mut() += player_speed * transform.scale().y();
                     animation.count = (animation.count + 1) % animation.up.len();
                     Some(animation.up[animation.count].clone())
                 },
                 CardinalDirection::South => {
-                    *loc.0.y_mut() -= player_speed * scale.0;
+                    *transform.translation().y_mut() -= player_speed * transform.scale().y();
                     animation.count = (animation.count + 1) % animation.down.len();
                     Some(animation.down[animation.count].clone())
                 },
                 CardinalDirection::West => {
-                    *loc.0.x_mut() -= player_speed * scale.0;
+                    *transform.translation().x_mut() -= player_speed * transform.scale().x();
                     animation.count = (animation.count + 1) % animation.left.len();
                     Some(animation.left[animation.count].clone())
                 },
                 CardinalDirection::East => {
-                    *loc.0.x_mut() += player_speed * scale.0;
+                    *transform.translation().x_mut() += player_speed * transform.scale().x();
                     animation.count = (animation.count + 1) % animation.right.len();
                     Some(animation.right[animation.count].clone())
                 },
@@ -167,7 +167,7 @@ pub fn player_movement_system (
             };
 
             if direction != CardinalDirection::None {
-                *movement = Movement::new(old_loc, Location::from(*loc), direction);
+                *movement = Movement::new(old_loc, Location::new(*transform, WorldLocation::World), direction);
 
                 if let Some(s) = sprite {
                     *atlas = s.atlas_handle;

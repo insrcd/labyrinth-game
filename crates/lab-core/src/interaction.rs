@@ -33,7 +33,7 @@ where Self : Clone + Sized {
 } 
 
 pub struct InteractionContext <'a, I, T : CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone> 
-where I : Interact<T, R> {
+where I : Interact<T, R> + 'static {
     pub source: Entity,
     pub destination: Entity,
     // resources
@@ -43,6 +43,7 @@ where I : Interact<T, R> {
         &'a InteractableType,
         &'a Named,
         &'a ObjectState,
+        &'a WorldHandle<Interaction>,
         &'a WorldHandle<Tile>,
         &'a Inventory
     )>,

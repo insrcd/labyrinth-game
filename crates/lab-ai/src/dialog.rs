@@ -18,9 +18,9 @@ pub fn dialog_system (
   windows: Res<Windows>,
   dialog_state: Res<DialogState>,
   
-  mut player_query : Query<(Entity, &Player, &Translation)>,
-  mut m_query: Query<(Entity, &NonPlayer, &Translation, &Named)>,
-  mut camera_query: Query<(&Camera, &Translation)>
+  mut player_query : Query<(Entity, &Player, &Transform)>,
+  mut m_query: Query<(Entity, &NonPlayer, &Transform, &Named)>,
+  mut camera_query: Query<(&Camera, &Transform)>
 ) {
   let window = windows.iter().last().unwrap();
   let c_trans = camera_query.iter()

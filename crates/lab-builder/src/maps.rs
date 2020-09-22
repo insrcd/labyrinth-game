@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
 use crate::*;
-use lab_world::{TileComponents, TilePalette};
+use lab_world::{TileComponents, TilePalette, TileInteraction};
 use std::{rc::Rc, cell::RefCell};
 use lab_core::prelude::*;
 
@@ -127,6 +127,45 @@ impl<'a>  MapBuilder {
             println!("Cannot find tile definition for {}", tile_name);
         }
     
+        self
+    }
+
+    pub fn add_interactable(&mut self, pos : RelativePosition, count : u32, tile_name: String, interaction : WorldHandle<TileInteraction>) -> &mut Self {
+        let comps = self.world_catalog.components.get(&tile_name).expect("Cannot find tiles");
+        for _ in 0..count {
+            let mut my_comp = comps.clone();
+            my_comp.name = Named(tile_name.to_string());
+
+            let loc = self.current_location;
+            
+            let tile_size_x = comps.sprite.width as f32;
+            let tile_size_y = comps.sprite.height as f32;
+
+            println!("Tile Size: {},{}", tile_size_x, tile_size_y);
+
+            let location = match pos {
+                RelativePosition::LeftOf => {                                    
+                    Location(loc.0 - tile_size_x, loc.1, loc.2, WorldLocation::World)
+                }
+                RelativePosition::RightOf => {
+                    Location(loc.0 + tile_size_x, loc.1, loc.2, WorldLocation::World)
+                }
+                RelativePosition::Above => {
+                    Location(loc.0, loc.1 + tile_size_y, loc.2, WorldLocation::World)
+                }
+                RelativePosition::Below => {
+                    Location(loc.0, loc.1 - tile_size_y, loc.2, WorldLocation::World)
+                },
+                _ => self.current_location
+            };
+            
+            my_comp.location = location;
+            my_comp.interaction = interaction;
+
+            self.tiles.push(my_comp);
+
+            self.current_location = location;
+        }
         self
     }
     pub fn add_tiles(&mut self, pos : RelativePosition, count : u32, tile_name: String) -> &mut Self {
