@@ -65,7 +65,6 @@ impl <I, T : CatalogItem + Sync + Send + Clone, R : Sync + Send + Clone> Interac
     pub fn add_interaction(&mut self, interaction : I) -> WorldHandle<I> {        
         let handle = WorldHandle::<I> {
             id:  HandleId::new(),
-            entity: Entity::new(0),
             ..Default::default() 
         };
 
@@ -191,7 +190,6 @@ where
     T: 'static,
 {
     pub id: HandleId,
-    pub entity: Entity,
     #[property(ignore)]
     marker: PhantomData<T>,
 }
@@ -221,8 +219,7 @@ impl<T> Default for WorldHandle<T> {
     fn default() -> Self {
         WorldHandle {
             id: HandleId::new(),
-            marker: PhantomData,
-            entity: Entity::new(1)
+            marker: PhantomData
         }
     }
 }
@@ -231,8 +228,7 @@ impl<T> Clone for WorldHandle<T> {
     fn clone(&self) -> Self {
         WorldHandle {
             id: self.id,
-            marker: PhantomData,
-            entity: self.entity
+            marker: PhantomData
         }
     }
 }

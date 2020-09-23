@@ -37,6 +37,7 @@ pub struct CorePlugin;
 impl Plugin for CorePlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .init_resource::<Items>()
             .init_resource::<WorldSettings>()
             .init_resource::<AdventureLog>()
             .init_resource::<InputTimer>();

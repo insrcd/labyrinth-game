@@ -238,6 +238,7 @@ pub fn inventory_ui_system (
     asset_server: Res<AssetServer>,
     materials: ResMut<Assets<ColorMaterial>>,
     mut assets: ResMut<Assets<Font>>,
+    mut items: ResMut<Items>,
     button_materials: Res<ButtonMaterials>,
     mut state_query: Query<(Entity, Changed<UiState>)>,
     item_query: Query<(Entity, &WorldHandle<Item>, &Named)>,
@@ -271,12 +272,11 @@ pub fn inventory_ui_system (
             c.spawn(ui.flex_container(inventory_column, colors.grey2))
             .with_children(|parent| {
               for item in inv.0.iter(){
-                // all items have a tile
-                let tile_handle = item_query.get::<WorldHandle<Tile>>((*item).entity).unwrap();
+                let entity = items.items.get(item).unwrap();
                 // and are named
-                let name = item_query.get::<Named>((*item).entity).unwrap();
+                let name = item_query.get::<Named>(*entity).unwrap();
                 // all tiles have sprites
-                let sprite = tile_query.get::<SpriteInfo>((*tile_handle).entity).unwrap();
+                let sprite = item_query.get::<SpriteInfo>(*entity).unwrap();
     
                 ui.build_item(parent, 
                   &*sprite, 

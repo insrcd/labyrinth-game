@@ -50,9 +50,9 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             item_type: ItemType::Key,
             item_slot: ItemSlot::LeftHand,
             handle: WorldHandle::default(),
-            tile_handle: (*tilehandle.unwrap()).clone()
+            tile_handle: (*tilehandle.unwrap()).clone(), 
         };
-        println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle.entity);
+        println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle);
         let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
     
         if let Some(t) = itype {
@@ -83,22 +83,25 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             description: "Enemy Interaction",});
     let locked_door_interaction = palette.add_interaction(TileInteraction { caller: |ctx| {    
             
-                let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
-                
-                let inventory = ctx.interaction_query.get::<Inventory>(ctx.source).unwrap();
-                
-                for e in (*inventory).0.iter() {
-                    let item = ctx.item_query.get::<Named>(e.entity).unwrap();
-                    if item.0 == "Key To Building 2" {
-                        return vec![
-                            TileInteractionResult::ChangeSprite(ctx.destination, comps.sprite.clone()),
-                            TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
-                    }
-                }
-    
-                vec![TileInteractionResult::Block(ctx.source), TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
-            },
-                description: "Open Door",});
+        let comps = ctx.world_catalog.components.get(tiles::BRICK_DOOR_OPEN).expect("Open brick door tile cannot be found");        
+        
+        println!("Source entity: {:?}", ctx.source);
+        let inventory = ctx.interaction_query.get::<Inventory>(ctx.source).unwrap();
+        
+        for e in (*inventory).0.iter() {
+            let entity = ctx.items.items.get(e).unwrap();
+            let item = ctx.item_query.get::<Named>(*entity).unwrap();
+
+            if item.0 == "Key To Building 2" {
+                return vec![
+                    TileInteractionResult::ChangeSprite(ctx.destination, comps.sprite.clone()),
+                    TileInteractionResult::Message("You have the key, Unlocked the door!".into())];
+            }
+        }
+
+        vec![TileInteractionResult::Block(ctx.source), TileInteractionResult::Message("The door is locked, maybe there's a key somewhere".into())]
+    },
+        description: "Open Door",});
     let window_interaction = palette.add_interaction(TileInteraction { 
             caller: |ctx| {  
                 let comps = ctx.world_catalog.components.get(tiles::BRICK_WINDOW_OPEN).expect("Open brick door tile cannot be found");        
@@ -131,9 +134,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         tiles.state.set_int("hardness".into(), 1);
         tiles.state.set_int("hit_points".into(), 100);        
     }
-    if let Some(mut tiles) = palette.components.get_mut(tiles::ENEMY) {
-        // add enemy stats here
-    }
+
 
     if let Some(tiles) = palette.components.get(tiles::BRICK_DOOR) {
         // open doors
@@ -144,7 +145,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     
     let mut mb = MapBuilder::new(palette.clone(), &Location::default());
 
-    &mut mb
+    &mut mb .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
+           
             .add_interactable(RelativePosition::RightOf, 5, tiles::WALL.to_string(),bump_handle)
             .add_interactable(RelativePosition::Below, 5, tiles::WALL.to_string(),bump_handle)
             .add_interactable(RelativePosition::LeftOf, 1, tiles::WALL.to_string(),bump_handle)
@@ -152,18 +154,17 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .add_interactable(RelativePosition::LeftOf, 1, tiles::WALL.to_string(),bump_handle)
             .add_interactable(RelativePosition::LeftOf, 2, tiles::WALL.to_string(),bump_handle)
             .add_interactable(RelativePosition::Above, 5, tiles::WALL.to_string(),bump_handle)
-            .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
             .to_blueprint("basic_house");
 
     mb
+    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
     .add_tiles(RelativePosition::RightOf, 5, tiles::BRICK.to_string())
     .add_tiles(RelativePosition::Below, 5, tiles::BRICK.to_string())
-    .add_tiles(RelativePosition::LeftOf, 2, tiles::BRICK_WINDOW.to_string())
-    .add_tiles(RelativePosition::LeftOf, 1, tiles::LOCKED_DOOR.to_string())
-    .add_tiles(RelativePosition::LeftOf, 1, tiles::BRICK_WINDOW.to_string())
+    .add_interactable(RelativePosition::LeftOf, 2, tiles::BRICK_WINDOW.to_string(), window_interaction)
+    .add_interactable(RelativePosition::LeftOf, 1, tiles::BRICK_DOOR.to_string(), locked_door_interaction)
+    .add_interactable(RelativePosition::LeftOf, 1, tiles::BRICK_WINDOW.to_string(), window_interaction)
     .add_tiles(RelativePosition::LeftOf, 1, tiles::BRICK.to_string())
     .add_tiles(RelativePosition::Above, 5, tiles::BRICK.to_string())
-    .add_tiles_to_area(&Location(0.,0.,0., WorldLocation::World), Vec2::new(6., 6.), tiles::FLOOR.to_string())
     .to_blueprint("brick_house");
 
     mb
@@ -177,8 +178,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         .add_tiles_from_blueprint("walkway")
         .add_tiles_from_blueprint("basic_house")
         .set_position(Location(-32.,0.,3., WorldLocation::World))
-        .add_tiles(RelativePosition::Below, 1,  tiles::ITEM.to_string())
-        .add_tiles(RelativePosition::Below, 40,  tiles::ITEM2.to_string());
+        .add_interactable(RelativePosition::Below, 1,  tiles::ITEM.to_string(), item_interaction)
+        .add_interactable(RelativePosition::Below, 40,  tiles::ITEM2.to_string(), item_interaction);
         //.add_mobs(Location(-32.,64.,3., WorldLocation::World), 10,  tiles::ENEMY.to_string());
         //.add_tiles_from_blueprint("walkway");*/
          //.add_tiles_from_blueprint("basic_house_2");
@@ -187,15 +188,11 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
 
     for comp in mb.iter() {
         let c = comp.clone();
-        
-        let mut handle = c.handle;
 
         commands
             .spawn(c)
             .with_bundle(comp.sprite.to_components(comp.location.into(), 1.))
             .with_bundle(Interactable::new(InteractableType::Tile));
-            handle.entity = commands.current_entity().expect("could not get entity from current entity").clone();
-      //  println!("Spawning entity {:?} {:?}", comp, commands.current_entity());
             
     } 
 
@@ -206,8 +203,6 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .with_bundle(mob.sprite.to_components(mob.location.into(), 1.))
             .with_bundle(Interactable::new(InteractableType::Npc))
             .with(enemy_interaction);
-
-        handle.entity = commands.current_entity().expect("could not get entity from current entity").clone();
     }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));

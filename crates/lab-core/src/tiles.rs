@@ -25,6 +25,11 @@ impl Debug for StateParseErr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("State Error: {}", self.message))
     }
+  }
+
+#[derive(Clone, Default)]
+pub struct Items {
+    pub items: HashMap<WorldHandle<Item>, Entity>
 }
 /// Component for tracking tile state
 /// e.g. val true_or_false : bool = tile_state.get("is_open".into()).into()

@@ -37,6 +37,7 @@ where I : Interact<T, R> + 'static {
     pub source: Entity,
     pub destination: Entity,
     // resources
+    pub items: &'a ResMut<'a, Items>,
     pub world_catalog: InteractionCatalog<I, T, R>,
     pub interaction_query: &'a Query<'a, (
         Entity,

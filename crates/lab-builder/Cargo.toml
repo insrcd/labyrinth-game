@@ -11,7 +11,7 @@ edition = "2018"
 log = { version = "0.4", features = ["release_max_level_info"] }
 serde = { version = "1.0", features = ["derive"]}
 
-bevy = { git = "https://github.com/insrcd/bevy" }
+bevy = { git = "https://github.com/bevyengine/bevy" }
 
 strum = "0.19.2"
 strum_macros = "0.19.2"

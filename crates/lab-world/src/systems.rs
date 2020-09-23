@@ -75,6 +75,8 @@ pub fn collision_system(
 
 pub fn interaction_system(
     mut commands: Commands,
+    
+    mut items : ResMut<Items>,
     mut result_events : ResMut<Events<TileInteractionResultEvent>>,
     mut state: ResMut<InteractionState>,
     interaction_events: ResMut<Events<InteractionEvent>>,
@@ -111,7 +113,8 @@ pub fn interaction_system(
                             destination: event.destination,
                             world_catalog:world_catalog.clone(),
                             interaction_query: &interactable_query,
-                            item_query: &item_query
+                            item_query: &item_query,
+                            items: &items
                         };
                         for r in tile_interaction.interact(ctx).iter() {
                             result_events.send(TileInteractionResultEvent { 
@@ -131,6 +134,7 @@ pub fn interaction_system(
 pub fn process_interaction_result_system (
     mut commands : Commands,
     interaction_events : ResMut<Events<TileInteractionResultEvent>>,
+    mut items : ResMut<Items>,
     mut state: ResMut<InteractionState>,
     mut text_update: ResMut<Events<TextChangeEvent>>,
     tile_query: Query<
@@ -207,18 +211,21 @@ pub fn process_interaction_result_system (
             }
             TileInteractionResult::Menu(_) => {},
             
-            TileInteractionResult::AddItem(dst, mut item) => {
+            TileInteractionResult::AddItem(dst, item) => {
             
 
                 if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(dst) {
                     inventory.0.push(item.handle.clone());
-                    
-                    let mut handle = item.handle;
-                    
+
+                    let handle = item.handle;
+
                     commands
-                        .spawn(( item, ));
+                        .spawn(( item, ))
+                        .for_current_entity(|e| {
+                            items.items.insert(handle, e.clone());
+                         } );
                     
-                    handle.entity = commands.current_entity().expect("No current entity found after spawning., it").clone();
+                    //handle.entity = commands.current_entity().expect("No current entity found after spawning., it").clone();
                 }
             }
         };

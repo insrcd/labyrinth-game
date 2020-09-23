@@ -16,7 +16,7 @@ strum_macros = "0.19.2"
 rand = "0.7.3"
 
 defaults = "0.2.0"
-bevy = { git = "https://github.com/insrcd/bevy" }
+bevy = { git = "https://github.com/bevyengine/bevy" }
 
 lab-core = { path = "../lab-core" }
 lab-sprites = { path = "../lab-sprites" }
