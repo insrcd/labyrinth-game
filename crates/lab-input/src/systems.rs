@@ -116,65 +116,71 @@ pub fn player_movement_system (
     mut query: Query<(&player::Player, &mut Transform, &mut Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
 
-    let mut direction = CardinalDirection::None;
+    let mut anination_direction = CardinalDirection::None;
+    let mut direction = Vec3::zero();
+        
+    if keyboard_input.pressed(KeyCode::A) {
+        anination_direction = CardinalDirection::West;
+        direction -= Vec3::new(1.0, 0.0, 0.0);
+    }
+
+    if keyboard_input.pressed(KeyCode::D) {
+        anination_direction = CardinalDirection::East;
+        direction += Vec3::new(1.0, 0.0, 0.0);
+    }
 
     if keyboard_input.pressed(KeyCode::W) {
-        direction = CardinalDirection::North;
+        anination_direction = CardinalDirection::North;
+        direction += Vec3::new(0.0, 1.0, 0.0);
     }
 
     if keyboard_input.pressed(KeyCode::S) {
-        direction = CardinalDirection::South;
+        anination_direction = CardinalDirection::South;
+        direction -= Vec3::new(0.0, 1.0, 0.0);
     }
 
-    if keyboard_input.pressed(KeyCode::A) {
-        direction = CardinalDirection::West;
-    }
-    if keyboard_input.pressed(KeyCode::D) {
-        direction = CardinalDirection::East;
-    }
-
+    
+    //translation.0 += time.delta_seconds * direction * 1000.0;
+    
     let player_speed = world_settings.base_player_speed;
-
-    for (_player, mut transform, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
-        timer.0.tick(time.delta_seconds);
-        if  timer.0.finished {
-            let old_loc = Location::new(*transform, WorldLocation::World);
-
-            let sprite = match direction {
-                CardinalDirection::North => {
-                    *transform.translation_mut().y_mut() += player_speed * transform.scale().y();
-                    animation.count = (animation.count + 1) % animation.up.len();
-                    Some(animation.up[animation.count].clone())
-                },
-                CardinalDirection::South => {
-                    *transform.translation_mut().y_mut() -= player_speed * transform.scale().y();
-                    animation.count = (animation.count + 1) % animation.down.len();
-                    Some(animation.down[animation.count].clone())
-                },
-                CardinalDirection::West => {
-                    *transform.translation_mut().x_mut() -= player_speed * transform.scale().x();
-                    animation.count = (animation.count + 1) % animation.left.len();
-                    Some(animation.left[animation.count].clone())
-                },
-                CardinalDirection::East => {
-                    *transform.translation_mut().x_mut() += player_speed * transform.scale().x();
-                    animation.count = (animation.count + 1) % animation.right.len();
-                    Some(animation.right[animation.count].clone())
-                },
-                CardinalDirection::None => {
-                    None
-                }
-            };
-
-            if direction != CardinalDirection::None {
-                *movement = Movement::new(old_loc, Location::new(*transform, WorldLocation::World), direction);
-
+    if anination_direction != CardinalDirection::None {
+        
+        for (_player, mut transform, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   
+            timer.0.tick(time.delta_seconds);
+            let trans = transform.translation();
+            
+            let scale = transform.scale();
+            transform.set_translation( trans + time.delta_seconds * (direction*scale) * 80.0);
+            *movement = Movement::new(trans, transform.translation(), direction);
+            if timer.0.finished {
+                let sprite = match anination_direction {
+                    CardinalDirection::North => {
+                        animation.count = (animation.count + 1) % animation.up.len();
+                        Some(animation.up[animation.count].clone())
+                    },
+                    CardinalDirection::South => {
+                        animation.count = (animation.count + 1) % animation.down.len();
+                        Some(animation.down[animation.count].clone())
+                    },
+                    CardinalDirection::West => {
+                        animation.count = (animation.count + 1) % animation.left.len();
+                        Some(animation.left[animation.count].clone())
+                    },
+                    CardinalDirection::East => {
+                        animation.count = (animation.count + 1) % animation.right.len();
+                        Some(animation.right[animation.count].clone())
+                    },
+                    CardinalDirection::None => {
+                        None
+                    }
+                };
+            
                 if let Some(s) = sprite {
-                    *atlas = s.atlas_handle;
-                    (*texture_sprite).index = s.atlas_sprite;
-                }
+                                    *atlas = s.atlas_handle;
+                                    (*texture_sprite).index = s.atlas_sprite;
+                                }
+                timer.0.reset();
             }
-            timer.0.reset();
-        }
-    }      
+        }     
+    }
 }

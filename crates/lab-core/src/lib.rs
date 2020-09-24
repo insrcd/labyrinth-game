@@ -160,25 +160,25 @@ impl AdventureLog {
 
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Movement { 
-    pub start: Location, 
-    pub end:  Location, 
-    pub direction: CardinalDirection, 
+    pub start: Vec3, 
+    pub end:  Vec3, 
+    pub direction: Vec3, 
     pub legal: Option<bool> 
 }
 
 impl Default for Movement {
     fn default() -> Movement {
         Movement {
-            start: Location::default(),
-            end: Location::default(),
-            direction: CardinalDirection::None,
+            start:Vec3::zero(),
+            end: Vec3::zero(),
+            direction: Vec3::zero(),
             legal: None
         }
     }
 }
 
 impl Movement {
-    pub fn new(start: Location, end: Location, direction: CardinalDirection) -> Self {
+    pub fn new(start: Vec3, end: Vec3, direction: Vec3) -> Self {
         Movement {
             start: start,
             end: end,

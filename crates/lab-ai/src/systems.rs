@@ -19,7 +19,7 @@ pub fn npc_move_system(
     for (entity, _np,  mut timer, trans) in &mut query.iter() {
         timer.tick(time.delta_seconds);
         if timer.finished {
-            let old_loc = Location::from(*trans);
+            let old_translation = trans.translation();
             let direction = rand::random::<CardinalDirection>();
             let scale = trans.scale().x();
             match direction {
@@ -32,9 +32,9 @@ pub fn npc_move_system(
 
             commands.insert(entity, ( 
                     Movement { 
-                        start:old_loc, 
-                        end:Location::from(*trans), 
-                        direction: direction, 
+                        start:old_translation, 
+                        end:trans.translation(),
+                        direction: old_translation - trans.translation(), 
                         legal: Some(true)
                     },
                 )

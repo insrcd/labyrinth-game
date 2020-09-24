@@ -49,7 +49,7 @@ pub fn collision_system(
             //println!("checking colision tile: {:?}", tile_translation);
             let collision = collide(
                 move_translation.translation(),
-                Vec2::new(8., 8.) * move_translation.scale().truncate(),
+                Vec2::new(8., 16.) * move_translation.scale().truncate(),
                 tile_translation.translation(),
                 tile_sprite.size() * tile_translation.scale().truncate(),
             );
@@ -196,8 +196,8 @@ pub fn process_interaction_result_system (
                 println!("Got block");
                 if let Ok(mut translation) = entity_query.get_mut::<Transform>(entity) {
                     if let Ok(src_move) = entity_query.get::<Movement>(entity) {
-                        *translation.translation_mut().x_mut() = src_move.start.0;
-                        *translation.translation_mut().y_mut() = src_move.start.1;
+                        *translation.translation_mut().x_mut() = src_move.start.x();
+                        *translation.translation_mut().y_mut() = src_move.start.y();
                     }
                 }
             }
@@ -291,13 +291,13 @@ pub fn zoom_system(
     }
 
 
-    for e in entities_changed {
-        match &mut movement_query.get_mut::<Movement>(e.0) {
+    for (e,l1,l2) in entities_changed {
+        match &mut movement_query.get_mut::<Movement>(e) {
             Ok(movement) => {
                 //println!("Setting movement for {:?}", e.0);
-                movement.start = e.1;
-                movement.end = e.2;
-                movement.direction = CardinalDirection::None;                    
+                movement.start = l1.into();
+                movement.end = l2.into();
+                movement.direction = Vec3::zero();                    
             }
             Err(_err) => {                    
                 // this will happen if the entity doesn't have a movement
@@ -346,7 +346,7 @@ pub fn static_text_system(
 ) {
     for (_e, _player, movement, t) in &mut player_query.iter() {
         for (_e, _letter, mut translation, _st) in &mut query.iter() {            
-            let change : Vec2 = Vec2::from(movement.start) - Vec2::from(movement.end);
+            let change : Vec2 = movement.start.truncate() - movement.end.truncate();
 
             // make sure there actually was a movement change in translation
             if Vec2::new(0.,0.) != change {

@@ -141,7 +141,7 @@ impl<'a>  MapBuilder {
             let tile_size_x = comps.sprite.width as f32;
             let tile_size_y = comps.sprite.height as f32;
 
-            println!("Tile Size: {},{}", tile_size_x, tile_size_y);
+            //println!("Tile Size: {},{}", tile_size_x, tile_size_y);
 
             let location = match pos {
                 RelativePosition::LeftOf => {                                    
@@ -179,7 +179,7 @@ impl<'a>  MapBuilder {
                 let tile_size_x = comps.sprite.width as f32;
                 let tile_size_y = comps.sprite.height as f32;
 
-                println!("Tile Size: {},{}", tile_size_x, tile_size_y);
+                //println!("Tile Size: {},{}", tile_size_x, tile_size_y);
 
                 let location = match pos {
                     RelativePosition::LeftOf => {                                    
