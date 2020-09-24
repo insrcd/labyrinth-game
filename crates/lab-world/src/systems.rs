@@ -103,7 +103,7 @@ pub fn interaction_system(
 
                 if let Some(tile_handle) = tile_handle_r.ok() {
                     
-                    println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, tile_handle);
+                    //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, tile_handle);
                     
                     if let Some(tile_interaction) =
                             world_catalog.get_interaction(*tile_handle)

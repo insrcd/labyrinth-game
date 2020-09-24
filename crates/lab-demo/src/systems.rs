@@ -52,7 +52,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             handle: WorldHandle::default(),
             tile_handle: (*tilehandle.unwrap()).clone(), 
         };
-        println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle);
+       // println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle);
         let itype = ctx.interaction_query.get::<InteractableType>(ctx.source).ok();
     
         if let Some(t) = itype {
