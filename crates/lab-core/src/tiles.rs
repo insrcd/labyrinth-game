@@ -31,6 +31,27 @@ impl Debug for StateParseErr {
 pub struct Items {
     pub items: HashMap<WorldHandle<Item>, Entity>
 }
+
+impl Items {
+  pub fn add(&mut self, components : ItemComponents, entity: Entity) -> &Items {
+    self.items.insert(components.handle, entity);
+
+    self
+  }
+
+  pub fn make(&mut self, commands : &mut Commands) -> WorldHandle<Item> {
+    let handle:WorldHandle<Item> = WorldHandle::default();
+
+    commands.spawn(ItemComponents {
+      handle: handle,
+      ..Default::default()
+    }).for_current_entity(|f|{
+      self.items.insert(handle, f);
+    });
+
+    handle
+  }
+}
 /// Component for tracking tile state
 /// e.g. val true_or_false : bool = tile_state.get("is_open".into()).into()
 #[derive(Clone, Debug, PartialEq)]

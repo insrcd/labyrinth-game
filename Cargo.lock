@@ -1399,9 +1399,9 @@ dependencies = [
 
 [[package]]
 name = "gfx-backend-metal"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d6b2b1e2510c8a283beac1e680cd152edc05d138c00dfabc0e3f636e143ffd66"
+checksum = "c9a5278b173f1008ad38f2bd38ca51e18a5e5d23a87195824bee468fcc390dce"
 dependencies = [
  "arrayvec",
  "bitflags",
@@ -1425,9 +1425,9 @@ dependencies = [
 
 [[package]]
 name = "gfx-backend-vulkan"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a84bda4200a82e1912d575801e2bb76ae19c6256359afbc0adfbbaec02fcadc6"
+checksum = "d3d79e22b4dd093774a1ef771e18ae59aec558a21f48ae494677f5f8ebc067f6"
 dependencies = [
  "arrayvec",
  "ash",
@@ -1773,6 +1773,19 @@ dependencies = [
  "log",
  "rand",
  "serde",
+ "strum",
+ "strum_macros",
+ "uuid",
+]
+
+[[package]]
+name = "lab-data"
+version = "0.1.0"
+dependencies = [
+ "defaults",
+ "log",
+ "serde",
+ "serde_json",
  "strum",
  "strum_macros",
  "uuid",

@@ -213,19 +213,18 @@ pub fn process_interaction_result_system (
             
             TileInteractionResult::AddItem(dst, item) => {
             
-
+                // Add an item to the destination entities inventory                
                 if let Ok(mut inventory) = entity_query.get_mut::<Inventory>(dst) {
                     inventory.0.push(item.handle.clone());
 
                     let handle = item.handle;
 
                     commands
-                        .spawn(( item, ))
+                        .spawn( item)
                         .for_current_entity(|e| {
-                            items.items.insert(handle, e.clone());
-                         } );
-                    
-                    //handle.entity = commands.current_entity().expect("No current entity found after spawning., it").clone();
+                            // register the entity with the items resource.
+                            items.items.insert(handle, e);
+                         } );                                        
                 }
             }
         };

@@ -90,6 +90,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         
         for e in (*inventory).0.iter() {
             let entity = ctx.items.items.get(e).unwrap();
+            println!("Got entity {:?} in inventory for item {:?}", entity, e);
             let item = ctx.item_query.get::<Named>(*entity).unwrap();
 
             if item.0 == "Key To Building 2" {
