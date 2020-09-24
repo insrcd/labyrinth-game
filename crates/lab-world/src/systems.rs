@@ -13,8 +13,8 @@ pub fn camera_tracking_system(
     for (_e, player_translation) in &mut player_moved.iter() {
         for (c, mut cam_trans) in &mut camera_query.iter() {
             if *(c.name.as_ref()).unwrap_or(&"".to_string()) != "UiCamera" {
-                *cam_trans.translation().x_mut() = player_translation.translation().x();
-                *cam_trans.translation().y_mut() = player_translation.translation().y();
+                *cam_trans.translation_mut().x_mut() = player_translation.translation().x();
+                *cam_trans.translation_mut().y_mut() = player_translation.translation().y();
             }
         }
     }
