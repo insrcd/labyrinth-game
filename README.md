@@ -84,4 +84,4 @@ Until I can get some sprites made specificially for the game, I am using openly 
 - https://opengameart.org/content/lots-of-free-2d-tiles-and-sprites-by-hyptosis - Hyptosis and Zabin
 - Zabin, Daneeklu, Jetrel, Hyptosis, Redshrike, Bertram. http://opengameart.org/content/rpg-tiles-cobble-stone-paths-town-objects 
 - "Elthen" / "Ahmet Avci" (https://www.patreon.com/elthen)
-
+- Medieval Tileset by Calciumtrice, usable under Creative Commons Attribution 3.0 license.
