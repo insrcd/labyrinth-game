@@ -1,6 +1,5 @@
 /// Module for game state
-
-use bevy::{prelude::*};
+use bevy::prelude::*;
 use lab_input::prelude::*;
 use lab_sprites::*;
 
@@ -12,45 +11,41 @@ pub enum StateType {
     Menu(Menu),
     CharacterScreen,
     Map,
-    Combat
+    Combat,
 }
 
 #[derive(Clone)]
 #[allow(dead_code)]
 pub struct GameState {
     pub current_state: StateType,
-    pub edit_mode: bool
+    pub edit_mode: bool,
 }
 
 impl Default for GameState {
     fn default() -> Self {
         GameState {
             current_state: StateType::Init,
-            edit_mode: false
+            edit_mode: false,
         }
     }
 }
 
 pub struct SceneState {
-    pub next_state: StateType
+    pub next_state: StateType,
 }
 
-#[allow(dead_code,unused_variables,unused_mut)]
-pub fn state_transition (
-    mut commands : Commands,
-    windows : Res<Windows>,
+#[allow(dead_code, unused_variables, unused_mut)]
+pub fn state_transition(
+    mut commands: Commands,
+    windows: Res<Windows>,
     sprite_library: Res<SpriteLibrary>,
     asset_server: Res<AssetServer>,
     mut fonts: ResMut<Assets<Font>>,
-    mut query : Query<(Changed<SceneState>,)>
+    mut query: Query<(Changed<SceneState>,)>,
 ) {
     for (state,) in &mut query.iter() {
-       
         match &state.next_state {
-
-            StateType::Init => { 
-                
-            }
+            StateType::Init => {}
             #[allow(unused_variables)]
             StateType::Menu(menu) => {}
             StateType::CharacterScreen => {}

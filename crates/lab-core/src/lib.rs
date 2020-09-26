@@ -1,19 +1,16 @@
-
-pub use bevy::{prelude::*, render::camera::*, input::mouse::MouseButtonInput};
+pub use bevy::{input::mouse::MouseButtonInput, prelude::*, render::camera::*};
 
 pub use crate::interaction::*;
 pub use crate::tiles::*;
 pub use crate::world::*;
-pub use crate::ui::*;
 
-use rand::distributions::{Standard, Distribution};
+use rand::distributions::{Distribution, Standard};
 use rand::Rng;
 
-mod systems;
 mod interaction;
+mod systems;
 mod tiles;
 mod world;
-mod ui;
 
 pub mod prelude {
     pub use crate::*;
@@ -36,8 +33,7 @@ pub struct CorePlugin;
 
 impl Plugin for CorePlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app
-            .init_resource::<Items>()
+        app.init_resource::<Items>()
             .init_resource::<WorldSettings>()
             .init_resource::<AdventureLog>()
             .init_resource::<InputTimer>();
@@ -51,7 +47,7 @@ pub struct Named(pub String);
 
 impl Default for Named {
     fn default() -> Self {
-        Named ("No Name".to_string())
+        Named("No Name".to_string())
     }
 }
 
@@ -73,19 +69,19 @@ pub struct StaticLocation;
 
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct MenuItem {
-    pub name: String
+    pub name: String,
 }
 
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct MenuDefinition {
-    pub items : Vec<MenuItem>
+    pub items: Vec<MenuItem>,
 }
 
 pub struct WorldSettings {
     pub tile_size: f32,
     pub base_player_speed: f32,
     pub base_npc_speed: f32,
-    pub base_scale: f32
+    pub base_scale: f32,
 }
 
 impl Default for WorldSettings {
@@ -94,28 +90,25 @@ impl Default for WorldSettings {
             tile_size: 16.,
             base_player_speed: 8.,
             base_npc_speed: 8.,
-            base_scale: 5.
+            base_scale: 5.,
         }
     }
 }
 
 pub struct AdventureLog {
-    pub logs : Vec<String>
+    pub logs: Vec<String>,
 }
 
 impl Default for AdventureLog {
     fn default() -> Self {
-        AdventureLog {
-            logs: Vec::new()
-        }
+        AdventureLog { logs: Vec::new() }
     }
 }
 
 impl AdventureLog {
-    pub fn add_message(&mut self, log : String) -> &mut AdventureLog {
-
+    pub fn add_message(&mut self, log: String) -> &mut AdventureLog {
         // don't repeat the messages
-        if self.logs.len() == 0 || self.logs[self.logs.len()-1] != log {
+        if self.logs.len() == 0 || self.logs[self.logs.len() - 1] != log {
             self.logs.push(log);
         }
 
@@ -123,56 +116,70 @@ impl AdventureLog {
     }
 
     /// Get a log line from the bottom of the log
-    pub fn last(&self, i : usize) -> Option<&str> {
+    pub fn last(&self, i: usize) -> Option<&str> {
         if i < self.logs.len() {
-            Some(&self.logs[self.logs.len()-1-i][..])
+            Some(&self.logs[self.logs.len() - 1 - i][..])
         } else {
             None
         }
     }
 
-    pub fn make(&mut self, commands: &mut Commands, font_handle:  Handle<Font>,  length : u32) -> &mut AdventureLog {
-        for n in 1..length+1 {
-            commands.spawn(TextComponents {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    position: Rect {bottom:Val::Px(20. + (length-n) as f32 * 25.), left:Val::Px(5.), ..Default::default()},
-                    ..Default::default()
-                },
-                text: Text {
-                    value: "".to_string(),
-                    font: font_handle,
-                    style: TextStyle {
-                        font_size: 20.0,
-                        color: Color::WHITE,
+    pub fn make(
+        &mut self,
+        commands: &mut Commands,
+        font_handle: Handle<Font>,
+        length: u32,
+    ) -> &mut AdventureLog {
+        for n in 1..length + 1 {
+            commands
+                .spawn(TextComponents {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        position: Rect {
+                            bottom: Val::Px(20. + (length - n) as f32 * 25.),
+                            left: Val::Px(5.),
+                            ..Default::default()
+                        },
+                        ..Default::default()
                     },
-                },
-                draw: Draw {is_visible: true, ..Default::default()},
-                ..Default::default()
-            }).with_bundle((Named(format!("log_line_{}", length-n).to_string()), 
-                            StaticLocation, )
-                    ); 
+                    text: Text {
+                        value: "".to_string(),
+                        font: font_handle,
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                        },
+                    },
+                    draw: Draw {
+                        is_visible: true,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .with_bundle((
+                    Named(format!("log_line_{}", length - n).to_string()),
+                    StaticLocation,
+                ));
         }
         self
     }
 }
 
-
 #[derive(PartialEq, Debug, Copy, Clone)]
-pub struct Movement { 
-    pub start: Vec3, 
-    pub end:  Vec3, 
-    pub direction: Vec3, 
-    pub legal: Option<bool> 
+pub struct Movement {
+    pub start: Vec3,
+    pub end: Vec3,
+    pub direction: Vec3,
+    pub legal: Option<bool>,
 }
 
 impl Default for Movement {
     fn default() -> Movement {
         Movement {
-            start:Vec3::zero(),
+            start: Vec3::zero(),
             end: Vec3::zero(),
             direction: Vec3::zero(),
-            legal: None
+            legal: None,
         }
     }
 }
@@ -183,7 +190,7 @@ impl Movement {
             start: start,
             end: end,
             direction: direction,
-            legal: None
+            legal: None,
         }
     }
 }
@@ -194,9 +201,8 @@ pub enum CardinalDirection {
     North,
     South,
     East,
-    West
+    West,
 }
-
 
 impl Distribution<CardinalDirection> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> CardinalDirection {
@@ -205,8 +211,7 @@ impl Distribution<CardinalDirection> for Standard {
             1 => CardinalDirection::South,
             2 => CardinalDirection::East,
             3 => CardinalDirection::West,
-            _ => CardinalDirection::None
+            _ => CardinalDirection::None,
         }
     }
 }
-

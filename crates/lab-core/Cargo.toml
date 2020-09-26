@@ -19,3 +19,5 @@ strum_macros = "0.19.2"
 defaults = "0.2.0"
 
 uuid = { version = "0.8", features = ["v4", "serde"] }
+
+lab-data = { path = "../lab-data"}

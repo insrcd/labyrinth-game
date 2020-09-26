@@ -1,4 +1,4 @@
-use lab_core::{WorldHandle, Item};
+use lab_core::{Item, WorldHandle};
 
 #[allow(dead_code)]
 pub enum WeaponSpecialPowers {
@@ -9,18 +9,18 @@ pub enum WeaponSpecialPowers {
 
 #[allow(dead_code)]
 pub struct Weapon {
-    attack_power : u32,
-    special_powers: Vec<WeaponSpecialPowers>
+    attack_power: u32,
+    special_powers: Vec<WeaponSpecialPowers>,
 }
 
 #[allow(dead_code)]
 struct Brew {
     name: String,
-    ingredients: Vec<Box<dyn Mixable>>
+    ingredients: Vec<Box<dyn Mixable>>,
 }
 
 trait Mixable {
-    fn mix_with(&self, item : &mut WorldHandle<Item>);
+    fn mix_with(&self, item: &mut WorldHandle<Item>);
 }
 
 struct Herb;
@@ -29,24 +29,23 @@ struct Extract;
 struct Fluid;
 
 impl Mixable for Herb {
-    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
+    fn mix_with(&self, _item: &mut WorldHandle<Item>) {
         todo!()
     }
 }
-impl Mixable for Grain {    
-    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
-        todo!()
-    } 
-}
-impl Mixable for Extract { 
-    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
+impl Mixable for Grain {
+    fn mix_with(&self, _item: &mut WorldHandle<Item>) {
         todo!()
     }
 }
-
-impl Mixable for Fluid { 
-    fn mix_with(&self, _item : &mut WorldHandle<Item>) {
+impl Mixable for Extract {
+    fn mix_with(&self, _item: &mut WorldHandle<Item>) {
         todo!()
     }
 }
 
+impl Mixable for Fluid {
+    fn mix_with(&self, _item: &mut WorldHandle<Item>) {
+        todo!()
+    }
+}

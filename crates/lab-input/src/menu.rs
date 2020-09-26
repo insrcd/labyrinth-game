@@ -1,9 +1,8 @@
-
 #[derive(Clone, Debug)]
 pub struct Menu {
-    title : String,
-    items : Vec<MenuItem>,
-    current_selection : Option<MenuItem>
+    title: String,
+    items: Vec<MenuItem>,
+    current_selection: Option<MenuItem>,
 }
 
 impl Default for Menu {
@@ -11,12 +10,10 @@ impl Default for Menu {
         Menu {
             title: Default::default(),
             items: Vec::new(),
-            current_selection: Option::None
+            current_selection: Option::None,
         }
     }
 }
 
 #[derive(Default, Clone, Copy, Debug)]
-pub struct MenuItem {
-    
-}
+pub struct MenuItem {}

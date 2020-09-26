@@ -19,3 +19,4 @@ lab-input = { path = "../lab-input" }
 lab-world = { path = "../lab-world" }
 lab-builder = { path = "../lab-builder" }
 lab-core = { path = "../lab-core" }
+lab-data = { path = "../lab-data" }
