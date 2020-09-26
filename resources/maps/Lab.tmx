@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="1">
  <tileset firstgid="1" name="OutdoorTiles2" tilewidth="32" tileheight="32" tilecount="900" columns="30">
-  <image source="../labrynth-game/resources/sprites/hyptosis_til-art-batch-2.png" width="960" height="960"/>
+  <image source="../sprites/hyptosis_til-art-batch-2.png" width="960" height="960"/>
  </tileset>
  <tileset firstgid="901" source="Bar.tsx"/>
  <tileset firstgid="1301" source="OutdoorTiles.tsx"/>
