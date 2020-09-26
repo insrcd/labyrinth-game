@@ -174,20 +174,16 @@ impl<'a> MapBuilder {
             let mut my_comp = comps.clone();
             my_comp.name = Named(tile_name.to_string());
 
-            let loc = self.current_location;
-
-            let tile_size_x = comps.sprite.width as f32;
-            let tile_size_y = comps.sprite.height as f32;
-
             my_comp.location = self.get_location(
                 pos,
                 Vec2::new(comps.sprite.width as f32, comps.sprite.height as f32),
             );
+
             my_comp.interaction = interaction;
 
-            self.tiles.push(my_comp);
+            self.current_location = my_comp.location;
 
-            self.current_location = location;
+            self.tiles.push(my_comp);
         }
         self
     }

@@ -16,6 +16,7 @@ pub mod prelude {
     pub use text::*;
 }
 
+#[derive(Copy, Clone, PartialEq)]
 pub enum RelativePosition {
     LeftOf,
     RightOf,
