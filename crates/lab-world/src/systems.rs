@@ -82,7 +82,6 @@ pub fn interaction_system(
         &Named,
         &ObjectState,
         &WorldHandle<TileInteraction>,
-        &WorldHandle<Tile>,
         &Inventory,
     )>,
 ) {

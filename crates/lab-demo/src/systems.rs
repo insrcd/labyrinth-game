@@ -48,24 +48,20 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     let item_interaction = palette.add_interaction(TileInteraction {
         description: "Get Item",
         caller: |ctx| {
-            // demoooo
 
-            let tilehandle = ctx
-                .interaction_query
-                .get::<WorldHandle<Tile>>(ctx.destination)
-                .ok();
             let definition = ctx
                 .interaction_query
                 .get::<ItemDefinition>(ctx.destination)
-                .ok();
+                .unwrap();
+            let name = definition.name.clone();
+
             let item = ItemComponents {
-                name: Named("Key To Building 2".into()),
+                name: Named(name.clone().into()),
                 weight: Weight(0.1),
                 item_type: ItemType::Key,
                 item_slot: ItemSlot::LeftHand,
                 handle: WorldHandle::default(),
-                tile_handle: (*tilehandle.unwrap()).clone(),
-                description: (*definition.unwrap()).clone(),
+                description: (*definition).clone(),
             };
             // println!("{:?} interacted with {:?} for key ({:?})", ctx.source, ctx.destination, item.tile_handle);
             let itype = ctx
@@ -78,7 +74,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                     return vec![
                         TileInteractionResult::AddItem(ctx.source, item),
                         TileInteractionResult::Despawn,
-                        TileInteractionResult::Message(format!("You picked up the key").into()),
+                        TileInteractionResult::Message(format!("You picked up the {}", name).into()),
                     ];
                 };
             }
@@ -116,12 +112,11 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 .get(tiles::BRICK_DOOR_OPEN)
                 .expect("Open brick door tile cannot be found");
 
-            println!("Source entity: {:?}", ctx.source);
             let inventory = ctx.interaction_query.get::<Inventory>(ctx.source).unwrap();
 
             for e in (*inventory).0.iter() {
                 let entity = ctx.items.items.get(e).unwrap();
-                println!("Got entity {:?} in inventory for item {:?}", entity, e);
+
                 let item = ctx.item_query.get::<Named>(*entity).unwrap();
 
                 if item.0 == "Key To Building 2" {
@@ -256,8 +251,8 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         Vec2::new(6., 6.),
         tiles::FLOOR.to_string(),
     )
-    .add_tiles(RelativePosition::RightOf, 5, tiles::BRICK.to_string())
-    .add_tiles(RelativePosition::Below, 5, tiles::BRICK.to_string())
+    .add_interactable(RelativePosition::RightOf, 5, tiles::BRICK.to_string(), bump_handle)
+    .add_interactable(RelativePosition::Below, 5, tiles::BRICK.to_string(), bump_handle)
     .add_interactable(
         RelativePosition::LeftOf,
         2,
@@ -336,6 +331,7 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
         commands
             .spawn(comps.clone())
             .with(item.clone())
+            .with_bundle(comps.sprite.to_components(comps.location.into(), 1.))
             .with_bundle(Interactable::new(InteractableType::Item))
             .with(item_interaction);
     }

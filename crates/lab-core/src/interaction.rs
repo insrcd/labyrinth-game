@@ -50,7 +50,6 @@ where
             &'a Named,
             &'a ObjectState,
             &'a WorldHandle<I>,
-            &'a WorldHandle<Tile>,
             &'a Inventory,
         ),
     >,

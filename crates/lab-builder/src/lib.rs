@@ -66,8 +66,7 @@ pub struct MobComponents {
     pub timer: Timer,
     pub location: Location,
     pub zoomable: Zoomable,
-    pub interactable_type: InteractableType,
-    pub handle: WorldHandle<Tile>,
+    pub interactable_type: InteractableType
 }
 
 impl Clone for MobComponents {
@@ -82,8 +81,7 @@ impl Clone for MobComponents {
             timer: self.timer.clone(),
             location: self.location.clone(),
             zoomable: self.zoomable.clone(),
-            interactable_type: self.interactable_type.clone(),
-            handle: WorldHandle::default(),
+            interactable_type: self.interactable_type.clone()
         }
     }
 }

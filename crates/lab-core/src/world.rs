@@ -187,7 +187,6 @@ pub struct ItemComponents {
     pub handle: WorldHandle<Item>,
     pub item_type: ItemType,
     pub item_slot: ItemSlot,
-    pub tile_handle: WorldHandle<Tile>,
     pub description: ItemDefinition,
 }
 
