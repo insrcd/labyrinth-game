@@ -1,7 +1,4 @@
 use lab_core::{WorldHandle, Item};
-use bevy::prelude::*;
-use defaults::*;
-use std::collections::HashMap;
 
 #[allow(dead_code)]
 pub enum WeaponSpecialPowers {

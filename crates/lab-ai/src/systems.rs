@@ -1,7 +1,5 @@
 use lab_core::prelude::*;
 use lab_entities::prelude::*;
-use crate::dialog::*;
-use rand::*;
 
 
 /// Super Basic right now, Move all NPCs in the scene every n seconds

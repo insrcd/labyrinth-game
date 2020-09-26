@@ -3,8 +3,7 @@ use bevy::sprite::collide_aabb::*;
 use lab_entities::prelude::*;
 use lab_core::prelude::*;
 use lab_sprites::SpriteInfo;
-use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction, TileInteractionResultEvent, TilePalette};
-use std::{rc::Rc, borrow::Cow, sync::Arc};
+use crate::{TextChangeEvent, TileComponents, InteractionState, UiTextState, TileInteractionResult, TileInteraction, TileInteractionResultEvent};
 
 pub fn camera_tracking_system(
     mut player_moved: Query<With<Player, (Entity, Mutated<Transform>)>>,
@@ -74,9 +73,7 @@ pub fn collision_system(
 /// and the result is sent as an event to be processed.
 
 pub fn interaction_system(
-    mut commands: Commands,
-    
-    mut items : ResMut<Items>,
+    items : ResMut<Items>,
     mut result_events : ResMut<Events<TileInteractionResultEvent>>,
     mut state: ResMut<InteractionState>,
     interaction_events: ResMut<Events<InteractionEvent>>,
@@ -118,7 +115,7 @@ pub fn interaction_system(
                         };
                         for r in tile_interaction.interact(ctx).iter() {
                             result_events.send(TileInteractionResultEvent { 
-                                source: event.source, 
+                                _source: event.source, 
                                 destination: event.destination, 
                                 result: r.clone() 
                             })
@@ -137,7 +134,7 @@ pub fn process_interaction_result_system (
     mut items : ResMut<Items>,
     mut state: ResMut<InteractionState>,
     mut text_update: ResMut<Events<TextChangeEvent>>,
-    tile_query: Query<
+    _tile_query: Query<
         (
             Entity,
             &Draw
@@ -259,7 +256,7 @@ pub fn zoom_system(
     movement_query: Query<(Entity,&mut Movement)>
 ) {
     
-    let window = windows.iter().last().unwrap();
+    let _window = windows.iter().last().unwrap();
 
     let mut entities_changed : Vec<(Entity, Location, Location)> = Vec::new();
     
@@ -344,7 +341,7 @@ pub fn static_text_system(
     mut query: Query<(Entity, &Text, &mut Transform, &StaticLocation)>,
     mut player_query: Query<(Entity, &Player, &Movement, Changed<Transform>)>,
 ) {
-    for (_e, _player, movement, t) in &mut player_query.iter() {
+    for (_e, _player, movement, _) in &mut player_query.iter() {
         for (_e, _letter, mut translation, _st) in &mut query.iter() {            
             let change : Vec2 = movement.start.truncate() - movement.end.truncate();
 

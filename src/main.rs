@@ -8,7 +8,7 @@ mod state;
 use lab_entities::prelude::*;
 use lab_input::*;
 use lab_sprites::*;
-use lab_core::{stage,*};
+use lab_core::*;
 use lab_world::{TextChangeEvent, TileInteraction};
 
 pub mod layers {
@@ -79,7 +79,7 @@ fn setup (
         PlayerComponents::new("Adam"))
         .with_bundle( player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), 1.))
         .with_bundle(Interactable::new(InteractableType::Player))
-        .with(WorldHandle::<TileInteraction>::default()) // needed for now
+        .with(WorldHandle::<TileInteraction>::default()) 
         .with(MoveAnimation {
             up: walk_right[3..6].to_vec(), 
             down: walk_left[0..4].to_vec(),

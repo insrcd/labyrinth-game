@@ -1,8 +1,6 @@
 use lab_world::*;
 use lab_builder::prelude::*;
-use lab_entities::prelude::*;
 use crate::*;
-use std::{cell::RefCell, rc::Rc, sync::Arc};
 use lab_core::prelude::*;
 
 // move to a resources file of some sort.
@@ -17,15 +15,15 @@ mod tiles {
     //pub const NPC : &'static str = "npc_0";   
     pub const ITEM : &'static str = "item_50";   
     pub const ITEM2 : &'static str = "item_15";   
-    pub const LOCKED_DOOR : &'static str = "locked_door";   
-    pub const ENEMY : &'static str = "mob_19";
+    pub const _LOCKED_DOOR : &'static str = "locked_door";   
+    pub const _ENEMY : &'static str = "mob_19";
 }
 
 /// Adds a simple map using the map builder for the purposes of a demo.
 
 pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<TilePalette>) {
 
-    let null_interaction = palette.add_interaction(TileInteraction { caller: |ctx| {            
+    let _null_interaction = palette.add_interaction(TileInteraction { caller: |_| {            
         TileInteractionResult::None.into()
     }, description:"Null" });
 
@@ -119,18 +117,18 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
                 }
             }, description: "Break Window" });
     
-    if let Some(mut tiles) = palette.components.get_mut(tiles::WALL) {
+    if let Some(tiles) = palette.components.get_mut(tiles::WALL) {
         // walls are hard
         tiles.state.set_int("hardness".into(), 1);
         tiles.state.set_int("hit_points".into(), 800);                 
     }
     
-    if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK) {
+    if let Some(tiles) = palette.components.get_mut(tiles::BRICK) {
         // brick walls are beefier
         tiles.state.set_int("hardness".into(), 5);
         tiles.state.set_int("hit_points".into(), 1000);        
     }
-    if let Some(mut tiles) = palette.components.get_mut(tiles::BRICK_DOOR) {
+    if let Some(tiles) = palette.components.get_mut(tiles::BRICK_DOOR) {
        
         tiles.state.set_int("hardness".into(), 1);
         tiles.state.set_int("hit_points".into(), 100);        
@@ -198,7 +196,6 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
     } 
 
     for mob in mb.mobs.iter().cloned() {
-        let mut handle = mob.handle;
 
         commands.spawn(mob.clone())
             .with_bundle(mob.sprite.to_components(mob.location.into(), 1.))

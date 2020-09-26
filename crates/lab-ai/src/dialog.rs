@@ -1,10 +1,9 @@
-use lab_world::TextChangeEvent;
+
 use lab_core::prelude::*;
-use lab_entities::prelude::*;
 
 #[derive(Default)]
 struct DialogState {
-  dialog_events : EventReader<DialogEvent>
+  _dialog_events : EventReader<DialogEvent>
 }
 #[derive(Clone, Debug)]
 pub struct DialogEvent {

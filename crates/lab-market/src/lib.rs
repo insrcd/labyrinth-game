@@ -1,6 +1,3 @@
-
-use lab_entities::player::*;
-
 pub enum ConsumerType {
     Individual,
     Business,
@@ -30,6 +27,6 @@ pub trait Good {
 /// Identifies a identity as a converer or someone who brings something from one inventory to another
 trait Conveyer {
     fn distribution_rate () -> u32;
-    fn convey (source : Inventory, destination: Inventory) -> bool;
+   // fn convey (source : Inventory, destination: Inventory) -> bool;
 }
 

@@ -1,6 +1,5 @@
 use lab_core::prelude::*;
-use std::collections::BTreeMap;
-use std::{fmt::Debug, collections::{HashMap, btree_map::{Values, Keys}}, sync::{Arc, Mutex}};
+use std::{fmt::Debug};
 use lab_sprites::SpriteInfo;
 
 mod systems;
@@ -51,7 +50,7 @@ impl CatalogItem for TileComponents {
 }
 
 pub struct TileInteractionResultEvent{
-    source: Entity,
+    _source: Entity,
     destination: Entity,
     result: TileInteractionResult
 }
@@ -111,7 +110,7 @@ impl Default for TileInteraction {
     fn default() -> Self {
         TileInteraction {
             description:"Default Interaction",
-            caller : |ctx| TileInteractionResult::None.into()
+            caller : |_| TileInteractionResult::None.into()
         }
     }
 }

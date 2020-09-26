@@ -1,4 +1,4 @@
-use std::{fs, marker::PhantomData};
+use std::{fs};
 use defaults::*;
 
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -65,7 +65,7 @@ trait ItemReader {
 //#[derive()]
 struct JsonFileReader<T> {
   items: Vec<T>,
-  filename : String,
+  _filename : String,
   current: i32,
   count: usize,
  // _pd : &'a PhantomData<T>
@@ -76,7 +76,7 @@ impl <T> Default for JsonFileReader<T> {
         JsonFileReader {
           //_pd: &PhantomData{},
           items: Default::default(),
-          filename: Default::default(),
+          _filename: Default::default(),
           current: -1 as i32,
           count: 0          
         }
@@ -84,13 +84,14 @@ impl <T> Default for JsonFileReader<T> {
 }
 
 impl <T> JsonFileReader <T> where T : DeserializeOwned + Clone {
+  #[allow(dead_code)]
   fn new(filename : &str) -> JsonFileReader<T> {   
     let contents = fs::read_to_string(filename)
       .expect("Could not read file");
     let items : Vec<T> = serde_json::from_str(&contents[..]).unwrap();
     let len = items.len();
     JsonFileReader {
-      filename: filename.into(),
+      _filename: filename.into(),
       items: items,
       current: -1,
       count: len,

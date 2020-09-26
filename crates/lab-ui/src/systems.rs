@@ -1,6 +1,3 @@
-use std::sync::Arc;
-
-use lab_input::ScrollState;
 use lab_sprites::SpriteInfo;
 use lab_core::prelude::*;
 use lab_entities::prelude::*;
@@ -15,7 +12,6 @@ pub fn ui_key_system (
 
   if keyboard_input.just_pressed(KeyCode::I) {
     for (e, state) in &mut query.iter(){
-      println!("{:?}", e);
       if let UiState::Inventory = state { 
         
         println!("Changing to main");
@@ -38,7 +34,7 @@ pub fn button_system(
       Mutated<Interaction>,
       &mut Handle<ColorMaterial>
   )>,
-  text_query: Query<&mut Text>,
+  _text_query: Query<&mut Text>,
 ) {
   for (_button, interaction, mut material) in &mut interaction_query.iter() {
      //let mut text = text_query.get_mut::<Text>(children[0]).unwrap();
@@ -213,9 +209,9 @@ pub struct UiColors {
   grey : HColor,
   grey2 : HColor,
   blue : HColor,
-  blue2 : HColor,
-  blue3 :HColor,
-  black :HColor,
+  _blue2 : HColor,
+  _blue3 :HColor,
+  _black :HColor,
   white :HColor
 }
 
@@ -225,9 +221,9 @@ impl UiColors{
       grey : materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
       grey2 : materials.add(Color::rgb(0.3, 0.3, 0.3).into()),
       blue : materials.add(Color::rgb(0.1, 0.1, 1.0).into()),
-      blue2 : materials.add(Color::rgb(0.3, 0.3, 1.0).into()),
-      blue3 :materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
-      black :materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+      _blue2 : materials.add(Color::rgb(0.3, 0.3, 1.0).into()),
+      _blue3 :materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
+      _black :materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
       white :materials.add(Color::rgb(1.0, 1.0, 1.0).into())
     }
   }
@@ -238,11 +234,11 @@ pub fn inventory_ui_system (
     asset_server: Res<AssetServer>,
     materials: ResMut<Assets<ColorMaterial>>,
     mut assets: ResMut<Assets<Font>>,
-    mut items: ResMut<Items>,
+    items: ResMut<Items>,
     button_materials: Res<ButtonMaterials>,
     mut state_query: Query<(Entity, Changed<UiState>)>,
     item_query: Query<(Entity, &WorldHandle<Item>, &Named)>,
-    tile_query: Query<(&WorldHandle<Tile>, &SpriteInfo)>,
+    _tile_query: Query<(&WorldHandle<Tile>, &SpriteInfo)>,
     mut ui_query: Query<(Entity, &InventoryUi)>,
     mut inventory_query: Query<(Entity, &Player, &mut Inventory)>
 ) {

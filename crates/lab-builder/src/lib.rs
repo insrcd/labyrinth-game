@@ -83,6 +83,7 @@ impl Clone for MobComponents {
 }
 
 impl MobComponents {
+    #[allow(dead_code)]
     fn new(name : String) -> Self {
         MobComponents {
             named: Named(name),

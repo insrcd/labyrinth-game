@@ -1,10 +1,8 @@
 
 
-const PLAYER_SPEED : f32  = 8.;
 use lab_sprites::*;
 
 use crate::*;
-use lab_core::prelude::*;
 use bevy::input::mouse::MouseWheel;
 
 /// System to sample mouse wheel events and update athe ScrollState
@@ -111,7 +109,6 @@ pub fn mouse_click_system (
 
 pub fn player_movement_system (
     time : Res<Time>,
-    world_settings : Res<WorldSettings>,
     keyboard_input: Res<Input<KeyCode>>, 
     mut query: Query<(&player::Player, &mut Transform, &mut Movement, &mut MoveAnimation, &mut TextureAtlasSprite, &mut lab_core::InputTimer, &mut Handle<TextureAtlas>)>) {
 
@@ -139,10 +136,6 @@ pub fn player_movement_system (
         direction -= Vec3::new(0.0, 1.0, 0.0);
     }
 
-    
-    //translation.0 += time.delta_seconds * direction * 1000.0;
-    
-    let player_speed = world_settings.base_player_speed;
     if anination_direction != CardinalDirection::None {
         
         for (_player, mut transform, mut movement, mut animation, mut texture_sprite, mut timer, mut atlas) in &mut query.iter() {   

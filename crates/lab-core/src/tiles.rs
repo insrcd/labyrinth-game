@@ -1,6 +1,6 @@
-use crate::{Zoomable, prelude::*};
+use crate::{prelude::*};
 use std::fmt::Debug;
-use std::{sync::{Arc, Mutex}, collections::HashMap};
+use std::collections::HashMap;
 
 #[derive(Default, Clone, Debug, PartialEq)]
 pub struct ParsableState {
@@ -85,7 +85,7 @@ impl ObjectState {
     }
   }
 
-  pub fn merge(&self, other : Self){
+  pub fn merge(&self, _other : Self){
     todo!()
   }
 }

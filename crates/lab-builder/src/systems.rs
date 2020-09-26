@@ -1,12 +1,11 @@
 use bevy::{prelude::*, 
     render::{camera::Camera}};
 
-use lab_entities::prelude::*;
 use lab_sprites::*;
 use lab_world::*;
 use crate::{BuilderSettings, MovingTile};
 use lab_input::{Mouse, SelectedTile, ScrollState, MouseClickEvent, MouseState};
-use lab_core::prelude::{Location, WorldLocation, InteractionCatalog};
+use lab_core::prelude::{Location, WorldLocation};
 
 
 pub fn make_world_catalog_system(
@@ -45,7 +44,7 @@ pub fn update_tile_system (mouse : ResMut<Mouse>,
         
             let camera_offset_x = t.translation().x();
             let camera_offset_y = t.translation().y();
-            for (_ft, mut t, _d) in &mut f_tile_query.iter(){        
+            for (_ft, t, _d) in &mut f_tile_query.iter(){        
                 let mouse_tile = palette.items_in_category(&selected_tile.category)[selected_tile.tile];
                 let sprite_width = mouse_tile.sprite.size().x() * scroll_state.current_scale;
                 let sprite_height = mouse_tile.sprite.size().y() * scroll_state.current_scale;
@@ -57,7 +56,7 @@ pub fn update_tile_system (mouse : ResMut<Mouse>,
             }
         }
     }
-    for (_ft, mut t, _d) in &mut m_tile_query.iter(){
+    for (_ft,  t, _d) in &mut m_tile_query.iter(){
         *t.translation().x_mut() = mouse.position.x();
         *t.translation().y_mut() = mouse.position.y();
     }
@@ -70,7 +69,6 @@ pub fn add_tiles_to_world_system (
     selected_tile: Res<SelectedTile>, 
     scroll_state: Res<ScrollState>, 
     palette: Res<TilePalette>,
-    mouse_input: Res<Input<MouseButton>>,
     mouse : ResMut<Mouse>,
     mouse_events : ResMut<Events<MouseClickEvent>>,
     mut mouse_click : ResMut<MouseState>,
