@@ -2,7 +2,7 @@ use crate::*;
 use bevy::prelude::*;
 use lab_core::prelude::*;
 use lab_world::{TileComponents, TileInteraction, TilePalette};
-
+use lab_data::ItemDefinition;
 #[derive(Clone, Debug)]
 pub struct Blueprint {
     pub name: String,
@@ -34,6 +34,7 @@ pub struct MapBuilder {
     pub current_location: Location,
     pub tiles: Vec<TileComponents>,
     pub mobs: Vec<MobComponents>,
+    pub items: Vec<(TileComponents, ItemDefinition)>,
     pub blueprints: Vec<Blueprint>,
 }
 
@@ -46,6 +47,7 @@ impl<'a> MapBuilder {
             tiles: Vec::new(),
             blueprints: Vec::new(),
             mobs: Vec::new(),
+            items: Vec::new()
         }
     }
     pub fn reset_position(&mut self) -> &MapBuilder {
@@ -60,7 +62,36 @@ impl<'a> MapBuilder {
         self
     }
 
-    pub fn add_item(&mut self) {}
+    pub fn add_item( &mut self,
+        pos: RelativePosition,
+        count: u32,
+        tile_name: String,
+        interaction: WorldHandle<TileInteraction>,
+        descripton: ItemDefinition) -> &mut Self {
+            let comps = self
+                .world_catalog
+                .components
+                .get(&tile_name)
+                .expect("Cannot find tiles");
+
+            for _ in 0..count {
+                let mut my_comp = comps.clone();
+
+                my_comp.location = self.get_location(
+                    pos,
+                    Vec2::new(comps.sprite.width as f32, comps.sprite.height as f32),
+                );
+
+                my_comp.interaction = interaction;
+
+                self.current_location = my_comp.location;
+
+                self.items.push((my_comp, descripton.clone()));
+            }
+            
+            self
+
+    }
     pub fn to_blueprint(&mut self, name: &str) -> Blueprint {
         let bp = Blueprint {
             name: name.to_string(),

@@ -332,6 +332,13 @@ pub fn create_simple_map_system(mut commands: Commands, mut palette: ResMut<Tile
             .with_bundle(Interactable::new(InteractableType::Npc))
             .with(enemy_interaction);
     }
+    for (comps, item) in mb.items.iter() {
+        commands
+            .spawn(comps.clone())
+            .with(item.clone())
+            .with_bundle(Interactable::new(InteractableType::Item))
+            .with(item_interaction);
+    }
 
     //commands.spawn((Moveable, Location(TILE_SIZE*2.,TILE_SIZE*2.,2.), Visible));
 }

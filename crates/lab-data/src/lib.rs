@@ -43,17 +43,17 @@ impl Into<f32> for Attribute {
 }
 #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct ItemDefinition {
-    name: String,
-    description: String,
-    attributes: Vec<Attribute>,
+    pub name: String,
+    pub description: String,
+    pub attributes: Vec<Attribute>,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct MobDefinition {
-    name: String,
-    description: String,
-    attributes: Vec<Attribute>,
-    script: String,
+    pub name: String,
+    pub description: String,
+    pub attributes: Vec<Attribute>,
+    pub script: String,
 }
 
 trait ItemReader {

@@ -1754,6 +1754,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "lab-core",
+ "lab-data",
  "lab-entities",
  "lab-input",
  "lab-sprites",
