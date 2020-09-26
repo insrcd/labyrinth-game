@@ -84,9 +84,4 @@ fn setup(
             right: walk_right[3..6].to_vec(),
             ..Default::default()
         });
-
-    /*
-    for _n in 0..50 {
-        commands.spawn((NonPlayer, Inventory::new() , Named("OldDude".to_string()), Location(TILE_SIZE, -TILE_SIZE, 50., world::WorldLocation::World), sprite.clone()),);
-    }*/
 }
