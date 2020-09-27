@@ -34,7 +34,8 @@ fn main() {
         .add_plugin(lab_ui::UiPlugin)
         .add_plugin(lab_ai::AiPlugin)
         .add_startup_system_to_stage(stages::POST_INIT, setup.system())
-        .add_plugin(lab_demo::DemoPlugin)
+        //.add_plugin(lab_demo::DemoPlugin)
+        .add_plugin(lab_tiled_demo::TiledDemoPlugin)
         .add_system(state::state_transition.system())
         .run();
 }
@@ -74,7 +75,7 @@ fn setup(
         },))
         .spawn((Mouse::default(),))
         .spawn(PlayerComponents::new("Adam"))
-        .with_bundle(player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), 1.))
+        .with_bundle(player_sprite.to_components(Vec3::new(-64., -64., layers::PLAYER), 2.))
         .with_bundle(Interactable::new(InteractableType::Player))
         .with(WorldHandle::<TileInteraction>::default())
         .with(MoveAnimation {
