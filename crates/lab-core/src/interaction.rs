@@ -28,14 +28,14 @@ pub trait CatalogItem {
 
 pub trait Interact<T: CatalogItem + Sync + Send + Clone + ?Sized, R: Sync + Send + Clone + ?Sized>
 where
-    Self: Clone + Sized,
+    Self: Clone + Sized + Sync + Send,
 {
     fn interact(&self, ctx: InteractionContext<Self, T, R>) -> R;
 }
 
 pub struct InteractionContext<'a, I, T: CatalogItem + Send + Sync + Clone, R: Send + Sync + Clone>
 where
-    I: Interact<T, R> + 'static,
+    I: Interact<T, R> + 'static + Sync + Send,
 {
     pub source: Entity,
     pub destination: Entity,
@@ -47,9 +47,8 @@ where
         (
             Entity,
             &'a InteractableType,
-            &'a Named,
             &'a ObjectState,
-            &'a WorldHandle<I>,
+            &'a I,
             &'a Inventory,
         ),
     >,

@@ -118,7 +118,7 @@ pub fn add_tiles_to_world_system(
                             && true_location.y() >= y1
                             && true_location.y() <= y2
                         {
-                            println!("Click on sprite {}", si.name);
+                            println!("Click on sprite {} {},{}", si.name, true_location.x(), true_location.y());
 
                             commands.insert_one(entity, MovingTile);
 

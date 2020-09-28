@@ -25,14 +25,15 @@ pub fn camera_tracking_system(
 /// This system sends an event whenever two Interactables touch.
 pub fn collision_system(
     mut interaction_event: ResMut<Events<InteractionEvent>>,
-    mut wall_query: Query<(Entity, &Transform, &SpriteInfo, &InteractableType)>,
+    mut wall_query: Query<(Entity, &Transform, &Size, &InteractableType)>,
     mut moveables: Query<(Entity, Mutated<Transform>)>,
 ) {
     for (mov_entity, move_translation) in &mut moveables.iter() {
         //println!("checking colision move: {:?}", *move_translation);
-        for (destination_entity, tile_translation, tile_sprite, interact_type) in
+        for (destination_entity, tile_translation, size, interact_type) in
             &mut wall_query.iter()
         {
+            //println!("Tile: {:?} {:?}", tile_translation, size);
             if *interact_type == InteractableType::None {
                 continue;
             }
@@ -44,12 +45,14 @@ pub fn collision_system(
             let collision = collide(
                 move_translation.translation(),
                 Vec2::new(8., 16.) * move_translation.scale().truncate(),
-                tile_translation.translation(),
-                tile_sprite.size() * tile_translation.scale().truncate(),
+                Vec3::new(
+                    tile_translation.translation().x() + (size.width/2.), 
+                    tile_translation.translation().y(), 0.),
+                Vec2::new(size.width, size.height)
             );
 
             if let Some(collision) = collision {
-                //println!("Collision detected");
+                //println!("Collision detected {}", move_translation.translation());
                 match collision {
                     _ => interaction_event.send(InteractionEvent {
                         source: mov_entity,
@@ -79,10 +82,9 @@ pub fn interaction_system(
     interactable_query: Query<(
         Entity,
         &InteractableType,
-        &Named,
         &ObjectState,
-        &WorldHandle<TileInteraction>,
-        &Inventory,
+        &TileInteraction,
+        &Inventory
     )>,
 ) {
     for event in state.interaction_events.iter(&interaction_events) {
@@ -93,27 +95,25 @@ pub fn interaction_system(
                 }
 
                 let tile_handle_r =
-                    interactable_query.get::<WorldHandle<TileInteraction>>(event.destination);
+                    interactable_query.get::<TileInteraction>(event.destination);
 
-                if let Some(tile_handle) = tile_handle_r.ok() {
-                    //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, tile_handle);
+                if let Some(tile_interaction) = tile_handle_r.ok() {
+                    //println!("{:?} interacted with {:?} name: {:?}", event.source, event.destination, tile_interaction);
 
-                    if let Some(tile_interaction) = world_catalog.get_interaction(*tile_handle) {
-                        let ctx = InteractionContext {
-                            source: event.source,
+                    let ctx = InteractionContext {
+                        source: event.source,
+                        destination: event.destination,
+                        world_catalog: world_catalog.clone(),
+                        interaction_query: &interactable_query,
+                        item_query: &item_query,
+                        items: &items,
+                    };
+                    for r in tile_interaction.interact(ctx).iter() {
+                        result_events.send(TileInteractionResultEvent {
+                            _source: event.source,
                             destination: event.destination,
-                            world_catalog: world_catalog.clone(),
-                            interaction_query: &interactable_query,
-                            item_query: &item_query,
-                            items: &items,
-                        };
-                        for r in tile_interaction.interact(ctx).iter() {
-                            result_events.send(TileInteractionResultEvent {
-                                _source: event.source,
-                                destination: event.destination,
-                                result: r.clone(),
-                            })
-                        }
+                            result: r.clone(),
+                        })
                     }
                 }
             }

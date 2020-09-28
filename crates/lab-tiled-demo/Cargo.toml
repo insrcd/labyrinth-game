@@ -18,4 +18,5 @@ lab-world = { path = "../lab-world" }
 lab-builder = { path = "../lab-builder" }
 lab-core = { path = "../lab-core" }
 lab-data = { path = "../lab-data" }
-bevy_tiled = { path = "../../../bevy_tiled" }
+bevy_tiled = { git = "https://github.com/insrcd/bevy_tiled", branch="lab" }
+tiled = "0.9.3"
