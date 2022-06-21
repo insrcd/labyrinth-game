@@ -32,7 +32,8 @@ If you want to contribute, please create issues or pull requests. Since I am doi
 
 - clone the repo
 - install https://rustup.rs/
-- cargo run --release in the repo directory
+- run ```rustup override set nightly``` in the repo directory
+- run ```cargo run --release``` in the same place
 
 Depending on your development environment there may be some "gotchyas" based on your video card, operating system, etc, check out https://github.com/bevyengine/bevy for current issues with your environment.
 
